@@ -26,6 +26,12 @@
       height: fit-content;
       transition: width 0.2s ease;
     }
+    /* Left-side Templates Companion Panel inside the floating widget */
+    .templates-side-panel {
+      width: 224px;
+      shrink: 0;
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
     /* Slide-out drawer transition */
     .hourly-drawer {
       max-height: 0;
@@ -215,6 +221,99 @@
         </div>
       </div>
 
+      <!-- QUICK-COPY TEMPLATES MANAGER (BULK "TITLE" PARSER + PERMANENT STORAGE + IMPORT/EXPORT) -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                Quick-Copy Templates Builder
+              </h3>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                Saved Forever
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">
+              Put button names inside <code class="text-emerald-300 font-mono-num bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">"Quotes"</code> followed by the template text. Create one or multiple buttons at once!
+            </p>
+          </div>
+
+          <!-- Export & Import Action Buttons -->
+          <div class="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+            <button type="button" onclick="exportTemplatesToInput()" title="Load all saved templates into the box below in &quot;Title&quot; format to copy or edit" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+              </svg>
+              <span id="btn-export-copy-label">Copy Export Text</span>
+            </button>
+            <button type="button" onclick="downloadTemplatesFile()" title="Download your templates as a .txt backup file" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+              <span>Download Backup</span>
+            </button>
+            <label class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer" title="Import templates from a saved .txt file">
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+              </svg>
+              <span>Import File</span>
+              <input type="file" id="input-import-templates-file" accept=".txt,.json" onchange="importTemplatesFromFile(this)" class="hidden">
+            </label>
+          </div>
+        </div>
+
+        <!-- Bulk Input Box for "Title" Template Text -->
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between text-xs">
+            <label for="textarea-bulk-templates" class="font-semibold text-slate-300">
+              Enter or Paste Templates (<span class="text-emerald-400 font-mono-num">"Button Name"</span> followed by template text):
+            </label>
+            <button type="button" onclick="insertSampleTemplateSyntax()" class="text-indigo-400 hover:text-indigo-300 underline text-[11px]">
+              Insert Example Format
+            </button>
+          </div>
+          <textarea id="textarea-bulk-templates" rows="5" placeholder='Example:&#10;"Greeting" Hello! Thank you for contacting support, how can I help you today?&#10;"Hold" Please allow me 2-3 minutes while I check your account details.&#10;"Closing" Thank you for contacting us! Have a wonderful rest of your day.' class="w-full bg-slate-950/90 border border-slate-700/90 rounded-xl p-3.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 font-mono-num focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
+          
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="parseAndSaveBulkTemplates(false)" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition flex items-center gap-1.5 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span>Create / Update Template Buttons</span>
+              </button>
+              <button type="button" onclick="parseAndSaveBulkTemplates(true)" title="Replace existing templates with only what is in the box above" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition cursor-pointer">
+                Replace All With Above
+              </button>
+            </div>
+
+            <button type="button" onclick="toggleTemplatesPopupPanel()" class="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 transition flex items-center gap-1.5 cursor-pointer">
+              <span>Toggle Left Templates Popup</span>
+            </button>
+          </div>
+          <p id="template-parse-feedback" class="text-xs text-emerald-400 hidden"></p>
+        </div>
+
+        <!-- Saved Templates List on Dashboard -->
+        <div class="pt-3 border-t border-slate-800/80">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Active Template Buttons (<span id="dashboard-template-count">0</span>)
+            </span>
+            <button type="button" onclick="clearAllTemplates()" class="text-xs text-rose-400 hover:text-rose-300 underline">
+              Clear All Templates
+            </button>
+          </div>
+
+          <div id="dashboard-templates-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto pr-1">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
       <!-- SHIFT HOURLY TICKETS TABLE (EASY EXCEL COPY) -->
       <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
@@ -305,12 +404,12 @@
       <div id="widget-dock-container" class="w-full flex justify-center">
         
         <!-- =============================================================== -->
-        <!-- THE POPUP WIDGET (Refined UI, Same Spatial Layout, Auto-Height) -->
+        <!-- THE POPUP WIDGET (Supports Side-by-Side Left Templates Panel)   -->
         <!-- =============================================================== -->
-        <div id="agent-popup-widget" class="resizable-widget w-[336px] bg-slate-950 border border-slate-700/90 rounded-xl shadow-2xl shadow-black flex flex-col select-none relative z-40">
+        <div id="agent-popup-widget" class="resizable-widget w-[336px] bg-transparent flex flex-col select-none relative z-40">
           
-          <!-- Compact Drag Bar (Hidden automatically when inside native PiP popup window so there is only the native X / Back to Tab bar) -->
-          <div id="widget-drag-handle" class="bg-slate-900 border-b border-slate-800 px-3 py-1.5 flex items-center justify-between cursor-move shrink-0">
+          <!-- Compact Drag Bar (Hidden automatically when inside native PiP popup window) -->
+          <div id="widget-drag-handle" class="bg-slate-900 border border-slate-700/90 rounded-t-xl px-3 py-1.5 flex items-center justify-between cursor-move shrink-0">
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
               <span class="text-[11px] font-bold tracking-wider uppercase text-slate-300">Work Companion</span>
@@ -325,39 +424,39 @@
             </div>
           </div>
 
-          <!-- POPUP BODY (Auto-fits strictly the visible tools, zero extra black space) -->
-          <div id="widget-modules-wrapper" class="p-2.5 space-y-2.5 bg-slate-950">
+          <!-- SIDE-BY-SIDE FLEX ROW: [LEFT: SEPARATE TEMPLATES POPUP BOX] + [RIGHT: MAIN TOOLS POPUP BOX] -->
+          <div id="widget-columns-row" class="flex flex-row items-start gap-2 w-full">
 
-            <!-- MODULE 1: CAIRO TIME AND DATE -->
-            <div id="mod-clock" class="bg-slate-800/95 border border-slate-700 rounded-lg px-3 py-2.5 shadow-inner flex flex-col items-center justify-center">
-              <div id="display-clock" class="font-mono-num text-2xl font-extrabold tracking-tight leading-none text-white">
-                00:00:00
+            <!-- LEFT SIDE SEPARATE TEMPLATES POPUP PANEL -->
+            <div id="popup-templates-panel" class="templates-side-panel hidden bg-slate-950 border border-slate-700/90 rounded-xl shadow-2xl shadow-black flex flex-col overflow-hidden">
+              <div class="bg-slate-900 border-b border-slate-800 px-2.5 py-2 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                  <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-200">Templates</span>
+                </div>
+                <button id="btn-templates-panel-close" type="button" title="Close Templates Popup" class="text-slate-400 hover:text-white text-xs font-bold px-1.5 py-0.5 rounded hover:bg-slate-800 cursor-pointer transition">
+                  ✕
+                </button>
               </div>
-              <div class="flex items-center gap-1.5 mt-1">
-                <span id="display-date" class="text-[11px] font-bold tracking-wider uppercase text-slate-300">
-                  MON, NOV 16, 2026
-                </span>
-                <span class="text-[10px] font-semibold px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                  CAIRO
-                </span>
+              <div id="popup-templates-list" class="p-2 space-y-1.5 max-h-[370px] overflow-y-auto bg-slate-950">
+                <!-- Populated dynamically with template buttons -->
               </div>
             </div>
 
-            <!-- MODULE 2: LUNCH & M&C TIME TRACKING -->
-            <div id="mod-breaks" class="bg-slate-800/95 border border-slate-700 rounded-lg p-2.5 shadow-inner">
-              <!-- Column Headers: START / FINISH / LEFT -->
-              <div class="grid grid-cols-12 gap-1.5 items-center mb-1 text-[10px] font-extrabold tracking-wider uppercase text-slate-400">
-                <div class="col-span-4 pl-0.5">BREAK</div>
-                <div class="col-span-3 text-center">START</div>
-                <div class="col-span-3 text-center">FINISH</div>
-                <div class="col-span-2 text-center">LEFT</div>
+            <!-- RIGHT SIDE MAIN TOOLS COLUMN -->
+            <div id="widget-modules-wrapper" class="flex-1 min-w-[290px] p-2.5 space-y-2.5 bg-slate-950 border border-slate-700/90 rounded-b-xl shadow-2xl shadow-black">
+
+              <!-- Top Quick Bar inside Main Popup to open/close Left Templates Popup -->
+              <div class="flex items-center justify-between gap-2 pb-1 border-b border-slate-800/90">
+                <button id="btn-popup-templates-toggle" type="button" class="px-2.5 py-1 rounded-md bg-indigo-600/25 hover:bg-indigo-600/40 active:scale-95 border border-indigo-500/40 text-indigo-200 text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1 transition cursor-pointer">
+                  <span id="popup-templates-toggle-label">◂ Templates</span>
+                  <span id="popup-templates-count-badge" class="px-1.5 py-0.2 rounded bg-indigo-500/30 text-white font-mono-num text-[9px]">0</span>
+                </button>
+                <span class="text-[10px] font-mono-num text-slate-400">GMT+2 Cairo</span>
               </div>
 
-              <!-- LUNCH ROW -->
-              <div class="grid grid-cols-12 gap-1.5 items-center mb-2">
-                <div class="col-span-4">
-                  <button id="btn-lunch" type="button" class="w-full h-8 px-2 rounded-md bg-slate-700 hover:bg-slate-600 active:scale-95 border border-slate-500/80 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 shadow-sm">
-                    <span id="lunch-dot" class="hidden w-2 h-2 rounded-full bg-white animate-ping"></span>
+              <!-- MODULE 1: CAIRO TIME AND DATE -->
+              <div id="mod-clock" class="bg-slate-800/95 border border-slate-700 rounded-lg px-3 py-2.5 shadow-inner flex flex-col items-center justify-center">
                     <span>Lunch</span>
                   </button>
                 </div>
@@ -511,6 +610,7 @@
               </div>
             </div>
 
+            </div>
           </div>
         </div>
 
@@ -664,6 +764,15 @@
      * 2. STATE MANAGEMENT & LOCAL STORAGE PERSISTENCE
      ********************************************************************/
     const STORAGE_KEY = 'support_companion_cairo_v2';
+    // Dedicated permanent storage key for Templates so shift resets NEVER erase user templates
+    const TEMPLATES_STORAGE_KEY = 'support_companion_templates_permanent_v1';
+
+    /**
+     * BUILT-IN DEFAULT TEMPLATES PLACEHOLDER
+     * When you have your team's default templates ready later, add them inside this array
+     * like: { id: 'def_1', title: 'Greeting', content: 'Hello, how can I help?' }
+     */
+    const DEFAULT_TEMPLATES = [];
 
     const defaultState = {
       modules: {
@@ -675,6 +784,7 @@
       use24Hour: false,
       autoResetStopwatchOnPlus: false,
       lunchAllowance: 75,
+      templatesPanelOpen: false,
 
       // Shift Start (0..23) & End Hours (1..24, or 0..23 for overnight shifts)
       shiftStartHour: 9,
@@ -717,8 +827,33 @@
     };
 
     let state = loadState();
+    let templatesList = loadTemplatesPermanent();
     let pipWindowRef = null;
     let fallbackPopupRef = null;
+
+    function loadTemplatesPermanent() {
+      try {
+        const raw = localStorage.getItem(TEMPLATES_STORAGE_KEY);
+        if (!raw) {
+          return JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+        }
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+        return JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+      } catch (e) {
+        return JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+      }
+    }
+
+    function saveTemplatesPermanent() {
+      try {
+        localStorage.setItem(TEMPLATES_STORAGE_KEY, JSON.stringify(templatesList));
+      } catch (e) {
+        console.error('Failed to save permanent templates:', e);
+      }
+    }
 
     function loadState() {
       try {
@@ -1228,6 +1363,349 @@
       return `${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
     }
 
+    /********************************************************************
+     * 7B. QUICK-COPY TEMPLATES ENGINE ("Title" Bulk Parser + Export/Import + Left Panel)
+     ********************************************************************/
+    // Parses multiple `"Button Title" template content...` blocks from a single string
+    function parseQuotedTemplatesString(rawText) {
+      const results = [];
+      if (!rawText || !rawText.trim()) return results;
+
+      // Matches "Button Title" followed by everything until the next "Button Title" or end of text
+      const regex = /"([^"]+)"\s*([\s\S]*?)(?=(?:(?:^|\n)\s*"[^"]+")|$)/g;
+      let match;
+      while ((match = regex.exec(rawText)) !== null) {
+        const title = (match[1] || '').trim();
+        const content = (match[2] || '').trim();
+        if (title && content) {
+          results.push({ title, content });
+        }
+      }
+
+      // Fallback if user put multiple `"Title" text` on the same line or flexible spacing
+      if (results.length === 0) {
+        const fallbackRegex = /"([^"]+)"\s*([^"]*)/g;
+        let m2;
+        while ((m2 = fallbackRegex.exec(rawText)) !== null) {
+          const title = (m2[1] || '').trim();
+          const content = (m2[2] || '').trim();
+          if (title && content) {
+            results.push({ title, content });
+          }
+        }
+      }
+      return results;
+    }
+
+    function parseAndSaveBulkTemplates(replaceAll = false) {
+      const textarea = document.getElementById('textarea-bulk-templates');
+      const feedback = document.getElementById('template-parse-feedback');
+      if (!textarea) return;
+
+      const parsedPairs = parseQuotedTemplatesString(textarea.value);
+      if (parsedPairs.length === 0) {
+        if (feedback) {
+          feedback.textContent = 'Please wrap each button name in double quotes followed by the template text, e.g. "Greeting" Hello there!';
+          feedback.className = 'text-xs text-rose-400 block';
+        }
+        return;
+      }
+
+      if (replaceAll) {
+        templatesList = [];
+      }
+
+      let addedCount = 0;
+      let updatedCount = 0;
+
+      parsedPairs.forEach(item => {
+        const existingIndex = templatesList.findIndex(
+          t => t.title.toLowerCase() === item.title.toLowerCase()
+        );
+        if (existingIndex !== -1) {
+          templatesList[existingIndex].title = item.title;
+          templatesList[existingIndex].content = item.content;
+          updatedCount++;
+        } else {
+          templatesList.push({
+            id: 'tpl_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+            title: item.title,
+            content: item.content
+          });
+          addedCount++;
+        }
+      });
+
+      saveTemplatesPermanent();
+      renderTemplatesAll();
+      textarea.value = '';
+
+      if (feedback) {
+        feedback.textContent = `Saved permanently! (${addedCount} new button${addedCount === 1 ? '' : 's'} created, ${updatedCount} updated).`;
+        feedback.className = 'text-xs text-emerald-400 block';
+        setTimeout(() => {
+          feedback.classList.add('hidden');
+        }, 4000);
+      }
+
+      addLog(`Saved ${parsedPairs.length} template button(s) permanently.`, 'indigo');
+    }
+
+    function insertSampleTemplateSyntax() {
+      const textarea = document.getElementById('textarea-bulk-templates');
+      if (!textarea) return;
+      const sample = `"Greeting" Hello! Thank you for contacting support. How can I assist you today?\n\n"Checking" Please bear with me for 2 minutes while I review your ticket details.\n\n"Closing" Thank you for your time today! Please let us know if you need anything else.`;
+      textarea.value = textarea.value ? (textarea.value.trim() + '\n\n' + sample) : sample;
+      textarea.focus();
+    }
+
+    function formatTemplatesToExportText() {
+      if (!templatesList || templatesList.length === 0) return '';
+      return templatesList.map(t => `"${t.title.replace(/"/g, "'")}" ${t.content}`).join('\n\n');
+    }
+
+    function exportTemplatesToInput() {
+      const exportStr = formatTemplatesToExportText();
+      const textarea = document.getElementById('textarea-bulk-templates');
+      if (textarea) {
+        textarea.value = exportStr;
+      }
+      copyTextUniversal(exportStr, document);
+      const label = document.getElementById('btn-export-copy-label');
+      if (label) {
+        label.textContent = 'Copied Export Text!';
+        setTimeout(() => { label.textContent = 'Copy Export Text'; }, 2000);
+      }
+      addLog(`Exported ${templatesList.length} templates to clipboard & editor box.`, 'emerald');
+    }
+
+    function downloadTemplatesFile() {
+      const exportStr = formatTemplatesToExportText();
+      if (!exportStr) return;
+      const blob = new Blob([exportStr], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'work-toolkit-templates.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      addLog(`Downloaded backup file with ${templatesList.length} templates.`, 'emerald');
+    }
+
+    function importTemplatesFromFile(inputEl) {
+      if (!inputEl || !inputEl.files || !inputEl.files[0]) return;
+      const file = inputEl.files[0];
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const content = String(evt.target.result || '');
+        const textarea = document.getElementById('textarea-bulk-templates');
+        if (textarea) {
+          textarea.value = content;
+          parseAndSaveBulkTemplates(false);
+        }
+        inputEl.value = '';
+      };
+      reader.readAsText(file);
+    }
+
+    function deleteTemplateById(id) {
+      templatesList = templatesList.filter(t => t.id !== id);
+      saveTemplatesPermanent();
+      renderTemplatesAll();
+    }
+
+    function loadSingleTemplateIntoEditor(id) {
+      const found = templatesList.find(t => t.id === id);
+      if (!found) return;
+      const textarea = document.getElementById('textarea-bulk-templates');
+      if (textarea) {
+        textarea.value = `"${found.title}" ${found.content}`;
+        textarea.focus();
+      }
+    }
+
+    function clearAllTemplates() {
+      const backdrop = document.getElementById('custom-modal-backdrop');
+      const title = document.getElementById('modal-title');
+      const desc = document.getElementById('modal-desc');
+      const inputWrap = document.getElementById('modal-input-wrapper');
+      const primaryBtn = document.getElementById('modal-primary-btn');
+
+      title.textContent = 'Clear All Saved Templates?';
+      desc.textContent = 'This will remove all custom template buttons from your browser. Consider clicking "Download Backup" first if you want to keep a copy.';
+      inputWrap.classList.add('hidden');
+
+      primaryBtn.textContent = 'Delete All Templates';
+      primaryBtn.onclick = () => {
+        templatesList = [];
+        saveTemplatesPermanent();
+        renderTemplatesAll();
+        closeModal();
+      };
+
+      backdrop.classList.remove('hidden');
+      backdrop.classList.add('flex');
+    }
+
+    // Copies text reliably inside both the main page and the Document PiP floating window
+    function copyTextUniversal(text, targetDoc = document) {
+      const docToUse = (pipWindowRef && pipWindowRef.document && targetDoc === pipWindowRef.document)
+        ? pipWindowRef.document
+        : document;
+
+      const ta = docToUse.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.opacity = '0';
+      docToUse.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        docToUse.execCommand('copy');
+      } catch (e) {
+        try { document.execCommand('copy'); } catch (err) {}
+      }
+      docToUse.body.removeChild(ta);
+    }
+
+    function copyTemplateById(id, btnElement) {
+      const item = templatesList.find(t => t.id === id);
+      if (!item) return;
+
+      const ownerDoc = btnElement ? btnElement.ownerDocument : document;
+      copyTextUniversal(item.content, ownerDoc);
+
+      if (btnElement) {
+        const labelEl = btnElement.querySelector('.tpl-btn-label');
+        const originalText = item.title;
+        btnElement.classList.add('border-emerald-400', 'bg-emerald-950/80');
+        if (labelEl) {
+          labelEl.textContent = '✓ Copied!';
+          labelEl.classList.add('text-emerald-300');
+        }
+        setTimeout(() => {
+          btnElement.classList.remove('border-emerald-400', 'bg-emerald-950/80');
+          if (labelEl) {
+            labelEl.textContent = originalText;
+            labelEl.classList.remove('text-emerald-300');
+          }
+        }, 1100);
+      }
+
+      addLog(`Copied template "${item.title}"`, 'indigo');
+    }
+
+    function toggleTemplatesPopupPanel(forceState) {
+      const next = typeof forceState === 'boolean' ? forceState : !state.templatesPanelOpen;
+      state.templatesPanelOpen = next;
+      saveState();
+      renderTemplatesAll();
+      resizePopupToFitContent();
+    }
+
+    function escapeHtmlSafe(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderTemplatesAll() {
+      // 1. Update count badges
+      const dashCount = document.getElementById('dashboard-template-count');
+      if (dashCount) dashCount.textContent = templatesList.length;
+
+      const popupBadge = getWidgetElement('popup-templates-count-badge');
+      if (popupBadge) popupBadge.textContent = templatesList.length;
+
+      // 2. Toggle Left Side Panel visibility & button label in Popup
+      const leftPanel = getWidgetElement('popup-templates-panel');
+      const toggleLabel = getWidgetElement('popup-templates-toggle-label');
+      const widgetContainer = getWidgetElement('agent-popup-widget');
+
+      if (leftPanel) {
+        if (state.templatesPanelOpen) {
+          leftPanel.classList.remove('hidden');
+          if (toggleLabel) toggleLabel.textContent = '▸ Hide Templates';
+          if (widgetContainer && !pipWindowRef) {
+            widgetContainer.style.width = '568px';
+          }
+        } else {
+          leftPanel.classList.add('hidden');
+          if (toggleLabel) toggleLabel.textContent = '◂ Templates';
+          if (widgetContainer && !pipWindowRef) {
+            widgetContainer.style.width = '336px';
+          }
+        }
+      }
+
+      // 3. Render buttons inside the Left Popup Panel
+      const popupListEl = getWidgetElement('popup-templates-list');
+      if (popupListEl) {
+        if (templatesList.length === 0) {
+          popupListEl.innerHTML = `
+            <div class="p-3 text-center text-[11px] text-slate-400 border border-dashed border-slate-800 rounded-lg">
+              No templates yet. Add <span class="text-emerald-300 font-mono-num">"Title"</span> templates on the dashboard!
+            </div>
+          `;
+        } else {
+          popupListEl.innerHTML = templatesList.map(t => `
+            <button type="button" data-tpl-id="${t.id}" title="${escapeHtmlSafe(t.content)}"
+              class="popup-tpl-copy-btn w-full text-left px-2.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 active:scale-[0.98] border border-slate-700/90 transition flex items-center justify-between gap-1.5 cursor-pointer group">
+              <span class="tpl-btn-label text-xs font-bold text-slate-100 truncate">${escapeHtmlSafe(t.title)}</span>
+              <svg class="w-3.5 h-3.5 text-slate-500 group-hover:text-indigo-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+              </svg>
+            </button>
+          `).join('');
+
+          // Attach click listeners directly so they work inside Document PiP window too
+          const btns = popupListEl.querySelectorAll('.popup-tpl-copy-btn');
+          btns.forEach(btn => {
+            btn.onclick = () => copyTemplateById(btn.getAttribute('data-tpl-id'), btn);
+          });
+        }
+      }
+
+      // 4. Render cards on the Dashboard
+      const dashGrid = document.getElementById('dashboard-templates-grid');
+      if (dashGrid) {
+        if (templatesList.length === 0) {
+          dashGrid.innerHTML = `
+            <div class="col-span-full py-6 px-4 text-center text-xs text-slate-500 border border-dashed border-slate-800 rounded-xl">
+              No saved templates yet. Type <span class="text-slate-300 font-mono-num">"Button Name" Your template text</span> above and click Create!
+            </div>
+          `;
+        } else {
+          dashGrid.innerHTML = templatesList.map(t => `
+            <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between gap-2 hover:border-slate-700 transition">
+              <div>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="font-bold text-xs text-indigo-300 truncate">"${escapeHtmlSafe(t.title)}"</span>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="copyTemplateById('${t.id}', this)" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-semibold text-emerald-300 border border-slate-700 cursor-pointer">
+                      <span class="tpl-btn-label">Copy</span>
+                    </button>
+                    <button type="button" onclick="loadSingleTemplateIntoEditor('${t.id}')" title="Edit in box above" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 border border-slate-700 cursor-pointer">
+                      Edit
+                    </button>
+                    <button type="button" onclick="deleteTemplateById('${t.id}')" title="Delete template" class="px-1.5 py-0.5 rounded bg-rose-500/10 hover:bg-rose-500/25 text-[10px] text-rose-300 border border-rose-500/30 cursor-pointer">
+                      ✕
+                    </button>
+                  </div>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1.5 line-clamp-2 font-mono-num break-words">${escapeHtmlSafe(t.content)}</p>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
     function toggleStopwatch() {
       if (!state.stopwatch.isRunning) {
         state.stopwatch.isRunning = true;
@@ -1314,11 +1792,13 @@
 
       widget.style.height = 'fit-content';
 
+      const targetWidth = state.templatesPanelOpen ? 576 : 344;
+
       if (pipWindowRef && !pipWindowRef.closed) {
         try {
           const contentHeight = widget.offsetHeight;
-          const targetHeight = Math.max(110, contentHeight + 38);
-          pipWindowRef.resizeTo(pipWindowRef.outerWidth || 350, targetHeight);
+          const targetHeight = Math.max(120, contentHeight + 36);
+          pipWindowRef.resizeTo(targetWidth, targetHeight);
         } catch (e) {}
       }
     }
@@ -1538,7 +2018,7 @@
       widget.style.position = 'relative';
       widget.style.left = '';
       widget.style.top = '';
-      widget.style.width = '336px';
+      widget.style.width = state.templatesPanelOpen ? '568px' : '336px';
       widget.style.height = 'fit-content';
       widget.classList.remove('hidden');
       const dot = document.getElementById('inpage-status-dot');
@@ -1575,12 +2055,12 @@
             pipWindowRef.close();
             pipWindowRef = null;
           }
-
-          // Calculate exact height of active tools so there is zero extra black space
+          // Calculate exact height and width (including left templates panel if open) so there is zero extra black space
           const measuredHeight = widget ? Math.max(140, widget.offsetHeight) : 420;
+          const measuredWidth = state.templatesPanelOpen ? 576 : 344;
 
           const pipWin = await window.documentPictureInPicture.requestWindow({
-            width: 344,
+            width: measuredWidth,
             height: measuredHeight
           });
 
@@ -1661,7 +2141,7 @@
       if (handle) handle.classList.remove('hidden');
 
       if (dock && widget) {
-        widget.style.width = '336px';
+        widget.style.width = state.templatesPanelOpen ? '568px' : '336px';
         widget.style.height = 'fit-content';
         widget.style.position = 'relative';
         widget.style.left = '';
@@ -1676,6 +2156,12 @@
 
     // Directly binds JS event listeners to popup elements so they work both on the main page AND inside Document Picture-in-Picture child windows
     function bindWidgetEventListeners() {
+      const tplToggleBtn = getWidgetElement('btn-popup-templates-toggle');
+      if (tplToggleBtn) tplToggleBtn.onclick = () => toggleTemplatesPopupPanel();
+
+      const tplCloseBtn = getWidgetElement('btn-templates-panel-close');
+      if (tplCloseBtn) tplCloseBtn.onclick = () => toggleTemplatesPopupPanel(false);
+
       const plusBtn = getWidgetElement('btn-ticket-plus');
       if (plusBtn) plusBtn.onclick = () => incrementTicket();
 
@@ -1716,6 +2202,9 @@
       if (e.key === STORAGE_KEY) {
         state = loadState();
         renderAll();
+      } else if (e.key === TEMPLATES_STORAGE_KEY) {
+        templatesList = loadTemplatesPermanent();
+        renderTemplatesAll();
       }
     });
 
@@ -1740,6 +2229,7 @@
       renderBreakModule();
       renderCounterModule();
       renderHourlyTables();
+      renderTemplatesAll();
       renderStopwatchControls();
       updateStopwatchDisplay();
       renderLogs();
