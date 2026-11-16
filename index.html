@@ -86,6 +86,13 @@
       </div>
 
       <div class="flex items-center gap-2.5 flex-wrap">
+        <button onclick="openResetModal()" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 transition flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <span>Start New Shift (Reset)</span>
+        </button>
+
         <button id="btn-toggle-inpage" onclick="toggleInPagePopup()" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-emerald-400" id="inpage-status-dot"></span>
           <span>Toggle Side Widget</span>
@@ -104,104 +111,123 @@
   <!-- MAIN CONTENT AREA -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
     
-    <!-- LEFT COLUMN: CONTROLS, SHIFT HOURS, EXCEL TABLE & ACTIVITY LOG (7 cols) -->
+    <!-- LEFT COLUMN: CONTROLS, SHIFT HOURS, TEMPLATES, EXCEL TABLE & ACTIVITY LOG (7 cols) -->
     <div class="lg:col-span-7 space-y-6">
       
-      <!-- Configuration Card -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-800">
+      <!-- TOP ROW: 2-COLUMN GRID FOR VISIBILITY & SHIFT HOURS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Card 1: Popup Modules Visibility -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
           <div>
-            <h2 class="text-xl font-bold text-white">Popup Tools &amp; Shift Settings</h2>
-            <p class="text-sm text-slate-400 mt-1">
-              The popup automatically resizes its height to fit only the tools you check below.
-            </p>
+            <div class="pb-3.5 border-b border-slate-800">
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Popup Modules Visibility
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Auto-resizes height to fit active tools.
+              </p>
+            </div>
+
+            <div class="mt-3.5 space-y-2">
+              <!-- Check 1: Time and Date -->
+              <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
+                <input type="checkbox" id="chk-mod-clock" checked onchange="toggleModuleVisibility('clock', this.checked)" class="w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
+                <div>
+                  <div class="font-semibold text-xs text-white">1. Time &amp; Date (Cairo GMT+2)</div>
+                  <p class="text-[11px] text-slate-400">Live digital clock and date.</p>
+                </div>
+              </label>
+
+              <!-- Check 2: Lunch & M&C -->
+              <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
+                <input type="checkbox" id="chk-mod-breaks" checked onchange="toggleModuleVisibility('breaks', this.checked)" class="w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
+                <div>
+                  <div class="font-semibold text-xs text-white">2. Lunch (75m) &amp; M&amp;C Tracker</div>
+                  <p class="text-[11px] text-slate-400">Logs Start/Finish &amp; remaining lunch.</p>
+                </div>
+              </label>
+
+              <!-- Check 3: Ticket Counter & Last Reply -->
+              <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
+                <input type="checkbox" id="chk-mod-counter" checked onchange="toggleModuleVisibility('counter', this.checked)" class="w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
+                <div>
+                  <div class="font-semibold text-xs text-white">3. Ticket Counter &amp; Last Reply</div>
+                  <p class="text-[11px] text-slate-400">Hourly/Total counters &amp; Shift Hours drawer.</p>
+                </div>
+              </label>
+
+              <!-- Check 4: Quick-Copy Templates -->
+              <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
+                <input type="checkbox" id="chk-mod-templates" checked onchange="toggleModuleVisibility('templates', this.checked)" class="w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
+                <div>
+                  <div class="font-semibold text-xs text-white">4. Quick-Copy Templates</div>
+                  <p class="text-[11px] text-slate-400">Searchable dropdown with compact template chips.</p>
+                </div>
+              </label>
+
+              <!-- Check 5: Ticket Stopwatch -->
+              <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
+                <input type="checkbox" id="chk-mod-stopwatch" checked onchange="toggleModuleVisibility('stopwatch', this.checked)" class="w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
+                <div>
+                  <div class="font-semibold text-xs text-white">5. Ticket Open Since Stopwatch</div>
+                  <p class="text-[11px] text-slate-400">Play/pause timer with Start Over button.</p>
+                </div>
+              </label>
+            </div>
           </div>
-          <button onclick="openResetModal()" class="self-start sm:self-auto px-3.5 py-2 rounded-xl text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 transition flex items-center gap-1.5 shrink-0">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-            </svg>
-            Start New Shift (Reset)
-          </button>
         </div>
 
-        <!-- MODULE VISIBILITY CHECKBOXES -->
-        <div class="mt-5">
-          <label class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-3">
-            Check Which Tools Appear in the Popup
-          </label>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            
-            <!-- Check 1: Time and Date -->
-            <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
-              <input type="checkbox" id="chk-mod-clock" checked onchange="toggleModuleVisibility('clock', this.checked)" class="mt-1 w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
-              <div>
-                <div class="font-semibold text-sm text-white">1. Cairo Time &amp; Date</div>
-                <p class="text-xs text-slate-400 mt-0.5">Live Cairo (GMT+2) digital clock and current date.</p>
+        <!-- Card 2: Shift Hours Configuration -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-4">
+          <div>
+            <div class="pb-3.5 border-b border-slate-800">
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Shift Hours Configuration
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">
+                12h AM/PM &amp; 24h shift bounds for hourly tracking.
+              </p>
+            </div>
+
+            <div class="mt-3.5 space-y-3">
+              <!-- Start Shift Hour -->
+              <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800/90">
+                <label for="select-shift-start" class="text-xs font-semibold text-indigo-300 block mb-1.5">Start Shift Hour (12h / 24h)</label>
+                <select id="select-shift-start" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-mono-num text-white focus:outline-none focus:border-indigo-500">
+                  <!-- Populated by JS with 12h AM/PM + 24h -->
+                </select>
               </div>
-            </label>
 
-            <!-- Check 2: Lunch & M&C -->
-            <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
-              <input type="checkbox" id="chk-mod-breaks" checked onchange="toggleModuleVisibility('breaks', this.checked)" class="mt-1 w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
-              <div>
-                <div class="font-semibold text-sm text-white">2. Lunch (75m) &amp; M&amp;C Tracker</div>
-                <p class="text-xs text-slate-400 mt-0.5">Logs Start &amp; Finish in Cairo time and updates remaining lunch minutes.</p>
+              <!-- End Shift Hour -->
+              <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800/90">
+                <label for="select-shift-end" class="text-xs font-semibold text-emerald-300 block mb-1.5">End Shift Hour (12h / 24h)</label>
+                <select id="select-shift-end" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-mono-num text-white focus:outline-none focus:border-indigo-500">
+                  <!-- Populated by JS with 12h AM/PM + 24h including 24:00 & Overnight -->
+                </select>
               </div>
-            </label>
 
-            <!-- Check 3: Ticket Counter & Last Reply -->
-            <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
-              <input type="checkbox" id="chk-mod-counter" checked onchange="toggleModuleVisibility('counter', this.checked)" class="mt-1 w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
-              <div>
-                <div class="font-semibold text-sm text-white">3. Hourly Counter &amp; Last Reply</div>
-                <p class="text-xs text-slate-400 mt-0.5">Counts hourly tickets (auto-resets each hour), total shift count, &amp; slide-out hourly table.</p>
+              <!-- Lunch Allowance -->
+              <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800/90">
+                <label class="text-xs text-slate-400 block mb-1.5">Lunch Allowance (Minutes)</label>
+                <div class="flex items-center gap-1.5">
+                  <input type="number" id="input-lunch-allowance" value="75" min="1" max="300" onchange="updateLunchAllowance(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-sm font-mono-num text-white focus:outline-none focus:border-indigo-500">
+                  <button onclick="resetLunchMinutesOnly()" title="Restore remaining lunch to full allowance" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 rounded-lg border border-slate-700 shrink-0">
+                    Reset
+                  </button>
+                </div>
               </div>
-            </label>
-
-            <!-- Check 4: Ticket Stopwatch -->
-            <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
-              <input type="checkbox" id="chk-mod-stopwatch" checked onchange="toggleModuleVisibility('stopwatch', this.checked)" class="mt-1 w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
-              <div>
-                <div class="font-semibold text-sm text-white">4. Ticket Open Since (Stopwatch)</div>
-                <p class="text-xs text-slate-400 mt-0.5">Fast play/pause stopwatch with Start Over reset button.</p>
-              </div>
-            </label>
-
-          </div>
-        </div>
-
-        <!-- SHIFT START / END HOURS & LUNCH SETTINGS -->
-        <div class="mt-6 pt-5 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-          
-          <!-- Start Shift Hour -->
-          <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800/90">
-            <label for="select-shift-start" class="text-xs font-semibold text-indigo-300 block mb-1.5">Start Shift Hour (12h / 24h)</label>
-            <select id="select-shift-start" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-mono-num text-white focus:outline-none focus:border-indigo-500">
-              <!-- Populated by JS with 12h AM/PM + 24h -->
-            </select>
-          </div>
-
-          <!-- End Shift Hour -->
-          <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800/90">
-            <label for="select-shift-end" class="text-xs font-semibold text-emerald-300 block mb-1.5">End Shift Hour (12h / 24h)</label>
-            <select id="select-shift-end" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-mono-num text-white focus:outline-none focus:border-indigo-500">
-              <!-- Populated by JS with 12h AM/PM + 24h including 24:00 & Overnight -->
-            </select>
-          </div>
-
-          <!-- Lunch Allowance -->
-          <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800/90">
-            <label class="text-xs text-slate-400 block mb-1.5">Lunch Allowance (Min)</label>
-            <div class="flex items-center gap-1.5">
-              <input type="number" id="input-lunch-allowance" value="75" min="1" max="300" onchange="updateLunchAllowance(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-sm font-mono-num text-white focus:outline-none focus:border-indigo-500">
-              <button onclick="resetLunchMinutesOnly()" title="Restore remaining lunch to full allowance" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 rounded-lg border border-slate-700 shrink-0">
-                Reset
-              </button>
             </div>
           </div>
 
-          <!-- Options -->
-          <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800/90 flex flex-col justify-center gap-2">
+          <!-- Extra Options -->
+          <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800/90 flex items-center justify-between gap-3">
             <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
               <input type="checkbox" id="chk-24h" onchange="toggleClockFormat(this.checked)" class="rounded bg-slate-900 border-slate-700 text-indigo-500">
               <span>24-Hour Clock</span>
@@ -211,39 +237,11 @@
               <span>+ Resets Stopwatch</span>
             </label>
           </div>
-
         </div>
+
       </div>
 
-      <!-- QUICK-COPY TEMPLATES MANAGER (BULK "TITLE" PARSER + PERMANENT STORAGE + IMPORT/EXPORT) -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
-          <div>
-            <div class="flex items-center gap-2">
-              <h3 class="text-base font-bold text-white flex items-center gap-2">
-                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                </svg>
-                Quick-Copy Templates Builder
-              </h3>
-              <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
-                Saved Forever
-              </span>
-            </div>
-            <p class="text-xs text-slate-400 mt-1">
-              Put button names inside <code class="text-emerald-300 font-mono-num bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">"Quotes"</code> followed by the template text. Create one or multiple buttons at once!
-            </p>
-          </div>
-
-          <!-- Export & Import Action Buttons -->
-          <div class="flex items-center gap-2 flex-wrap self-start sm:self-auto">
-            <button type="button" onclick="exportTemplatesToInput()" title="Load all saved templates into the box below in &quot;Title&quot; format to copy or edit" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
-              <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-              </svg>
-              <span id="btn-export-copy-label">Copy Export Text</span>
-            </button>
-      <!-- QUICK-COPY TEMPLATES MANAGER (BULK "TITLE" PARSER + PERMANENT STORAGE) -->
+      <!-- QUICK-COPY TEMPLATES BUILDER CARD -->
       <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
           <div>
@@ -274,18 +272,18 @@
               Insert Example Format
             </button>
           </div>
-          <textarea id="textarea-bulk-templates" rows="5" placeholder='Example:&#10;"Greeting" Hello! Thank you for contacting support, how can I help you today?&#10;"Hold" Please allow me 2-3 minutes while I check your account details.&#10;"Closing" Thank you for contacting us! Have a wonderful rest of your day.' class="w-full bg-slate-950/90 border border-slate-700/90 rounded-xl p-3.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 font-mono-num focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
+          <textarea id="textarea-bulk-templates" rows="4" placeholder='Example:&#10;"Greeting" Hello! Thank you for contacting support, how can I help you today?&#10;"Hold" Please allow me 2-3 minutes while I check your account details.&#10;"Closing" Thank you for contacting us! Have a wonderful rest of your day.' class="w-full bg-slate-950/90 border border-slate-700/90 rounded-xl p-3.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 font-mono-num focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
           
           <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
             <button type="button" onclick="parseAndSaveBulkTemplates()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition flex items-center gap-1.5 cursor-pointer">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
               </svg>
-              <span>Create Template Buttons</span>
+              <span>Create / Update Template Buttons</span>
             </button>
 
-            <button type="button" onclick="toggleTemplatesPopupPanel()" class="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 transition flex items-center gap-1.5 cursor-pointer">
-              <span>Toggle Templates Dropdown</span>
+            <button type="button" onclick="clearAllTemplates()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 transition cursor-pointer">
+              Clear All
             </button>
           </div>
           <p id="template-parse-feedback" class="text-xs text-emerald-400 hidden"></p>
@@ -297,9 +295,6 @@
             <span class="text-xs font-bold uppercase tracking-wider text-slate-400">
               Active Template Buttons (<span id="dashboard-template-count">0</span>)
             </span>
-            <button type="button" onclick="clearAllTemplates()" class="text-xs text-rose-400 hover:text-rose-300 underline">
-              Clear All Templates
-            </button>
           </div>
 
           <div id="dashboard-templates-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto pr-1">
@@ -498,17 +493,17 @@
               </div>
             </div>
 
-            <!-- MODULE 3: HOURLY TICKET COUNTER (+ / -), SLIDE-OUT HOURLY DRAWER, TEMPLATES DROPDOWN & LAST REPLY -->
+            <!-- MODULE 3: HOURLY TICKET COUNTER (+ / -), SLIDE-OUT HOURLY DRAWER & LAST REPLY -->
             <div id="mod-counter" class="bg-slate-800/95 border border-slate-700 rounded-lg p-2.5 shadow-inner">
               <div class="grid grid-cols-12 gap-2 items-stretch">
                 
-                <!-- Left Column: + and - Buttons AND Slide-Out Drawer Buttons Under + / - -->
+                <!-- Left Column: + and - Buttons AND Slide-Out Hourly Drawer Button Under + / - -->
                 <div class="col-span-5 flex flex-col gap-1.5">
                   <div class="grid grid-cols-2 gap-1.5 flex-1">
-                    <button id="btn-ticket-plus" type="button" title="Add Ticket to Current Hour (+1)" class="bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-mono-num text-2xl font-extrabold rounded-md shadow-md shadow-emerald-950/50 flex items-center justify-center min-h-[50px] transition border border-emerald-300/40 cursor-pointer">
+                    <button id="btn-ticket-plus" type="button" title="Add Ticket to Current Hour (+1)" class="bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-mono-num text-2xl font-extrabold rounded-md shadow-md shadow-emerald-950/50 flex items-center justify-center min-h-[52px] transition border border-emerald-300/40 cursor-pointer">
                       +
                     </button>
-                    <button id="btn-ticket-minus" type="button" title="Subtract Ticket (-1)" class="bg-rose-500 hover:bg-rose-400 active:scale-95 text-slate-950 font-mono-num text-2xl font-extrabold rounded-md shadow-md shadow-rose-950/50 flex items-center justify-center min-h-[50px] transition border border-rose-300/40 cursor-pointer">
+                    <button id="btn-ticket-minus" type="button" title="Subtract Ticket (-1)" class="bg-rose-500 hover:bg-rose-400 active:scale-95 text-slate-950 font-mono-num text-2xl font-extrabold rounded-md shadow-md shadow-rose-950/50 flex items-center justify-center min-h-[52px] transition border border-rose-300/40 cursor-pointer">
                       -
                     </button>
                   </div>
@@ -516,16 +511,11 @@
                   <button id="btn-hourly-drawer" type="button" class="w-full py-1 px-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 border border-slate-600/80 text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition cursor-pointer">
                     <span id="hourly-btn-label">Shift Hours ▾</span>
                   </button>
-                  <!-- Button under Shift Hours to slide open the Templates Dropdown -->
-                  <button id="btn-popup-templates-toggle" type="button" class="w-full py-1 px-2 rounded bg-indigo-950/90 hover:bg-indigo-900/80 text-indigo-200 border border-indigo-500/40 text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition cursor-pointer">
-                    <span id="popup-templates-toggle-label">Templates ▾</span>
-                    <span id="popup-templates-count-badge" class="px-1 rounded bg-indigo-500/30 text-white font-mono-num text-[9px]">0</span>
-                  </button>
                 </div>
 
                 <!-- Right Column: Counter Display Box (Current Hour Big + Total Shift Small in Corner) -->
                 <div class="col-span-7 flex flex-col">
-                  <div class="border-2 border-slate-600 bg-slate-900 rounded-md relative flex flex-col items-center justify-center flex-1 min-h-[96px] px-2">
+                  <div class="border-2 border-slate-600 bg-slate-900 rounded-md relative flex flex-col items-center justify-center flex-1 min-h-[80px] px-2">
                     <!-- Active Hour Mini Tag Top-Left -->
                     <span id="display-active-hour-tag" class="text-[9px] font-mono-num font-semibold text-slate-400 absolute top-1 left-1.5">
                       HR 00:00
@@ -555,7 +545,7 @@
                 </div>
               </div>
 
-              <!-- SLIDE-OUT HOURLY SHIFT TABLE DRAWER (Inside Popup) -->
+              <!-- SLIDE-OUT HOURLY SHIFT TABLE DRAWER (Inside Counter Box) -->
               <div id="popup-hourly-drawer" class="hourly-drawer bg-slate-900 border border-slate-700 rounded-md">
                 <div class="px-2.5 py-1.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
                   <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-300">Shift Hourly Breakdown</span>
@@ -567,22 +557,35 @@
                   <!-- Populated dynamically with each shift hour -->
                 </div>
               </div>
+            </div>
 
-              <!-- SLIDE-OUT TEMPLATES DROPDOWN DRAWER (Inside Popup, matching Shift Hours) -->
+            <!-- MODULE 4: DEDICATED QUICK-COPY TEMPLATES BOX (Above Stopwatch) -->
+            <div id="mod-templates" class="bg-slate-800/95 border border-slate-700 rounded-lg p-2.5 shadow-inner">
+              <button id="btn-popup-templates-toggle" type="button" class="w-full py-1.5 px-3 rounded-md bg-slate-900 hover:bg-slate-700/90 text-slate-100 border border-slate-600/90 text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between transition cursor-pointer shadow-sm">
+                <span id="popup-templates-toggle-label">Templates ▾</span>
+                <span id="popup-templates-count-badge" class="px-1.5 py-0.2 rounded bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 font-mono-num text-[10px]">0</span>
+              </button>
+
+              <!-- SLIDE-OUT TEMPLATES DROPDOWN (Search bar header + compact wrapped chips) -->
               <div id="popup-templates-drawer" class="hourly-drawer bg-slate-900 border border-slate-700 rounded-md">
-                <div class="px-2.5 py-1.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-300">Quick-Copy Templates</span>
-                  <button id="btn-templates-panel-close" type="button" title="Close Templates" class="text-slate-400 hover:text-white text-xs font-bold px-1.5 py-0.5 rounded hover:bg-slate-800 cursor-pointer">
-                    ✕ Close
-                  </button>
+                <!-- Search Bar Header (Replaces Close button) -->
+                <div class="p-1.5 bg-slate-950 border-b border-slate-800">
+                  <div class="relative flex items-center">
+                    <svg class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input id="input-popup-template-search" type="text" placeholder="Search templates..." autocomplete="off"
+                      class="w-full bg-slate-900 border border-slate-700/90 focus:border-indigo-500 rounded px-2 py-1 pl-7 text-[11px] text-white placeholder-slate-500 focus:outline-none">
+                  </div>
                 </div>
-                <div class="max-h-48 overflow-y-auto p-2 space-y-1.5 bg-slate-900" id="popup-templates-list">
-                  <!-- Populated dynamically with template buttons -->
+                <!-- Compact Wrapped Template Buttons Container -->
+                <div class="max-h-44 overflow-y-auto p-2 flex flex-wrap gap-1.5 bg-slate-900 items-start content-start" id="popup-templates-list">
+                  <!-- Populated dynamically with compact text-wrapped template buttons -->
                 </div>
               </div>
             </div>
 
-            <!-- MODULE 4: TICKET OPEN SINCE (STOPWATCH) -->
+            <!-- MODULE 5: TICKET OPEN SINCE (STOPWATCH) -->
             <div id="mod-stopwatch" class="bg-slate-800/95 border border-slate-700 rounded-lg p-2.5 shadow-inner flex flex-col items-center">
               <div class="w-full flex items-center justify-between mb-1">
                 <span class="text-[10px] font-extrabold tracking-wider uppercase text-slate-300">
@@ -782,12 +785,14 @@
         clock: true,
         breaks: true,
         counter: true,
+        templates: true,
         stopwatch: true
       },
       use24Hour: false,
       autoResetStopwatchOnPlus: false,
       lunchAllowance: 75,
       templatesPanelOpen: false,
+      templateSearchQuery: '',
 
       // Shift Start (0..23) & End Hours (1..24, or 0..23 for overnight shifts)
       shiftStartHour: 9,
@@ -1589,33 +1594,8 @@
       // 2. Apply dropdown drawer open/close state
       applyTemplatesDrawerState();
 
-      // 3. Render buttons inside the Popup Dropdown Drawer
-      const popupListEl = getWidgetElement('popup-templates-list');
-      if (popupListEl) {
-        if (templatesList.length === 0) {
-          popupListEl.innerHTML = `
-            <div class="p-2.5 text-center text-[11px] text-slate-400 border border-dashed border-slate-800 rounded-lg">
-              No templates yet. Add <span class="text-emerald-300 font-mono-num">"Title"</span> templates on the dashboard!
-            </div>
-          `;
-        } else {
-          popupListEl.innerHTML = templatesList.map(t => `
-            <button type="button" data-tpl-id="${t.id}" title="${escapeHtmlSafe(t.content)}"
-              class="popup-tpl-copy-btn w-full text-left px-2.5 py-1.5 rounded-md bg-slate-950 hover:bg-slate-800 active:scale-[0.98] border border-slate-700/90 transition flex items-center justify-between gap-1.5 cursor-pointer group">
-              <span class="tpl-btn-label text-xs font-bold text-slate-100 truncate">${escapeHtmlSafe(t.title)}</span>
-              <svg class="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-              </svg>
-            </button>
-          `).join('');
-
-          // Attach click listeners directly so they work inside Document PiP window too
-          const btns = popupListEl.querySelectorAll('.popup-tpl-copy-btn');
-          btns.forEach(btn => {
-            btn.onclick = () => copyTemplateById(btn.getAttribute('data-tpl-id'), btn);
-          });
-        }
-      }
+      // 3. Render compact wrapped buttons inside the Popup Dropdown Drawer (filtered by search query)
+      renderPopupTemplateButtonsOnly();
 
       // 4. Render cards on the Dashboard
       const dashGrid = document.getElementById('dashboard-templates-grid');
@@ -1650,6 +1630,48 @@
           `).join('');
         }
       }
+    }
+
+    function renderPopupTemplateButtonsOnly() {
+      const popupListEl = getWidgetElement('popup-templates-list');
+      if (!popupListEl) return;
+
+      const searchInput = getWidgetElement('input-popup-template-search');
+      const query = (searchInput ? searchInput.value : (state.templateSearchQuery || '')).trim().toLowerCase();
+
+      if (templatesList.length === 0) {
+        popupListEl.innerHTML = `
+          <div class="w-full p-2 text-center text-[11px] text-slate-400 border border-dashed border-slate-800 rounded">
+            No templates yet. Add <span class="text-emerald-300 font-mono-num">"Title"</span> templates on the dashboard!
+          </div>
+        `;
+        return;
+      }
+
+      const filtered = query
+        ? templatesList.filter(t => t.title.toLowerCase().includes(query) || t.content.toLowerCase().includes(query))
+        : templatesList;
+
+      if (filtered.length === 0) {
+        popupListEl.innerHTML = `
+          <div class="w-full p-2 text-center text-[11px] text-slate-400">
+            No matching templates for "${escapeHtmlSafe(query)}"
+          </div>
+        `;
+        return;
+      }
+
+      popupListEl.innerHTML = filtered.map(t => `
+        <button type="button" data-tpl-id="${t.id}" title="${escapeHtmlSafe(t.content)}"
+          class="popup-tpl-copy-btn inline-flex items-center w-auto px-2.5 py-1 rounded bg-slate-950 hover:bg-indigo-950/90 active:scale-95 border border-slate-700 hover:border-indigo-500/60 transition cursor-pointer shadow-sm">
+          <span class="tpl-btn-label text-xs font-semibold text-slate-100 whitespace-nowrap">${escapeHtmlSafe(t.title)}</span>
+        </button>
+      `).join('');
+
+      const btns = popupListEl.querySelectorAll('.popup-tpl-copy-btn');
+      btns.forEach(btn => {
+        btn.onclick = () => copyTemplateById(btn.getAttribute('data-tpl-id'), btn);
+      });
     }
 
     function toggleStopwatch() {
@@ -1715,19 +1737,20 @@
         clock: 'mod-clock',
         breaks: 'mod-breaks',
         counter: 'mod-counter',
+        templates: 'mod-templates',
         stopwatch: 'mod-stopwatch'
       };
       Object.keys(map).forEach(key => {
         const el = getWidgetElement(map[key]);
         if (el) {
-          if (state.modules[key]) {
+          if (state.modules[key] !== false) {
             el.classList.remove('hidden');
           } else {
             el.classList.add('hidden');
           }
         }
         const chk = document.getElementById(`chk-mod-${key}`);
-        if (chk) chk.checked = !!state.modules[key];
+        if (chk) chk.checked = (state.modules[key] !== false);
       });
     }
 
@@ -2105,8 +2128,14 @@
       const tplToggleBtn = getWidgetElement('btn-popup-templates-toggle');
       if (tplToggleBtn) tplToggleBtn.onclick = () => toggleTemplatesPopupPanel();
 
-      const tplCloseBtn = getWidgetElement('btn-templates-panel-close');
-      if (tplCloseBtn) tplCloseBtn.onclick = () => toggleTemplatesPopupPanel(false);
+      const tplSearchInput = getWidgetElement('input-popup-template-search');
+      if (tplSearchInput) {
+        tplSearchInput.oninput = (e) => {
+          state.templateSearchQuery = e.target.value || '';
+          renderPopupTemplateButtonsOnly();
+          resizePopupToFitContent();
+        };
+      }
 
       const plusBtn = getWidgetElement('btn-ticket-plus');
       if (plusBtn) plusBtn.onclick = () => incrementTicket();
