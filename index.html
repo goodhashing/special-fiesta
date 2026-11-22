@@ -4,101 +4,236 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Shift Companion & Work Toolkit</title>
+  <title>Work Toolkit</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style id="shared-styles">
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #090d16;
-      color: #f8fafc;
+      background-color: #1c1613;
+      color: #f5f0eb;
     }
     .font-mono-num {
       font-family: 'JetBrains Mono', monospace;
       font-variant-numeric: tabular-nums;
     }
-    /* Auto-sizing resizable floating widget container - no extra black space */
+
+    /* =====================================================================
+       SCOPED POPUP COLOR THEMES (Applied to Live Right Column & PiP Window)
+       ===================================================================== */
+
+    /* 1. DARK MODE (Default — matches dashboard espresso brown & matte black) */
+    #widget-root.theme-dark {
+      --w-shell-bg: #1c1613;
+      --w-shell-border: #2b221e;
+      --w-handle-bg: #0c0a09;
+      --w-card-bg: #0c0a09;
+      --w-card-border: #2b221e;
+      --w-sub-bg: #14100e;
+      --w-sub-border: #2b221e;
+      --w-btn-bg: #221b17;
+      --w-btn-hover: #2e2520;
+      --w-btn-border: #3a2f29;
+      --w-text-primary: #f5f0eb;
+      --w-text-secondary: #b5a89e;
+      --w-text-muted: #8a7c72;
+      --w-accent-text: #f59e0b;
+      --w-row-active-bg: rgba(34, 197, 94, 0.20);
+      --w-scroll-track: #0c0a09;
+      --w-scroll-thumb: #3a2f29;
+      --w-scroll-thumb-hover: #52433a;
+    }
+
+    /* 2. BLUE MODE (Classic deep slate-blue palette) */
+    #widget-root.theme-blue {
+      --w-shell-bg: #0f172a;
+      --w-shell-border: #334155;
+      --w-handle-bg: #0b1120;
+      --w-card-bg: #1e293b;
+      --w-card-border: #334155;
+      --w-sub-bg: #0f172a;
+      --w-sub-border: #334155;
+      --w-btn-bg: #293548;
+      --w-btn-hover: #334155;
+      --w-btn-border: #475569;
+      --w-text-primary: #f8fafc;
+      --w-text-secondary: #cbd5e1;
+      --w-text-muted: #94a3b8;
+      --w-accent-text: #38bdf8;
+      --w-row-active-bg: rgba(34, 197, 94, 0.20);
+      --w-scroll-track: #0f172a;
+      --w-scroll-thumb: #334155;
+      --w-scroll-thumb-hover: #475569;
+    }
+
+    /* 3. WHITE MODE (Calm, soft light grey — zero harsh glare) */
+    #widget-root.theme-white {
+      --w-shell-bg: #eceef1;
+      --w-shell-border: #cfd4dc;
+      --w-handle-bg: #e2e6eb;
+      --w-card-bg: #f6f7f9;
+      --w-card-border: #d4d9e0;
+      --w-sub-bg: #e9ecf0;
+      --w-sub-border: #cfd4dc;
+      --w-btn-bg: #dfe3e8;
+      --w-btn-hover: #d1d6de;
+      --w-btn-border: #bfc6d0;
+      --w-text-primary: #1f2937;
+      --w-text-secondary: #4b5563;
+      --w-text-muted: #6b7280;
+      --w-accent-text: #b45309;
+      --w-row-active-bg: rgba(34, 197, 94, 0.22);
+      --w-scroll-track: #e9ecf0;
+      --w-scroll-thumb: #b4bac2;
+      --w-scroll-thumb-hover: #9ca3af;
+    }
+
+    /* Theme Utility Classes scoped to #widget-root */
+    #widget-root {
+      background-color: var(--w-shell-bg);
+      border-color: var(--w-shell-border);
+      color: var(--w-text-primary);
+    }
+    #widget-root .w-handle {
+      background-color: var(--w-handle-bg);
+      border-color: var(--w-shell-border);
+    }
+    #widget-root .w-card {
+      background-color: var(--w-card-bg);
+      border-color: var(--w-card-border);
+    }
+    #widget-root .w-sub {
+      background-color: var(--w-sub-bg);
+      border-color: var(--w-sub-border);
+    }
+    #widget-root .w-btn {
+      background-color: var(--w-btn-bg);
+      border-color: var(--w-btn-border);
+      color: var(--w-text-primary);
+    }
+    #widget-root .w-btn:hover {
+      background-color: var(--w-btn-hover);
+    }
+    #widget-root .w-text-primary {
+      color: var(--w-text-primary);
+    }
+    #widget-root .w-text-secondary {
+      color: var(--w-text-secondary);
+    }
+    #widget-root .w-text-muted {
+      color: var(--w-text-muted);
+    }
+    #widget-root .w-accent-text {
+      color: var(--w-accent-text);
+    }
+    #widget-root .w-border {
+      border-color: var(--w-card-border);
+    }
+    #widget-root .w-row-active {
+      background-color: var(--w-row-active-bg);
+    }
+    #widget-root .w-input {
+      background-color: var(--w-sub-bg);
+      border-color: var(--w-sub-border);
+      color: var(--w-text-primary);
+    }
+    #widget-root .w-input::placeholder {
+      color: var(--w-text-muted);
+    }
+
+    /* Auto-sizing resizable floating widget container — zero extra bottom space */
     .resizable-widget {
       resize: horizontal;
       overflow: hidden;
-      min-width: 290px;
+      min-width: 300px;
       max-width: 96vw;
       height: fit-content;
-      transition: width 0.2s ease;
+      transition: width 0.2s ease, background-color 0.2s ease;
     }
-    /* Slide-out drawer transition (used by both Shift Hours & Templates dropdowns) */
-    .hourly-drawer {
+
+    /* Smooth slide-out drawers (Shift Hours, Templates, Temporary Notes) */
+    .widget-drawer {
       max-height: 0;
       overflow: hidden;
       opacity: 0;
-      transition: max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, margin-top 0.2s ease;
+      transition: max-height 0.22s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.16s ease, margin-top 0.16s ease;
     }
-    .hourly-drawer.open {
-      max-height: 290px;
+    .widget-drawer.open {
+      max-height: 260px;
       opacity: 1;
-      margin-top: 0.5rem;
+      margin-top: 0.4rem;
     }
-    /* Custom subtle scrollbars */
+
+    /* Dashboard warm scrollbars */
     ::-webkit-scrollbar {
       width: 5px;
       height: 5px;
     }
     ::-webkit-scrollbar-track {
-      background: #0f172a;
+      background: #0c0a09;
     }
     ::-webkit-scrollbar-thumb {
-      background: #334155;
+      background: #2b221e;
       border-radius: 3px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #475569;
+      background: #44362f;
     }
-    @keyframes pulse-ring {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5), inset 0 0 8px rgba(16, 185, 129, 0.25); }
-      50% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15), inset 0 0 12px rgba(16, 185, 129, 0.4); }
+
+    /* Popup themed scrollbars */
+    #widget-root .popup-scroll::-webkit-scrollbar-track {
+      background: var(--w-scroll-track);
     }
-    .active-break-btn {
-      animation: pulse-ring 1.6s infinite;
+    #widget-root .popup-scroll::-webkit-scrollbar-thumb {
+      background: var(--w-scroll-thumb);
+      border-radius: 3px;
+    }
+    #widget-root .popup-scroll::-webkit-scrollbar-thumb:hover {
+      background: var(--w-scroll-thumb-hover);
+    }
+
+    /* Active break glow animations */
+    @keyframes pulse-emerald {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55); }
+      50% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.18); }
+    }
+    .active-lunch-btn {
+      animation: pulse-emerald 1.6s infinite;
+    }
+    @keyframes pulse-amber {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); }
+      50% { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18); }
+    }
+    .active-mc-btn {
+      animation: pulse-amber 1.6s infinite;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+<body class="min-h-screen flex flex-col selection:bg-amber-600 selection:text-white overflow-x-hidden bg-[#1c1613] text-[#f5f0eb]">
 
-  <!-- TOP NAVIGATION BAR -->
-  <header class="border-b border-slate-800/80 bg-slate-900/75 backdrop-blur-md sticky top-0 z-30">
+  <!-- =====================================================================
+       TOP DASHBOARD HEADER
+       ===================================================================== -->
+  <header class="border-b border-[#2b221e] bg-[#0c0a09]/95 backdrop-blur-md sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-amber-600 flex items-center justify-center shadow-lg shadow-black/40 shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
         </div>
-        <div>
-          <div class="flex items-center gap-2.5">
-            <h1 class="text-lg font-bold tracking-tight text-white">Work Toolkit</h1>
-            <span id="cairo-sync-badge" class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              Cairo Time (GMT+2)
-            </span>
-          </div>
-          <p class="text-xs text-slate-400">Shift Time, Break &amp; Hourly Ticket Companion</p>
-        </div>
+        <h1 class="text-lg font-bold tracking-tight text-[#f5f0eb]">Work Toolkit</h1>
       </div>
 
-      <div class="flex items-center gap-2.5 flex-wrap">
-        <button onclick="openResetModal()" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 transition flex items-center gap-1.5">
+      <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
+        <button type="button" id="btn-header-reset" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-red-600 hover:bg-red-500 text-white shadow-md shadow-red-950/40 transition flex items-center gap-1.5 cursor-pointer">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
           </svg>
           <span>Start New Shift (Reset)</span>
         </button>
 
-        <button id="btn-toggle-inpage" onclick="toggleInPagePopup()" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-400" id="inpage-status-dot"></span>
-          <span>Toggle Side Widget</span>
-        </button>
-
-        <button onclick="launchAlwaysOnTopPopup()" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition flex items-center gap-2">
+        <button type="button" id="btn-header-launch" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/40 transition flex items-center gap-1.5 cursor-pointer">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
           </svg>
@@ -108,426 +243,428 @@
     </div>
   </header>
 
-  <!-- MAIN CONTENT AREA -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-    
-    <!-- LEFT COLUMN: CONTROLS, SHIFT HOURS, TEMPLATES, EXCEL TABLE & ACTIVITY LOG (7 cols) -->
-    <div class="lg:col-span-7 space-y-6">
-      
-      <!-- TOP ROW: 2-COLUMN GRID FOR VISIBILITY & SHIFT HOURS -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        <!-- Card 1: Popup Modules Visibility -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
-          <div>
-            <div class="pb-3.5 border-b border-slate-800">
-              <h2 class="text-base font-bold text-white flex items-center gap-2">
-                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Popup Modules Visibility
-              </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Auto-resizes height to fit active tools.
-              </p>
-            </div>
+  <!-- =====================================================================
+       2-COLUMN MAIN LAYOUT
+       Left Column: Dashboard Cards | Right Column: Sticky Live Popup Widget
+       ===================================================================== -->
+  <main id="dashboard-main" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-            <div class="mt-3.5 space-y-2">
-              <!-- Check 1: Time and Date -->
-              <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
-                <input type="checkbox" id="chk-mod-clock" checked onchange="toggleModuleVisibility('clock', this.checked)" class="w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
-                <div>
-                  <div class="font-semibold text-xs text-white">1. Time &amp; Date (Cairo GMT+2)</div>
-                  <p class="text-[11px] text-slate-400">Live digital clock and date.</p>
-                </div>
-              </label>
+    <!-- ===================================================================
+         LEFT COLUMN: DASHBOARD CARDS (8 of 12 cols on desktop)
+         =================================================================== -->
+    <div id="dashboard-content" class="lg:col-span-8 space-y-5">
 
-              <!-- Check 2: Lunch & M&C -->
-              <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
-                <input type="checkbox" id="chk-mod-breaks" checked onchange="toggleModuleVisibility('breaks', this.checked)" class="w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
-                <div>
-                  <div class="font-semibold text-xs text-white">2. Lunch (75m) &amp; M&amp;C Tracker</div>
-                  <p class="text-[11px] text-slate-400">Logs Start/Finish &amp; remaining lunch.</p>
-                </div>
-              </label>
+      <!-- CARD 1: SHOW/HIDE TOOLS + POPUP COLOR MODE -->
+      <section class="bg-[#0c0a09] border border-[#2b221e] rounded-2xl p-4 sm:p-5 shadow-xl shadow-black/40 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#2b221e]">
+          <h2 class="text-sm sm:text-base font-bold text-[#f5f0eb] flex items-center gap-2">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Show/Hide Tools
+          </h2>
 
-              <!-- Check 3: Ticket Counter & Last Reply -->
-              <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
-                <input type="checkbox" id="chk-mod-counter" checked onchange="toggleModuleVisibility('counter', this.checked)" class="w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
-                <div>
-                  <div class="font-semibold text-xs text-white">3. Ticket Counter &amp; Last Reply</div>
-                  <p class="text-[11px] text-slate-400">Hourly/Total counters &amp; Shift Hours drawer.</p>
-                </div>
-              </label>
-
-              <!-- Check 4: Quick-Copy Templates -->
-              <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
-                <input type="checkbox" id="chk-mod-templates" checked onchange="toggleModuleVisibility('templates', this.checked)" class="w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
-                <div>
-                  <div class="font-semibold text-xs text-white">4. Quick-Copy Templates</div>
-                  <p class="text-[11px] text-slate-400">Searchable dropdown with compact template chips.</p>
-                </div>
-              </label>
-
-              <!-- Check 5: Ticket Stopwatch -->
-              <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition select-none">
-                <input type="checkbox" id="chk-mod-stopwatch" checked onchange="toggleModuleVisibility('stopwatch', this.checked)" class="w-4 h-4 rounded text-indigo-500 bg-slate-900 border-slate-600 focus:ring-indigo-500">
-                <div>
-                  <div class="font-semibold text-xs text-white">5. Ticket Open Since Stopwatch</div>
-                  <p class="text-[11px] text-slate-400">Play/pause timer with Start Over button.</p>
-                </div>
-              </label>
-            </div>
+          <!-- 3-Mode Popup Color Mode Selector -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-sm font-bold text-[#f5f0eb] mr-1">Popup Color Mode:</span>
+            <button type="button" id="btn-theme-dark" class="px-3 py-1 rounded-lg text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer">
+              <span>Dark</span>
+            </button>
+            <button type="button" id="btn-theme-blue" class="px-3 py-1 rounded-lg text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer">
+              <span>Blue</span>
+            </button>
+            <button type="button" id="btn-theme-white" class="px-3 py-1 rounded-lg text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer">
+              <span>White</span>
+            </button>
           </div>
         </div>
 
-        <!-- Card 2: Shift Hours Configuration -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-4">
-          <div>
-            <div class="pb-3.5 border-b border-slate-800">
-              <h2 class="text-base font-bold text-white flex items-center gap-2">
-                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Shift Hours Configuration
-              </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
-                12h AM/PM &amp; 24h shift bounds for hourly tracking.
-              </p>
+        <!-- 6 Tool Toggle Rows -->
+        <div class="space-y-1.5">
+
+          <!-- 1. Time & Date (with Large / Wide / Small toggles on right) -->
+          <div class="grid grid-cols-1 sm:grid-cols-[175px_1fr_175px] items-center gap-2 px-3 py-2 rounded-xl bg-[#14100e] hover:bg-[#1a1512] border border-[#2b221e] transition">
+            <label for="chk-mod-clock" class="flex items-center gap-2.5 cursor-pointer select-none">
+              <input type="checkbox" id="chk-mod-clock" checked class="w-4 h-4 rounded accent-emerald-500 bg-[#0c0a09] border-[#2b221e] shrink-0 cursor-pointer">
+              <span class="text-xs font-bold text-[#f5f0eb]">Time &amp; Date</span>
+            </label>
+            <div class="text-xs text-[#b5a89e] sm:text-center">
+              Live Cairo clock &amp; date
             </div>
-
-            <div class="mt-3.5 space-y-3">
-              <!-- Start Shift Hour -->
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800/90">
-                <label for="select-shift-start" class="text-xs font-semibold text-indigo-300 block mb-1.5">Start Shift Hour (12h / 24h)</label>
-                <select id="select-shift-start" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-mono-num text-white focus:outline-none focus:border-indigo-500">
-                  <!-- Populated by JS with 12h AM/PM + 24h -->
-                </select>
-              </div>
-
-              <!-- End Shift Hour -->
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800/90">
-                <label for="select-shift-end" class="text-xs font-semibold text-emerald-300 block mb-1.5">End Shift Hour (12h / 24h)</label>
-                <select id="select-shift-end" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-mono-num text-white focus:outline-none focus:border-indigo-500">
-                  <!-- Populated by JS with 12h AM/PM + 24h including 24:00 & Overnight -->
-                </select>
-              </div>
-
-              <!-- Lunch Allowance -->
-              <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800/90">
-                <label class="text-xs text-slate-400 block mb-1.5">Lunch Allowance (Minutes)</label>
-                <div class="flex items-center gap-1.5">
-                  <input type="number" id="input-lunch-allowance" value="75" min="1" max="300" onchange="updateLunchAllowance(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-sm font-mono-num text-white focus:outline-none focus:border-indigo-500">
-                  <button onclick="resetLunchMinutesOnly()" title="Restore remaining lunch to full allowance" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 rounded-lg border border-slate-700 shrink-0">
-                    Reset
-                  </button>
-                </div>
-              </div>
+            <div class="flex items-center sm:justify-end gap-1">
+              <button type="button" id="btn-clock-large" class="px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer">
+                Large
+              </button>
+              <button type="button" id="btn-clock-wide" class="px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer">
+                Wide
+              </button>
+              <button type="button" id="btn-clock-small" class="px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer">
+                Small
+              </button>
             </div>
           </div>
 
-          <!-- Extra Options -->
-          <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800/90 flex items-center justify-between gap-3">
-            <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
-              <input type="checkbox" id="chk-24h" onchange="toggleClockFormat(this.checked)" class="rounded bg-slate-900 border-slate-700 text-indigo-500">
-              <span>24-Hour Clock</span>
-            </label>
-            <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none" title="Automatically restart 'Ticket Open Since' stopwatch when you click +">
-              <input type="checkbox" id="chk-autostopwatch" onchange="toggleAutoStopwatch(this.checked)" class="rounded bg-slate-900 border-slate-700 text-indigo-500">
-              <span>+ Resets Stopwatch</span>
-            </label>
+          <!-- 2. Lunch & M&C -->
+          <label class="grid grid-cols-1 sm:grid-cols-[175px_1fr_175px] items-center gap-2 px-3 py-2 rounded-xl bg-[#14100e] hover:bg-[#1a1512] border border-[#2b221e] cursor-pointer transition select-none">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" id="chk-mod-breaks" checked class="w-4 h-4 rounded accent-emerald-500 bg-[#0c0a09] border-[#2b221e] shrink-0 cursor-pointer">
+              <span class="text-xs font-bold text-[#f5f0eb]">Lunch &amp; M&amp;C</span>
+            </div>
+            <div class="text-xs text-[#b5a89e] sm:text-center">
+              Lunch, meeting and coaching time tracker
+            </div>
+            <div class="hidden sm:block"></div>
+          </label>
+
+          <!-- 3. Ticket Counter -->
+          <label class="grid grid-cols-1 sm:grid-cols-[175px_1fr_175px] items-center gap-2 px-3 py-2 rounded-xl bg-[#14100e] hover:bg-[#1a1512] border border-[#2b221e] cursor-pointer transition select-none">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" id="chk-mod-counter" checked class="w-4 h-4 rounded accent-emerald-500 bg-[#0c0a09] border-[#2b221e] shrink-0 cursor-pointer">
+              <span class="text-xs font-bold text-[#f5f0eb]">Ticket Counter</span>
+            </div>
+            <div class="text-xs text-[#b5a89e] sm:text-center">
+              Hourly &amp; shift counter + last reply timer
+            </div>
+            <div class="hidden sm:block"></div>
+          </label>
+
+          <!-- 4. Quick-Copy Templates -->
+          <label class="grid grid-cols-1 sm:grid-cols-[175px_1fr_175px] items-center gap-2 px-3 py-2 rounded-xl bg-[#14100e] hover:bg-[#1a1512] border border-[#2b221e] cursor-pointer transition select-none">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" id="chk-mod-templates" checked class="w-4 h-4 rounded accent-emerald-500 bg-[#0c0a09] border-[#2b221e] shrink-0 cursor-pointer">
+              <span class="text-xs font-bold text-[#f5f0eb]">Quick-Copy Templates</span>
+            </div>
+            <div class="text-xs text-[#b5a89e] sm:text-center">
+              Expandable template copy buttons
+            </div>
+            <div class="hidden sm:block"></div>
+          </label>
+
+          <!-- 5. Temporary Notes (ENABLED BY DEFAULT) -->
+          <label class="grid grid-cols-1 sm:grid-cols-[175px_1fr_175px] items-center gap-2 px-3 py-2 rounded-xl bg-[#14100e] hover:bg-[#1a1512] border border-[#2b221e] cursor-pointer transition select-none">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" id="chk-mod-notes" checked class="w-4 h-4 rounded accent-emerald-500 bg-[#0c0a09] border-[#2b221e] shrink-0 cursor-pointer">
+              <span class="text-xs font-bold text-[#f5f0eb]">Temporary Notes</span>
+            </div>
+            <div class="text-xs text-[#b5a89e] sm:text-center">
+              Notes
+            </div>
+            <div class="hidden sm:block"></div>
+          </label>
+
+          <!-- 6. Stopwatch -->
+          <label class="grid grid-cols-1 sm:grid-cols-[175px_1fr_175px] items-center gap-2 px-3 py-2 rounded-xl bg-[#14100e] hover:bg-[#1a1512] border border-[#2b221e] cursor-pointer transition select-none">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" id="chk-mod-stopwatch" checked class="w-4 h-4 rounded accent-emerald-500 bg-[#0c0a09] border-[#2b221e] shrink-0 cursor-pointer">
+              <span class="text-xs font-bold text-[#f5f0eb]">Stopwatch</span>
+            </div>
+            <div class="text-xs text-[#b5a89e] sm:text-center">
+              Ticket open since timer
+            </div>
+            <div class="hidden sm:block"></div>
+          </label>
+
+        </div>
+      </section>
+
+      <!-- CARD 2: COMPACT SHIFT HOURS CONFIGURATION -->
+      <section class="bg-[#0c0a09] border border-[#2b221e] rounded-2xl px-4 py-3.5 shadow-xl shadow-black/40">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2.5">
+          <h2 class="text-sm font-bold text-[#f5f0eb] flex items-center gap-1.5 shrink-0 mr-1">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Shift Hours Configuration
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">
+            <div class="flex items-center gap-2 bg-[#14100e] px-2.5 py-1.5 rounded-xl border border-[#2b221e]">
+              <label for="select-shift-start" class="text-[11px] font-semibold text-amber-400 shrink-0">Start Shift</label>
+              <select id="select-shift-start" class="w-full bg-[#0c0a09] border border-[#2b221e] rounded-lg px-2 py-1 text-xs font-mono-num text-[#f5f0eb] focus:outline-none focus:border-amber-500">
+                <!-- Populated by JS -->
+              </select>
+            </div>
+            <div class="flex items-center gap-2 bg-[#14100e] px-2.5 py-1.5 rounded-xl border border-[#2b221e]">
+              <label for="select-shift-end" class="text-[11px] font-semibold text-emerald-400 shrink-0">End Shift</label>
+              <select id="select-shift-end" class="w-full bg-[#0c0a09] border border-[#2b221e] rounded-lg px-2 py-1 text-xs font-mono-num text-[#f5f0eb] focus:outline-none focus:border-amber-500">
+                <!-- Populated by JS -->
+              </select>
+            </div>
           </div>
         </div>
+      </section>
 
-      </div>
-
-      <!-- QUICK-COPY TEMPLATES BUILDER CARD -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
+      <!-- CARD 3: QUICK-COPY TEMPLATES BUILDER -->
+      <section class="bg-[#0c0a09] border border-[#2b221e] rounded-2xl p-4 sm:p-5 shadow-xl shadow-black/40 space-y-4">
+        <div class="flex items-center justify-between gap-2 pb-3 border-b border-[#2b221e]">
           <div>
-            <div class="flex items-center gap-2">
-              <h3 class="text-base font-bold text-white flex items-center gap-2">
-                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                </svg>
-                Quick-Copy Templates Builder
-              </h3>
-              <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
-                Saved Forever
-              </span>
-            </div>
-            <p class="text-xs text-slate-400 mt-1">
-              Put button names inside <code class="text-emerald-300 font-mono-num bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">"Quotes"</code> followed by the template text. Create one or multiple buttons at once!
+            <h2 class="text-sm sm:text-base font-bold text-[#f5f0eb] flex items-center gap-2">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+              </svg>
+              Quick-Copy Templates Builder
+            </h2>
+            <p class="text-xs text-[#b5a89e] mt-0.5">
+              Type <code class="text-emerald-300 font-mono-num bg-[#14100e] px-1.5 py-0.5 rounded border border-[#2b221e]">"Button Title"</code> followed by your reply text to quickly copy your own rephrases or anything you need instantly.
             </p>
           </div>
         </div>
 
-        <!-- Bulk Input Box for "Title" Template Text -->
         <div class="space-y-2.5">
-          <div class="flex items-center justify-between text-xs">
-            <label for="textarea-bulk-templates" class="font-semibold text-slate-300">
-              Enter or Paste Templates (<span class="text-emerald-400 font-mono-num">"Button Name"</span> followed by template text):
-            </label>
-            <button type="button" onclick="insertSampleTemplateSyntax()" class="text-indigo-400 hover:text-indigo-300 underline text-[11px]">
-              Insert Example Format
-            </button>
-          </div>
-          <textarea id="textarea-bulk-templates" rows="4" placeholder='Example:&#10;"Greeting" Hello! Thank you for contacting support, how can I help you today?&#10;"Hold" Please allow me 2-3 minutes while I check your account details.&#10;"Closing" Thank you for contacting us! Have a wonderful rest of your day.' class="w-full bg-slate-950/90 border border-slate-700/90 rounded-xl p-3.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 font-mono-num focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
-          
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-            <button type="button" onclick="parseAndSaveBulkTemplates()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition flex items-center gap-1.5 cursor-pointer">
+          <textarea id="textarea-bulk-templates" rows="4" placeholder='Example:&#10;"Thank you"&#10;Thank you for reaching out.&#10;We&#39;re here if anything else comes up.' class="w-full bg-[#14100e] border border-[#2b221e] rounded-xl p-3 text-xs sm:text-sm text-[#f5f0eb] placeholder-[#7d6f66] font-mono-num focus:outline-none focus:border-amber-500 leading-relaxed"></textarea>
+
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <button type="button" id="btn-save-templates" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/40 transition flex items-center gap-1.5 cursor-pointer">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
               </svg>
               <span>Create / Update Template Buttons</span>
             </button>
-
-            <button type="button" onclick="clearAllTemplates()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 transition cursor-pointer">
-              Clear All
-            </button>
+            <span id="template-parse-feedback" class="text-xs font-medium hidden"></span>
           </div>
-          <p id="template-parse-feedback" class="text-xs text-emerald-400 hidden"></p>
         </div>
 
-        <!-- Saved Templates List on Dashboard -->
-        <div class="pt-3 border-t border-slate-800/80">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Active Template Buttons (<span id="dashboard-template-count">0</span>)
+        <!-- Compact List of Saved Templates -->
+        <div class="pt-3 border-t border-[#2b221e]">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[#b5a89e]">
+              Saved Templates (<span id="dashboard-template-count">0</span>)
             </span>
           </div>
-
-          <div id="dashboard-templates-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto pr-1">
+          <div id="dashboard-templates-tags" class="flex flex-wrap gap-2 max-h-44 overflow-y-auto pr-1">
             <!-- Populated dynamically -->
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- SHIFT HOURLY TICKETS TABLE (EASY EXCEL COPY) -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      <!-- CARD 4: SHIFT HOURLY TICKETS BREAKDOWN (EXCEL COPY) -->
+      <section class="bg-[#0c0a09] border border-[#2b221e] rounded-2xl p-4 sm:p-5 shadow-xl shadow-black/40">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3.5">
           <div>
-            <h3 class="text-base font-bold text-white flex items-center gap-2">
-              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <h2 class="text-sm sm:text-base font-bold text-[#f5f0eb] flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
               </svg>
               Shift Hourly Tickets Breakdown
-            </h3>
-            <p class="text-xs text-slate-400 mt-0.5">
-              Counter automatically adds to the active Cairo hour and resets to 0 when a new hour begins.
+            </h2>
+            <p class="text-xs text-[#b5a89e] mt-0.5">
+              Tracks tickets per Cairo hour and auto-resets the hourly counter to 0 every new hour.
             </p>
           </div>
-
-          <div class="flex items-center gap-2 self-start sm:self-auto">
-            <button id="btn-copy-excel" onclick="copyHourlyTableForExcel()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/20 transition flex items-center gap-1.5">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-              </svg>
-              <span id="copy-excel-label">Copy for Excel</span>
-            </button>
-          </div>
+          <button type="button" id="btn-copy-excel" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/40 transition flex items-center gap-1.5 self-start sm:self-auto cursor-pointer shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+            <span id="copy-excel-label">Copy for Excel</span>
+          </button>
         </div>
 
-        <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/60">
+        <div class="overflow-x-auto rounded-xl border border-[#2b221e] bg-[#14100e]">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="border-b border-slate-800 bg-slate-900/90 text-slate-400 uppercase tracking-wider font-bold">
-                <th class="py-2.5 px-4">Shift Hour (Cairo)</th>
-                <th class="py-2.5 px-4 text-center">Status</th>
-                <th class="py-2.5 px-4 text-right">Tickets Answered</th>
+              <tr class="border-b border-[#2b221e] bg-[#0c0a09] text-[#b5a89e] uppercase tracking-wider font-bold">
+                <th class="py-2.5 px-3.5">Shift Hour (Cairo)</th>
+                <th class="py-2.5 px-3.5 text-center">Status</th>
+                <th class="py-2.5 px-3.5 text-right">Tickets</th>
               </tr>
             </thead>
-            <tbody id="dashboard-hourly-tbody" class="divide-y divide-slate-800/70">
+            <tbody id="dashboard-hourly-tbody" class="divide-y divide-[#2b221e]">
               <!-- Populated dynamically -->
             </tbody>
             <tfoot>
-              <tr class="border-t-2 border-slate-800 bg-slate-900/90 font-bold text-white">
-                <td class="py-3 px-4" colspan="2">Total Shift Tickets</td>
-                <td id="dashboard-hourly-total" class="py-3 px-4 text-right font-mono-num text-sm text-emerald-400">0</td>
+              <tr class="border-t-2 border-[#2b221e] bg-[#0c0a09] font-bold text-[#f5f0eb]">
+                <td class="py-2.5 px-3.5" colspan="2">Total Shift Tickets</td>
+                <td id="dashboard-hourly-total" class="py-2.5 px-3.5 text-right font-mono-num text-sm text-emerald-400">0</td>
               </tr>
             </tfoot>
           </table>
         </div>
-      </div>
+      </section>
 
-      <!-- TODAY'S SHIFT ACTIVITY LOG -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl">
-        <div class="flex items-center justify-between mb-4">
+      <!-- CARD 5: TODAY'S SHIFT ACTIVITY LOG -->
+      <section class="bg-[#0c0a09] border border-[#2b221e] rounded-2xl p-4 sm:p-5 shadow-xl shadow-black/40">
+        <div class="flex items-center justify-between mb-3">
           <div>
-            <h3 class="text-base font-bold text-white">Today's Shift Activity Log</h3>
-            <p class="text-xs text-slate-400">Tracks your Lunch, M&amp;C sessions, hourly rollovers, and tickets in Cairo Time.</p>
+            <h2 class="text-sm sm:text-base font-bold text-[#f5f0eb]">Today's Shift Activity Log</h2>
+            <p class="text-xs text-[#b5a89e]">Timestamped Cairo-time log for Lunch and M&amp;C start/finish events.</p>
           </div>
-          <button onclick="clearHistoryLog()" class="text-xs text-slate-400 hover:text-slate-200 underline">Clear Log</button>
+          <button type="button" id="btn-clear-log" class="text-xs text-[#b5a89e] hover:text-[#f5f0eb] underline cursor-pointer">Clear Log</button>
         </div>
-        <div id="activity-log-list" class="space-y-2 max-h-56 overflow-y-auto pr-1 text-xs">
+        <div id="activity-log-list" class="space-y-1.5 max-h-52 overflow-y-auto pr-1 text-xs">
           <!-- Populated dynamically -->
         </div>
-      </div>
+      </section>
 
     </div>
 
-    <!-- RIGHT COLUMN: FLOATING & AUTO-SIZING SIDE POPUP HOLDER (5 cols) -->
-    <div class="lg:col-span-5 flex flex-col items-center sticky top-24">
-      <div class="w-full max-w-[345px] mb-2.5 flex items-center justify-between text-xs text-slate-400 px-1">
-        <span>Live Popup Preview (Auto-adjusts height)</span>
-        <button onclick="resetWidgetPosition()" class="text-indigo-400 hover:text-indigo-300 font-medium">Reset Position</button>
+    <!-- ===================================================================
+         RIGHT COLUMN: STICKY LIVE INTERACTIVE POPUP WIDGET (4 of 12 cols)
+         No "Live Popup Preview" wrapper card, no header, no extra buttons.
+         =================================================================== -->
+    <aside id="widget-column" class="lg:col-span-4 lg:sticky lg:top-20 flex flex-col items-center lg:items-end">
+
+      <!-- Subtle text shown ONLY while popped out into the floating window -->
+      <div id="popped-out-indicator" class="hidden text-xs text-[#b5a89e] py-6 text-center w-full">
+        Widget is popped out
       </div>
 
-      <!-- DOCK PLACEHOLDER WHEN POPPED OUT TO WIDGET -->
-      <div id="pip-placeholder" class="hidden w-full max-w-[345px] p-8 rounded-2xl border-2 border-dashed border-slate-700 bg-slate-900/40 text-center space-y-4">
-        <div class="w-12 h-12 rounded-full bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center mx-auto text-indigo-400">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-          </svg>
-        </div>
-        <div>
-          <h4 class="font-bold text-white text-base">Widget Popup is Active</h4>
-          <p class="text-xs text-slate-400 mt-1">Your floating toolkit is open in its own always-on-top mini window (with only X and Back to Tab controls).</p>
-        </div>
-        <button onclick="bringWidgetBackInline()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-600 transition">
-          Bring Back to Page
-        </button>
-      </div>
+      <!-- Dock holding the live interactive popup widget -->
+      <div id="widget-dock-container" class="w-full flex justify-center lg:justify-end">
 
-      <!-- FLOATING WIDGET DOCK AREA -->
-      <div id="widget-dock-container" class="w-full flex justify-center">
-        
-        <!-- =============================================================== -->
-        <!-- THE POPUP WIDGET (Auto-adjusts height to active tools/drawers)  -->
-        <!-- =============================================================== -->
-        <div id="agent-popup-widget" class="resizable-widget w-[336px] bg-transparent flex flex-col select-none relative z-40">
-          
-          <!-- Compact Drag Bar (Hidden automatically when inside native PiP popup window) -->
-          <div id="widget-drag-handle" class="bg-slate-900 border border-slate-700/90 rounded-t-xl px-3 py-1.5 flex items-center justify-between cursor-move shrink-0">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
-              <span class="text-[11px] font-bold tracking-wider uppercase text-slate-300">Work Companion</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span class="text-[10px] font-mono-num text-slate-400 px-1.5 py-0.5 rounded bg-slate-800">GMT+2</span>
-              <button onclick="launchAlwaysOnTopPopup()" title="Pop out into standalone widget window" class="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                </svg>
-              </button>
+        <!-- ===============================================================
+             FLOATING POPUP WIDGET (#widget-root — THEME-SCOPED)
+             =============================================================== -->
+        <div id="widget-root" class="theme-dark resizable-widget w-[340px] border rounded-xl shadow-2xl shadow-black/60 flex flex-col select-none relative z-20">
+
+          <!-- Compact Popup Top Bar -->
+          <div id="widget-drag-handle" class="w-handle border-b px-2.5 py-1 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+              <span class="text-[11px] font-bold tracking-wide w-text-secondary">Teams: Hashish.9</span>
             </div>
           </div>
 
-          <!-- MAIN TOOLS WRAPPER -->
-          <div id="widget-modules-wrapper" class="w-full p-2.5 space-y-2.5 bg-slate-950 border border-slate-700/90 rounded-b-xl shadow-2xl shadow-black">
+          <!-- ALL 6 POPUP MODULES (Tight 4px vertical gap, 5px outer padding) -->
+          <div id="widget-modules-wrapper" class="w-full p-[5px] flex flex-col gap-[4px]">
 
-            <!-- MODULE 1: CAIRO TIME AND DATE -->
-            <div id="mod-clock" class="bg-slate-800/95 border border-slate-700 rounded-lg px-3 py-2.5 shadow-inner flex flex-col items-center justify-center">
-              <div id="display-clock" class="font-mono-num text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-tight">
-                00:00:00 AM
+            <!-- 1. TIME & DATE (NO YEAR, NO CAIRO TIME, NO GMT+2, HIGHLIGHTED DAY BADGE) -->
+            <div id="mod-clock" class="w-card border rounded-lg">
+              <!-- Large Mode Layout (Centered, stacked, slightly bigger) -->
+              <div id="clock-layout-large" class="hidden px-3 py-3 flex flex-col items-center justify-center gap-1.5 text-center">
+                <div id="display-clock-large" class="font-mono-num text-3xl font-extrabold tracking-tight w-text-primary leading-none">
+                  00:00:00 AM
+                </div>
+                <div class="flex items-center justify-center gap-1.5">
+                  <span id="display-date-large-monthday" class="text-xs font-bold uppercase tracking-wider w-text-secondary leading-none">
+                    SUN, NOV
+                  </span>
+                  <span id="display-date-large-num" class="px-2 py-0.5 rounded-md bg-amber-500 text-black font-mono-num text-sm font-extrabold leading-tight shadow-sm">
+                    22
+                  </span>
+                </div>
               </div>
-              <div id="display-date" class="text-[11px] font-medium text-slate-300 tracking-wide uppercase mt-0.5">
-                Loading Cairo Date...
+
+              <!-- Wide Mode Layout (Default) -->
+              <div id="clock-layout-wide" class="px-3 py-2 flex items-center justify-between gap-2">
+                <div id="display-clock-wide" class="font-mono-num text-2xl font-extrabold tracking-tight w-text-primary leading-none">
+                  00:00:00 AM
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <span id="display-date-wide-monthday" class="text-xs font-bold uppercase tracking-wide w-text-secondary leading-none">
+                    Sun, Nov
+                  </span>
+                  <span id="display-date-wide-num" class="px-2 py-0.5 rounded-md bg-amber-500 text-black font-mono-num text-sm font-extrabold leading-tight shadow-sm">
+                    22
+                  </span>
+                </div>
+              </div>
+
+              <!-- Small Mode Layout (Compact single row) -->
+              <div id="clock-layout-small" class="hidden px-2.5 py-1.5 flex items-center justify-between gap-2">
+                <div id="display-clock-small" class="font-mono-num text-base font-extrabold tracking-tight w-text-primary leading-none">
+                  00:00:00 AM
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <span id="display-date-small-monthday" class="text-[11px] font-bold uppercase tracking-wide w-text-secondary leading-none">
+                    Sun, Nov
+                  </span>
+                  <span id="display-date-small-num" class="px-1.5 py-0.5 rounded bg-amber-500 text-black font-mono-num text-xs font-extrabold leading-none shadow-sm">
+                    22
+                  </span>
+                </div>
               </div>
             </div>
 
-            <!-- MODULE 2: LUNCH (75m) & M&C TRACKER -->
-            <div id="mod-breaks" class="bg-slate-800/95 border border-slate-700 rounded-lg p-2.5 shadow-inner space-y-1.5">
-              <!-- Column Headers -->
-              <div class="grid grid-cols-12 gap-1.5 items-center text-[10px] font-extrabold uppercase tracking-wider text-slate-300 px-0.5">
-                <div class="col-span-4">Break</div>
+            <!-- 2. LUNCH & M&C TRACKER (COMPACT, TIGHTLY WRAPPED) -->
+            <div id="mod-breaks" class="w-card border rounded-lg p-2 space-y-1.5">
+              <div class="grid grid-cols-12 gap-1.5 items-center text-[9px] font-extrabold uppercase tracking-wider w-text-muted leading-none px-0.5">
+                <div class="col-span-4">Tracker</div>
                 <div class="col-span-3 text-center">START</div>
                 <div class="col-span-3 text-center">FINISH</div>
-                <div class="col-span-2 text-center">Left</div>
+                <div class="col-span-2 text-center">MIN</div>
               </div>
 
-              <!-- LUNCH ROW -->
+              <!-- Lunch Row -->
               <div class="grid grid-cols-12 gap-1.5 items-center">
                 <div class="col-span-4">
-                  <button id="btn-lunch" type="button" class="w-full h-8 px-2 rounded-md bg-slate-700 hover:bg-slate-600 active:scale-95 border border-slate-500/80 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 shadow-sm">
-                    <span id="lunch-dot" class="hidden w-2 h-2 rounded-full bg-white animate-ping"></span>
+                  <button id="btn-lunch" type="button" class="w-full h-7 px-2 rounded-md w-btn border active:scale-95 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <span id="lunch-dot" class="hidden w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
                     <span>Lunch</span>
                   </button>
                 </div>
-                <!-- Lunch START Box -->
                 <div class="col-span-3">
-                  <div id="lunch-start-box" class="h-8 bg-slate-900/90 border border-slate-600/90 rounded-md flex items-center justify-center font-mono-num text-xs font-bold text-slate-100">
+                  <div id="lunch-start-box" class="h-7 w-sub border rounded-md flex items-center justify-center font-mono-num text-xs font-bold w-text-primary">
                     00:00
                   </div>
                 </div>
-                <!-- Lunch FINISH Box -->
                 <div class="col-span-3">
-                  <div id="lunch-finish-box" class="h-8 bg-slate-900/90 border border-slate-600/90 rounded-md flex items-center justify-center font-mono-num text-xs font-bold text-slate-100">
+                  <div id="lunch-finish-box" class="h-7 w-sub border rounded-md flex items-center justify-center font-mono-num text-xs font-bold w-text-primary">
                     00:00
                   </div>
                 </div>
-                <!-- 75 Remaining Box -->
                 <div class="col-span-2">
-                  <div id="lunch-remaining-box" title="Remaining Lunch Minutes (Click or double-click to edit)" class="h-8 bg-slate-900 border border-indigo-500/50 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-emerald-400 cursor-pointer select-none">
+                  <div id="lunch-remaining-box" title="Double-click to edit remaining lunch minutes" class="h-7 w-sub border border-emerald-500/60 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-emerald-500 cursor-pointer select-none">
                     75
                   </div>
                 </div>
               </div>
 
-              <!-- M&C ROW -->
+              <!-- M&C Row -->
               <div class="grid grid-cols-12 gap-1.5 items-center">
                 <div class="col-span-4">
-                  <button id="btn-mc" type="button" title="Meeting and Coaching" class="w-full h-8 px-2 rounded-md bg-slate-700 hover:bg-slate-600 active:scale-95 border border-slate-500/80 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 shadow-sm">
-                    <span id="mc-dot" class="hidden w-2 h-2 rounded-full bg-white animate-ping"></span>
+                  <button id="btn-mc" type="button" title="Meeting and Coaching" class="w-full h-7 px-2 rounded-md w-btn border active:scale-95 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <span id="mc-dot" class="hidden w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
                     <span>M&amp;C</span>
                   </button>
                 </div>
-                <!-- M&C START Box -->
                 <div class="col-span-3">
-                  <div id="mc-start-box" class="h-8 bg-slate-900/90 border border-slate-600/90 rounded-md flex items-center justify-center font-mono-num text-xs font-bold text-slate-100">
+                  <div id="mc-start-box" class="h-7 w-sub border rounded-md flex items-center justify-center font-mono-num text-xs font-bold w-text-primary">
                     00:00
                   </div>
                 </div>
-                <!-- M&C FINISH Box -->
                 <div class="col-span-3">
-                  <div id="mc-finish-box" class="h-8 bg-slate-900/90 border border-slate-600/90 rounded-md flex items-center justify-center font-mono-num text-xs font-bold text-slate-100">
+                  <div id="mc-finish-box" class="h-7 w-sub border rounded-md flex items-center justify-center font-mono-num text-xs font-bold w-text-primary">
                     00:00
                   </div>
                 </div>
-                <!-- M&C Spent Minutes Mini Indicator -->
                 <div class="col-span-2">
-                  <div id="mc-spent-box" title="Total minutes spent in Meeting & Coaching today" class="h-8 bg-slate-900/50 border border-slate-700/70 rounded-md flex items-center justify-center text-[11px] font-mono-num font-semibold text-slate-300">
+                  <div id="mc-spent-box" title="Total M&C minutes spent today" class="h-7 w-sub border rounded-md flex items-center justify-center text-[11px] font-mono-num font-semibold w-text-secondary">
                     0m
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- MODULE 3: HOURLY TICKET COUNTER (+ / -), SLIDE-OUT HOURLY DRAWER & LAST REPLY -->
-            <div id="mod-counter" class="bg-slate-800/95 border border-slate-700 rounded-lg p-2.5 shadow-inner">
+            <!-- 3. TICKET COUNTER (+ / -), LAST REPLY & SHIFT HOURS DRAWER -->
+            <div id="mod-counter" class="w-card border rounded-lg p-2">
               <div class="grid grid-cols-12 gap-2 items-stretch">
-                
-                <!-- Left Column: + and - Buttons AND Slide-Out Hourly Drawer Button Under + / - -->
+                <!-- Left: + / - and Shift Hours Toggle -->
                 <div class="col-span-5 flex flex-col gap-1.5">
                   <div class="grid grid-cols-2 gap-1.5 flex-1">
-                    <button id="btn-ticket-plus" type="button" title="Add Ticket to Current Hour (+1)" class="bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-mono-num text-2xl font-extrabold rounded-md shadow-md shadow-emerald-950/50 flex items-center justify-center min-h-[52px] transition border border-emerald-300/40 cursor-pointer">
+                    <button id="btn-ticket-plus" type="button" title="Add Ticket (+1)" class="bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-black font-mono-num text-2xl font-extrabold rounded-md shadow-sm flex items-center justify-center min-h-[48px] transition border border-emerald-400/50 cursor-pointer">
                       +
                     </button>
-                    <button id="btn-ticket-minus" type="button" title="Subtract Ticket (-1)" class="bg-rose-500 hover:bg-rose-400 active:scale-95 text-slate-950 font-mono-num text-2xl font-extrabold rounded-md shadow-md shadow-rose-950/50 flex items-center justify-center min-h-[52px] transition border border-rose-300/40 cursor-pointer">
+                    <button id="btn-ticket-minus" type="button" title="Subtract Ticket (-1)" class="bg-rose-400 hover:bg-rose-300 active:scale-95 text-black font-mono-num text-2xl font-extrabold rounded-md shadow-sm flex items-center justify-center min-h-[48px] transition border border-rose-300/50 cursor-pointer">
                       -
                     </button>
                   </div>
-                  <!-- Button under + / - to slide open the Hourly Shift Table -->
-                  <button id="btn-hourly-drawer" type="button" class="w-full py-1 px-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 border border-slate-600/80 text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition cursor-pointer">
+                  <button id="btn-hourly-drawer" type="button" class="w-full py-1 px-2 rounded w-btn border text-[10px] font-bold uppercase tracking-wider flex items-center justify-center transition cursor-pointer">
                     <span id="hourly-btn-label">Shift Hours ▾</span>
                   </button>
                 </div>
 
-                <!-- Right Column: Counter Display Box (Current Hour Big + Total Shift Small in Corner) -->
+                <!-- Right: Current Hour Count + Total Corner Badge -->
                 <div class="col-span-7 flex flex-col">
-                  <div class="border-2 border-slate-600 bg-slate-900 rounded-md relative flex flex-col items-center justify-center flex-1 min-h-[80px] px-2">
-                    <!-- Active Hour Mini Tag Top-Left -->
-                    <span id="display-active-hour-tag" class="text-[9px] font-mono-num font-semibold text-slate-400 absolute top-1 left-1.5">
-                      HR 00:00
+                  <div class="w-sub border-2 rounded-md relative flex flex-col items-center justify-center flex-1 min-h-[74px] px-2">
+                    <span id="display-active-hour-tag" class="text-[9px] font-mono-num font-semibold w-text-muted absolute top-1 left-1.5">
+                      00:00
                     </span>
-                    <!-- Main Current-Hour Ticket Count -->
-                    <span id="display-ticket-count" class="font-mono-num text-4xl font-extrabold text-white leading-none mt-1">
+                    <span id="display-ticket-count" class="font-mono-num text-4xl font-extrabold w-text-primary leading-none mt-1">
                       0
                     </span>
-                    <!-- Smaller Total Shift Number in Bottom-Right Corner (Starts at 0) -->
                     <div class="absolute bottom-1 right-2 flex items-baseline gap-1" title="Total Shift Tickets">
-                      <span class="text-[9px] uppercase font-bold text-slate-400">TOT</span>
-                      <span id="display-ticket-total" class="font-mono-num text-xs font-extrabold text-emerald-400 leading-none">
+                      <span class="text-[9px] uppercase font-bold w-text-muted">TOT</span>
+                      <span id="display-ticket-total" class="font-mono-num text-xs font-extrabold text-emerald-500 leading-none">
                         0
                       </span>
                     </div>
@@ -535,84 +672,102 @@
                 </div>
               </div>
 
-              <!-- LAST REPLY ROW -->
-              <div class="mt-2 pt-2 border-t border-slate-700/70 flex items-center justify-between gap-2">
-                <span class="text-[11px] font-extrabold tracking-wider uppercase text-slate-300">
+              <!-- Last Reply Timer Row -->
+              <div class="mt-2 pt-1.5 border-t w-border flex items-center justify-center gap-6">
+                <span class="text-[11px] font-extrabold tracking-wider uppercase w-text-secondary">
                   LAST REPLY
                 </span>
-                <div id="display-last-reply" title="Time elapsed since last ticket was added" class="border border-slate-600 bg-slate-900 rounded px-3 py-0.5 min-w-[96px] text-center font-mono-num text-xs font-bold text-amber-300">
+                <div id="display-last-reply" title="Time elapsed since last ticket was added" class="w-sub border rounded px-3 py-0.5 min-w-[90px] text-center font-mono-num text-xs font-bold w-accent-text">
                   00:00
                 </div>
               </div>
 
-              <!-- SLIDE-OUT HOURLY SHIFT TABLE DRAWER (Inside Counter Box) -->
-              <div id="popup-hourly-drawer" class="hourly-drawer bg-slate-900 border border-slate-700 rounded-md">
-                <div class="px-2.5 py-1.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-300">Shift Hourly Breakdown</span>
-                  <button id="btn-hourly-drawer-close" type="button" title="Close Hourly Table" class="text-slate-400 hover:text-white text-xs font-bold px-1.5 py-0.5 rounded hover:bg-slate-800 cursor-pointer">
+              <!-- Slide-Out Shift Hours Breakdown -->
+              <div id="popup-hourly-drawer" class="widget-drawer w-sub border rounded-md">
+                <div class="px-2.5 py-1.5 w-handle border-b flex items-center justify-between">
+                  <span class="text-[10px] font-bold uppercase tracking-wider w-text-secondary">Shift Hourly Breakdown</span>
+                  <button id="btn-hourly-drawer-close" type="button" class="w-text-muted hover:w-text-primary text-[10px] font-bold px-1.5 py-0.5 rounded w-btn border cursor-pointer">
                     ✕ Close
                   </button>
                 </div>
-                <div class="max-h-44 overflow-y-auto divide-y divide-slate-800/80 text-[11px]" id="popup-hourly-list">
-                  <!-- Populated dynamically with each shift hour -->
+                <div id="popup-hourly-list" class="max-h-40 overflow-y-auto popup-scroll divide-y w-border text-[11px]">
+                  <!-- Populated dynamically -->
                 </div>
               </div>
             </div>
 
-            <!-- MODULE 4: DEDICATED QUICK-COPY TEMPLATES BOX (Above Stopwatch) -->
-            <div id="mod-templates" class="bg-slate-800/95 border border-slate-700 rounded-lg p-2.5 shadow-inner">
-              <button id="btn-popup-templates-toggle" type="button" class="w-full py-1.5 px-3 rounded-md bg-slate-900 hover:bg-slate-700/90 text-slate-100 border border-slate-600/90 text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between transition cursor-pointer shadow-sm">
+            <!-- 4. QUICK-COPY TEMPLATES (STANDALONE BOX WITH SEARCH, NO CLOSE X) -->
+            <div id="mod-templates" class="w-card border rounded-lg p-2">
+              <button id="btn-popup-templates-toggle" type="button" class="w-full py-1.5 px-2.5 rounded-md w-btn border text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between transition cursor-pointer">
                 <span id="popup-templates-toggle-label">Templates ▾</span>
-                <span id="popup-templates-count-badge" class="px-1.5 py-0.2 rounded bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 font-mono-num text-[10px]">0</span>
+                <span id="popup-templates-count-badge" class="px-1.5 py-0.2 rounded w-sub border font-mono-num text-[10px] w-text-secondary">0</span>
               </button>
 
-              <!-- SLIDE-OUT TEMPLATES DROPDOWN (Search bar header + compact wrapped chips) -->
-              <div id="popup-templates-drawer" class="hourly-drawer bg-slate-900 border border-slate-700 rounded-md">
-                <!-- Search Bar Header (Replaces Close button) -->
-                <div class="p-1.5 bg-slate-950 border-b border-slate-800">
+              <div id="popup-templates-drawer" class="widget-drawer w-sub border rounded-md">
+                <div class="p-1.5 w-handle border-b">
                   <div class="relative flex items-center">
-                    <svg class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-3.5 h-3.5 w-text-muted absolute left-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                     <input id="input-popup-template-search" type="text" placeholder="Search templates..." autocomplete="off"
-                      class="w-full bg-slate-900 border border-slate-700/90 focus:border-indigo-500 rounded px-2 py-1 pl-7 text-[11px] text-white placeholder-slate-500 focus:outline-none">
+                      class="w-full w-input border focus:border-emerald-500 rounded px-2 py-1 pl-7 text-[11px] focus:outline-none">
                   </div>
                 </div>
-                <!-- Compact Wrapped Template Buttons Container -->
-                <div class="max-h-44 overflow-y-auto p-2 flex flex-wrap gap-1.5 bg-slate-900 items-start content-start" id="popup-templates-list">
-                  <!-- Populated dynamically with compact text-wrapped template buttons -->
+                <div id="popup-templates-list" class="max-h-40 overflow-y-auto popup-scroll p-2 flex flex-wrap gap-1.5 items-start content-start">
+                  <!-- Compact inline wrapped chips -->
                 </div>
               </div>
             </div>
 
-            <!-- MODULE 5: TICKET OPEN SINCE (STOPWATCH) -->
-            <div id="mod-stopwatch" class="bg-slate-800/95 border border-slate-700 rounded-lg p-2.5 shadow-inner flex flex-col items-center">
-              <div class="w-full flex items-center justify-between mb-1">
-                <span class="text-[10px] font-extrabold tracking-wider uppercase text-slate-300">
-                  TICKET OPEN SINCE
-                </span>
-                <button id="btn-stopwatch-reset" type="button" class="px-2.5 py-0.5 bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-100 text-[10px] font-bold uppercase tracking-wider rounded border border-slate-500/80 shadow-sm transition cursor-pointer">
-                  Start Over
-                </button>
-              </div>
+            <!-- 5. TEMPORARY NOTES (ENABLED BY DEFAULT) -->
+            <div id="mod-notes" class="w-card border rounded-lg p-2">
+              <button id="btn-popup-notes-toggle" type="button" class="w-full py-1.5 px-2.5 rounded-md w-btn border text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between transition cursor-pointer">
+                <span id="popup-notes-toggle-label">Temporary Notes ▾</span>
+                <span id="popup-notes-indicator" class="w-2 h-2 rounded-full bg-neutral-500"></span>
+              </button>
 
-              <div class="w-full flex items-center justify-center gap-3 py-1 bg-slate-900/90 border border-slate-700/80 rounded-md">
-                <!-- Play / Pause Triangle Toggle Button -->
-                <button id="btn-stopwatch-toggle" type="button" title="Start / Pause Stopwatch" class="w-9 h-9 flex items-center justify-center rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-600 active:scale-95 transition cursor-pointer">
-                  <!-- Play Triangle Icon -->
-                  <svg id="icon-stopwatch-play" class="w-5 h-5 text-emerald-400 ml-0.5" viewBox="0 0 24 24" fill="currentColor">
+              <div id="popup-notes-drawer" class="widget-drawer w-sub border rounded-md">
+                <div class="px-2 py-1 w-handle border-b flex items-center justify-between">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider w-text-muted">Scratchpad</span>
+                  <button id="btn-popup-notes-clear" type="button" class="text-[10px] font-semibold w-text-secondary hover:text-red-500 px-1.5 py-0.5 rounded w-btn border transition cursor-pointer">
+                    Clear
+                  </button>
+                </div>
+                <textarea id="textarea-popup-notes" placeholder="Type temporary notes here..."
+                  class="w-full h-[115px] resize-none overflow-y-auto popup-scroll w-input text-xs p-2.5 focus:outline-none leading-relaxed block"></textarea>
+              </div>
+            </div>
+
+            <!-- 6. TICKET OPEN SINCE (STOPWATCH: REPEAT FAR LEFT, PLAY NEXT, LABEL OVER TIME) -->
+            <div id="mod-stopwatch" class="w-card border rounded-lg p-2">
+              <div class="w-full flex items-center gap-2 px-2 py-1.5 w-sub border rounded-md">
+                <!-- Far Left: Circular Repeat Icon (Resets to 00m 00s & Starts Automatically) -->
+                <button id="btn-stopwatch-repeat" type="button" title="Reset to 00m 00s &amp; Auto-Start" class="w-9 h-9 flex items-center justify-center rounded-full w-btn border hover:border-amber-500 active:scale-95 transition cursor-pointer shrink-0">
+                  <svg class="w-4 h-4 w-accent-text" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+                    <polyline points="21 3 21 9 15 9"></polyline>
+                  </svg>
+                </button>
+
+                <!-- Directly to the Right of Repeat: Play / Pause Icon -->
+                <button id="btn-stopwatch-toggle" type="button" title="Start / Pause Stopwatch" class="w-9 h-9 flex items-center justify-center rounded-md w-btn border hover:border-emerald-500 active:scale-95 transition cursor-pointer shrink-0">
+                  <svg id="icon-stopwatch-play" class="w-5 h-5 text-emerald-500 ml-0.5" viewBox="0 0 24 24" fill="currentColor">
                     <polygon points="5 3 19 12 5 21 5 3"></polygon>
                   </svg>
-                  <!-- Pause Icon -->
-                  <svg id="icon-stopwatch-pause" class="w-5 h-5 text-amber-400 hidden" viewBox="0 0 24 24" fill="currentColor">
+                  <svg id="icon-stopwatch-pause" class="w-5 h-5 text-amber-500 hidden" viewBox="0 0 24 24" fill="currentColor">
                     <rect x="6" y="4" width="4" height="16"></rect>
                     <rect x="14" y="4" width="4" height="16"></rect>
                   </svg>
                 </button>
 
-                <!-- Stopwatch Time Display -->
-                <div id="display-stopwatch" class="font-mono-num text-2xl sm:text-[26px] font-extrabold text-white tracking-tight">
-                  00m 00s
+                <!-- Right Side: Title Directly Above Timer Text -->
+                <div class="flex-1 flex flex-col items-center justify-center leading-tight min-w-0">
+                  <span class="text-[9px] font-extrabold tracking-widest uppercase w-text-muted leading-none">
+                    TICKET OPEN SINCE
+                  </span>
+                  <div id="display-stopwatch" class="font-mono-num text-2xl font-extrabold w-text-primary tracking-tight leading-tight mt-0.5">
+                    00m 00s
+                  </div>
                 </div>
               </div>
             </div>
@@ -621,25 +776,24 @@
         </div>
 
       </div>
-    </div>
+    </aside>
 
   </main>
 
-  <!-- CUSTOM MODAL FOR SHIFT RESET OR MANUAL LUNCH EDIT -->
-  <div id="custom-modal-backdrop" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-      <h3 id="modal-title" class="text-lg font-bold text-white">Start New Shift?</h3>
-      <p id="modal-desc" class="text-sm text-slate-300">
-        This will reset your hourly ticket counts and total counter back to 0, restore your remaining lunch minutes to 75, and clear break times for a fresh shift.
+  <!-- =====================================================================
+       CUSTOM CONFIRMATION MODAL (No alert() or confirm())
+       ===================================================================== -->
+  <div id="custom-modal-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-[#0c0a09] border border-[#2b221e] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <h3 class="text-lg font-bold text-[#f5f0eb]">Start New Shift?</h3>
+      <p class="text-sm text-[#b5a89e]">
+        This will reset your hourly &amp; total ticket counts to 0, clear temporary notes, restore lunch minutes to 75, and clear break times. Your saved templates will NOT be affected.
       </p>
-      <div id="modal-input-wrapper" class="hidden">
-        <input type="number" id="modal-number-input" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono-num text-base">
-      </div>
       <div class="flex items-center justify-end gap-2.5 pt-2">
-        <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300">
+        <button type="button" id="btn-modal-cancel" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#1c1613] hover:bg-[#2b221e] text-[#f5f0eb] border border-[#2b221e] cursor-pointer">
           Cancel
         </button>
-        <button id="modal-primary-btn" class="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white">
+        <button type="button" id="btn-modal-confirm" class="px-4 py-2 rounded-xl text-xs font-semibold bg-red-600 hover:bg-red-500 text-white cursor-pointer">
           Confirm Reset
         </button>
       </div>
@@ -648,10 +802,10 @@
 
   <script>
     /********************************************************************
-     * 1. CAIRO TIME (GMT+2 / Africa/Cairo) ENGINE WITH API + INTL FALLBACK
+     * 1. CAIRO TIME (Africa/Cairo) — API SYNC + INTL FALLBACK
      ********************************************************************/
     const CAIRO_TZ = 'Africa/Cairo';
-    let serverTimeOffsetMs = 0; // Offset between user PC clock and verified Cairo API clock
+    let serverTimeOffsetMs = 0;
 
     async function syncCairoTimeWithAPI() {
       try {
@@ -664,25 +818,19 @@
         if (res.ok) {
           const data = await res.json();
           if (data && data.unixtime) {
-            const apiMs = data.unixtime * 1000;
-            serverTimeOffsetMs = apiMs - Date.now();
-            const badge = document.getElementById('cairo-sync-badge');
-            if (badge) {
-              badge.title = 'Synced with WorldTimeAPI (Africa/Cairo)';
-            }
+            serverTimeOffsetMs = (data.unixtime * 1000) - Date.now();
+            return;
           }
         }
-      } catch (e) {
-        // Fallback relies on Intl.DateTimeFormat with timeZone: 'Africa/Cairo'
+      } catch (err) {
+        // Automatic fallback to browser Intl.DateTimeFormat Africa/Cairo
       }
     }
 
-    // Returns current timestamp corrected by API offset
     function getCorrectedNowMs() {
       return Date.now() + serverTimeOffsetMs;
     }
 
-    // Extracts exact Cairo Hour (0-23), Minute (0-59), Second (0-59), and Date parts regardless of PC timezone
     function getCairoParts(ms = getCorrectedNowMs()) {
       const d = new Date(ms);
       const parts = new Intl.DateTimeFormat('en-US', {
@@ -708,47 +856,31 @@
         second: map.second || '00',
         weekday: map.weekday || '',
         month: map.month || '',
-        day: map.day || '',
-        year: map.year || '',
-        dateKey: `${map.year}-${map.month}-${map.day}`
+        day: map.day || ''
       };
     }
 
     function formatCairoHHMM(ms = getCorrectedNowMs()) {
       const p = getCairoParts(ms);
-      if (state.use24Hour) {
-        return `${String(p.hour24).padStart(2, '0')}:${p.minute}`;
-      } else {
-        const h12 = p.hour24 % 12 || 12;
-        return `${String(h12).padStart(2, '0')}:${p.minute}`;
-      }
+      const h12 = p.hour24 % 12 || 12;
+      return `${String(h12).padStart(2, '0')}:${p.minute}`;
     }
 
     function formatCairoClockFull(ms = getCorrectedNowMs()) {
       const p = getCairoParts(ms);
-      if (state.use24Hour) {
-        return `${String(p.hour24).padStart(2, '0')}:${p.minute}:${p.second}`;
-      } else {
-        const h12 = p.hour24 % 12 || 12;
-        const ampm = p.hour24 >= 12 ? 'PM' : 'AM';
-        return `${String(h12).padStart(2, '0')}:${p.minute}:${p.second} ${ampm}`;
-      }
+      const h12 = p.hour24 % 12 || 12;
+      const ampm = p.hour24 >= 12 ? 'PM' : 'AM';
+      return `${String(h12).padStart(2, '0')}:${p.minute}:${p.second} ${ampm}`;
     }
 
-    // Formats a single hour (0..24) in both 12-hour AM/PM and 24-hour format
-    function formatSingleHour12And24(hour24, isEndOption = false) {
-      if (hour24 === 24) {
-        return '12:00 AM Next Day (24:00)';
-      }
+    function formatSingleHour12And24(hour24) {
+      if (hour24 === 24) return '12:00 AM Next Day (24:00)';
       const h = ((hour24 % 24) + 24) % 24;
       const h12 = h % 12 || 12;
       const ampm = h >= 12 ? 'PM' : 'AM';
-      const str12 = `${String(h12).padStart(2, '0')}:00 ${ampm}`;
-      const str24 = `${String(h).padStart(2, '0')}:00`;
-      return `${str12} (${str24})`;
+      return `${String(h12).padStart(2, '0')}:00 ${ampm} (${String(h).padStart(2, '0')}:00)`;
     }
 
-    // Formats an hour slot (e.g., 9 -> "09:00 AM - 10:00 AM (09:00 - 10:00)")
     function formatHourLabel(hour24, compact = false) {
       const h = ((hour24 % 24) + 24) % 24;
       const nextH = (h + 1) % 24;
@@ -756,29 +888,24 @@
       const nextH12 = nextH % 12 || 12;
       const ampm1 = h >= 12 ? 'PM' : 'AM';
       const ampm2 = nextH >= 12 ? 'PM' : 'AM';
-
       const f24 = (n) => `${String(n).padStart(2, '0')}:00`;
       const f12 = (n, ap) => `${String(n).padStart(2, '0')}:00 ${ap}`;
 
-      if (compact) {
-        return `${f12(h12, ampm1)} - ${f12(nextH12, ampm2)} (${f24(h)})`;
-      }
+      if (compact) return `${f12(h12, ampm1)} - ${f12(nextH12, ampm2)}`;
       return `${f12(h12, ampm1)} - ${f12(nextH12, ampm2)} (${f24(h)} - ${f24(nextH)})`;
     }
 
     /********************************************************************
-     * 2. STATE MANAGEMENT & LOCAL STORAGE PERSISTENCE
+     * 2. STATE & PERSISTENT LOCAL STORAGE
      ********************************************************************/
-    const STORAGE_KEY = 'support_companion_cairo_v2';
-    // Dedicated permanent storage key for Templates so shift resets NEVER erase user templates
-    const TEMPLATES_STORAGE_KEY = 'support_companion_templates_permanent_v1';
+    const STORAGE_KEY = 'work_toolkit_state_v5';
+    const TEMPLATES_STORAGE_KEY = 'work_toolkit_templates_v1';
 
-    /**
-     * BUILT-IN DEFAULT TEMPLATES PLACEHOLDER
-     * When you have your team's default templates ready later, add them inside this array
-     * like: { id: 'def_1', title: 'Greeting', content: 'Hello, how can I help?' }
-     */
-    const DEFAULT_TEMPLATES = [];
+    const THEME_BODY_BG = {
+      dark: '#1c1613',
+      blue: '#0f172a',
+      white: '#eceef1'
+    };
 
     const defaultState = {
       modules: {
@@ -786,19 +913,15 @@
         breaks: true,
         counter: true,
         templates: true,
+        notes: true, // Enabled by default like the rest
         stopwatch: true
       },
-      use24Hour: false,
-      autoResetStopwatchOnPlus: false,
+      clockSize: 'wide',   // 'large' | 'wide' (default) | 'small'
+      popupTheme: 'dark',  // 'dark' (default) | 'blue' | 'white'
       lunchAllowance: 75,
-      templatesPanelOpen: false,
-      templateSearchQuery: '',
-
-      // Shift Start (0..23) & End Hours (1..24, or 0..23 for overnight shifts)
       shiftStartHour: 9,
       shiftEndHour: 17,
 
-      // Break tracking state
       lunch: {
         isRunning: false,
         startTimestamp: null,
@@ -813,24 +936,23 @@
         finishFormatted: '00:00',
         totalMinutesSpent: 0
       },
-
-      // Ticket counter & Hourly buckets (Initialized at 0!)
       tickets: {
         currentHourCount: 0,
         totalShiftCount: 0,
-        activeCairoHour: null, // Tracks which hour (0-23) is currently active for auto-reset
-        hourlyCounts: {},      // e.g. { "9": 12, "10": 15 }
+        activeCairoHour: null,
+        hourlyCounts: {},
         lastReplyTimestamp: null,
         drawerOpen: false
       },
-
-      // Ticket Open Since (Stopwatch)
+      templatesPanelOpen: false,
+      templateSearchQuery: '',
+      notesPanelOpen: false,
+      temporaryNotes: '',
       stopwatch: {
         isRunning: false,
         startTimestamp: null,
         elapsedMs: 0
       },
-
       logs: []
     };
 
@@ -842,16 +964,11 @@
     function loadTemplatesPermanent() {
       try {
         const raw = localStorage.getItem(TEMPLATES_STORAGE_KEY);
-        if (!raw) {
-          return JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
-        }
+        if (!raw) return [];
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          return parsed;
-        }
-        return JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+        return Array.isArray(parsed) ? parsed : [];
       } catch (e) {
-        return JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+        return [];
       }
     }
 
@@ -859,7 +976,7 @@
       try {
         localStorage.setItem(TEMPLATES_STORAGE_KEY, JSON.stringify(templatesList));
       } catch (e) {
-        console.error('Failed to save permanent templates:', e);
+        console.error('Failed to save templates:', e);
       }
     }
 
@@ -895,10 +1012,9 @@
       }
     }
 
-    function addLog(message, badgeColor = 'indigo') {
-      const timeStr = formatCairoClockFull();
+    function addLog(message, badgeColor = 'amber') {
       state.logs.unshift({
-        time: timeStr,
+        time: formatCairoClockFull(),
         text: message,
         color: badgeColor
       });
@@ -907,7 +1023,7 @@
       renderLogs();
     }
 
-    // Helper to find elements whether the widget is inside main window or Document PiP window
+    // Finds elements inside either the main document or the popped-out PiP document
     function getWidgetElement(id) {
       const inMain = document.getElementById(id);
       if (inMain) return inMain;
@@ -918,64 +1034,97 @@
     }
 
     /********************************************************************
-     * 3. SHIFT HOURS & HOURLY AUTO-RESET LOGIC
+     * 3. POPUP THEME & CLOCK SIZE TOGGLES
      ********************************************************************/
-    function getShiftHoursSequence() {
-      const start = parseInt(state.shiftStartHour, 10);
-      const end = parseInt(state.shiftEndHour, 10);
-      const validStart = isNaN(start) ? 9 : start;
-      const validEnd = isNaN(end) ? 17 : end;
-      const hours = [];
-
-      if (validEnd === 24) {
-        // Runs up to midnight (includes hour 23:00 - 24:00)
-        for (let h = validStart; h < 24; h++) {
-          hours.push(h);
-        }
-        if (hours.length === 0) {
-          for (let i = 0; i < 24; i++) hours.push(i);
-        }
-      } else if (validStart === validEnd) {
-        // Full 24-hour cycle starting from validStart
-        for (let i = 0; i < 24; i++) {
-          hours.push((validStart + i) % 24);
-        }
-      } else if (validStart < validEnd) {
-        // Same-day shift (e.g., 09:00 AM to 05:00 PM)
-        for (let h = validStart; h < validEnd; h++) {
-          hours.push(h);
-        }
-      } else {
-        // Overnight shift across midnight (e.g., 08:00 PM [20] to 05:00 AM [5])
-        for (let h = validStart; h < 24; h++) {
-          hours.push(h);
-        }
-        for (let h = 0; h < validEnd; h++) {
-          hours.push(h);
-        }
-      }
-      return hours;
+    function setPopupTheme(theme) {
+      if (!['dark', 'blue', 'white'].includes(theme)) return;
+      state.popupTheme = theme;
+      saveState();
+      applyPopupTheme();
     }
 
+    function applyPopupTheme() {
+      const theme = state.popupTheme || 'dark';
+      const widget = getWidgetElement('widget-root');
+
+      if (widget) {
+        widget.classList.remove('theme-dark', 'theme-blue', 'theme-white');
+        widget.classList.add(`theme-${theme}`);
+      }
+
+      if (pipWindowRef && !pipWindowRef.closed && pipWindowRef.document && pipWindowRef.document.body) {
+        pipWindowRef.document.body.style.backgroundColor = THEME_BODY_BG[theme];
+      }
+
+      if (window.location.hash === '#popupmode') {
+        document.body.style.backgroundColor = THEME_BODY_BG[theme];
+      }
+
+      const themeBtnStyles = {
+        dark: 'bg-[#1c1613] hover:bg-[#2a211c] text-[#f5f0eb] border-[#52433a]',
+        blue: 'bg-[#1e3a5f] hover:bg-[#264a78] text-[#f8fafc] border-sky-400/70',
+        white: 'bg-[#eceef1] hover:bg-[#f6f7f9] text-[#1f2937] border-[#bfc6d0]'
+      };
+
+      ['dark', 'blue', 'white'].forEach(t => {
+        const btn = document.getElementById(`btn-theme-${t}`);
+        if (!btn) return;
+        const stateRing = t === theme
+          ? 'ring-2 ring-emerald-400 ring-offset-1 ring-offset-[#0c0a09] shadow-md opacity-100'
+          : 'opacity-75 hover:opacity-100';
+        btn.className = `px-3 py-1 rounded-lg text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer ${themeBtnStyles[t]} ${stateRing}`;
+      });
+    }
+
+    function setClockSize(size) {
+      if (!['large', 'wide', 'small'].includes(size)) return;
+      state.clockSize = size;
+      saveState();
+      applyClockSize();
+      resizePopupToFitContent();
+    }
+
+    function applyClockSize() {
+      const size = state.clockSize || 'wide';
+      const largeEl = getWidgetElement('clock-layout-large');
+      const wideEl = getWidgetElement('clock-layout-wide');
+      const smallEl = getWidgetElement('clock-layout-small');
+
+      if (largeEl) largeEl.classList.toggle('hidden', size !== 'large');
+      if (wideEl) wideEl.classList.toggle('hidden', size !== 'wide');
+      if (smallEl) smallEl.classList.toggle('hidden', size !== 'small');
+
+      const activeClasses = 'bg-emerald-600 border-emerald-400 text-white';
+      const inactiveClasses = 'bg-[#0c0a09] border-[#2b221e] text-[#b5a89e] hover:text-[#f5f0eb]';
+
+      const btnLarge = document.getElementById('btn-clock-large');
+      const btnWide = document.getElementById('btn-clock-wide');
+      const btnSmall = document.getElementById('btn-clock-small');
+      if (btnLarge) btnLarge.className = `px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${size === 'large' ? activeClasses : inactiveClasses}`;
+      if (btnWide) btnWide.className = `px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${size === 'wide' ? activeClasses : inactiveClasses}`;
+      if (btnSmall) btnSmall.className = `px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${size === 'small' ? activeClasses : inactiveClasses}`;
+    }
+
+    /********************************************************************
+     * 4. SHIFT HOURS CONFIGURATION & HOURLY ROLLOVER
+     ********************************************************************/
     function populateShiftSelects() {
       const startSel = document.getElementById('select-shift-start');
       const endSel = document.getElementById('select-shift-end');
       if (!startSel || !endSel) return;
 
-      let startOptionsHtml = '';
-      for (let h = 0; h < 24; h++) {
-        startOptionsHtml += `<option value="${h}">${formatSingleHour12And24(h)}</option>`;
+      let startHtml = '';
+      for (let h = 0; h <= 23; h++) {
+        startHtml += `<option value="${h}">${formatSingleHour12And24(h)}</option>`;
       }
-
-      let endOptionsHtml = '';
-      for (let h = 0; h <= 24; h++) {
-        endOptionsHtml += `<option value="${h}">${formatSingleHour12And24(h, true)}</option>`;
-      }
-
-      startSel.innerHTML = startOptionsHtml;
-      endSel.innerHTML = endOptionsHtml;
-
+      startSel.innerHTML = startHtml;
       startSel.value = String(state.shiftStartHour);
+
+      let endHtml = '';
+      for (let h = 0; h <= 24; h++) {
+        endHtml += `<option value="${h}">${formatSingleHour12And24(h)}</option>`;
+      }
+      endSel.innerHTML = endHtml;
       endSel.value = String(state.shiftEndHour);
     }
 
@@ -988,65 +1137,94 @@
       state.shiftEndHour = parseInt(endSel.value, 10);
       saveState();
       renderHourlyTables();
-      addLog(`Updated shift hours to ${formatSingleHour12And24(state.shiftStartHour)} → ${formatSingleHour12And24(state.shiftEndHour, true)}`, 'indigo');
+      resizePopupToFitContent();
     }
 
-    function recalculateTotalFromHourly() {
-      let sum = 0;
-      Object.values(state.tickets.hourlyCounts).forEach(v => {
-        sum += Math.max(0, parseInt(v, 10) || 0);
-      });
-      state.tickets.totalShiftCount = sum;
+    function getShiftHoursSequence() {
+      const start = parseInt(state.shiftStartHour, 10);
+      const end = parseInt(state.shiftEndHour, 10);
+      const seq = [];
+
+      if (end === 24) {
+        for (let h = start; h < 24; h++) seq.push(h);
+      } else if (start < end) {
+        for (let h = start; h < end; h++) seq.push(h);
+      } else if (start > end) {
+        // Overnight shift across midnight
+        for (let h = start; h < 24; h++) seq.push(h);
+        for (let h = 0; h < end; h++) seq.push(h);
+      } else {
+        // Same start and end -> full 24h cycle starting at start
+        for (let i = 0; i < 24; i++) seq.push((start + i) % 24);
+      }
+
+      return seq;
     }
 
-    // Checks if Cairo hour changed; if so, resets currentHourCount to 0 for the new hour
     function checkHourlyRollover() {
-      const cairo = getCairoParts();
-      const currentH = cairo.hour24;
-
+      const currentCairoH = getCairoParts().hour24;
       if (state.tickets.activeCairoHour === null || state.tickets.activeCairoHour === undefined) {
-        state.tickets.activeCairoHour = currentH;
-        state.tickets.currentHourCount = state.tickets.hourlyCounts[currentH] || 0;
+        state.tickets.activeCairoHour = currentCairoH;
+        state.tickets.currentHourCount = state.tickets.hourlyCounts[currentCairoH] || 0;
         saveState();
-      } else if (state.tickets.activeCairoHour !== currentH) {
-        const prevH = state.tickets.activeCairoHour;
-        const prevCount = state.tickets.currentHourCount;
-        // Ensure previous hour count is stored in hourlyCounts
-        state.tickets.hourlyCounts[prevH] = prevCount;
+        return;
+      }
 
-        // Roll over to new hour and reset current-hour counter to 0
-        state.tickets.activeCairoHour = currentH;
-        state.tickets.currentHourCount = state.tickets.hourlyCounts[currentH] || 0;
-        recalculateTotalFromHourly();
+      if (state.tickets.activeCairoHour !== currentCairoH) {
+        state.tickets.activeCairoHour = currentCairoH;
+        state.tickets.currentHourCount = state.tickets.hourlyCounts[currentCairoH] || 0;
         saveState();
-
-        addLog(`New Cairo hour (${String(currentH).padStart(2, '0')}:00): Saved ${prevCount} tickets for ${formatHourLabel(prevH)} and reset hourly counter to 0.`, 'indigo');
         renderCounterModule();
         renderHourlyTables();
       }
     }
 
-    /********************************************************************
-     * 4. MODULE 1: CAIRO CLOCK & DATE
-     ********************************************************************/
-    function updateClockModule() {
-      checkHourlyRollover();
-
-      const nowMs = getCorrectedNowMs();
-      const p = getCairoParts(nowMs);
-      const clockEl = getWidgetElement('display-clock');
-      const dateEl = getWidgetElement('display-date');
-
-      if (clockEl) {
-        clockEl.textContent = formatCairoClockFull(nowMs);
-      }
-      if (dateEl) {
-        dateEl.textContent = `${p.weekday}, ${p.month} ${p.day}, ${p.year}`;
-      }
+    function recalculateTotalFromHourly() {
+      let sum = 0;
+      Object.values(state.tickets.hourlyCounts || {}).forEach(v => {
+        sum += Math.max(0, parseInt(v, 10) || 0);
+      });
+      state.tickets.totalShiftCount = sum;
     }
 
     /********************************************************************
-     * 5. MODULE 2: LUNCH (75m) & M&C TRACKER
+     * 5. MODULE 1: CAIRO TIME & DATE (No Year, Highlighted Day Number)
+     ********************************************************************/
+    function updateClockModule() {
+      checkHourlyRollover();
+      const nowMs = getCorrectedNowMs();
+      const p = getCairoParts(nowMs);
+      const clockStr = formatCairoClockFull(nowMs);
+      const weekdayMonth = `${p.weekday}, ${p.month}`;
+      const dayNum = p.day;
+
+      const largeClock = getWidgetElement('display-clock-large');
+      const largeMonthDay = getWidgetElement('display-date-large-monthday');
+      const largeNum = getWidgetElement('display-date-large-num');
+
+      const wideClock = getWidgetElement('display-clock-wide');
+      const wideMonthDay = getWidgetElement('display-date-wide-monthday');
+      const wideNum = getWidgetElement('display-date-wide-num');
+
+      const smallClock = getWidgetElement('display-clock-small');
+      const smallMonthDay = getWidgetElement('display-date-small-monthday');
+      const smallNum = getWidgetElement('display-date-small-num');
+
+      if (largeClock) largeClock.textContent = clockStr;
+      if (largeMonthDay) largeMonthDay.textContent = weekdayMonth;
+      if (largeNum) largeNum.textContent = dayNum;
+
+      if (wideClock) wideClock.textContent = clockStr;
+      if (wideMonthDay) wideMonthDay.textContent = weekdayMonth;
+      if (wideNum) wideNum.textContent = dayNum;
+
+      if (smallClock) smallClock.textContent = clockStr;
+      if (smallMonthDay) smallMonthDay.textContent = weekdayMonth;
+      if (smallNum) smallNum.textContent = dayNum;
+    }
+
+    /********************************************************************
+     * 6. MODULE 2: LUNCH & M&C TRACKER
      ********************************************************************/
     function handleBreakClick(type) {
       const nowMs = getCorrectedNowMs();
@@ -1057,16 +1235,15 @@
           state.lunch.startTimestamp = nowMs;
           state.lunch.startFormatted = formatCairoHHMM(nowMs);
           state.lunch.finishFormatted = '00:00';
-          addLog(`Started Lunch at ${state.lunch.startFormatted} (${state.lunch.remainingMinutes}m left)`, 'emerald');
+          addLog(`Lunch started at ${state.lunch.startFormatted} (${state.lunch.remainingMinutes}m left)`, 'emerald');
         } else {
           state.lunch.isRunning = false;
           state.lunch.finishFormatted = formatCairoHHMM(nowMs);
           const elapsedMs = Math.max(0, nowMs - (state.lunch.startTimestamp || nowMs));
-          const elapsedMinutes = Math.max(1, Math.round(elapsedMs / 60000));
-          state.lunch.remainingMinutes = state.lunch.remainingMinutes - elapsedMinutes;
+          const elapsedMin = Math.max(1, Math.round(elapsedMs / 60000));
+          state.lunch.remainingMinutes = state.lunch.remainingMinutes - elapsedMin;
           state.lunch.startTimestamp = null;
-
-          addLog(`Finished Lunch at ${state.lunch.finishFormatted} (-${elapsedMinutes}m used, ${state.lunch.remainingMinutes}m left)`, 'amber');
+          addLog(`Lunch finished at ${state.lunch.finishFormatted} (${elapsedMin}m spent, ${state.lunch.remainingMinutes}m left)`, 'amber');
         }
       } else if (type === 'mc') {
         if (!state.mc.isRunning) {
@@ -1074,16 +1251,15 @@
           state.mc.startTimestamp = nowMs;
           state.mc.startFormatted = formatCairoHHMM(nowMs);
           state.mc.finishFormatted = '00:00';
-          addLog(`Started M&C at ${state.mc.startFormatted}`, 'indigo');
+          addLog(`M&C started at ${state.mc.startFormatted}`, 'amber');
         } else {
           state.mc.isRunning = false;
           state.mc.finishFormatted = formatCairoHHMM(nowMs);
           const elapsedMs = Math.max(0, nowMs - (state.mc.startTimestamp || nowMs));
-          const elapsedMinutes = Math.max(1, Math.round(elapsedMs / 60000));
-          state.mc.totalMinutesSpent = (state.mc.totalMinutesSpent || 0) + elapsedMinutes;
+          const elapsedMin = Math.max(1, Math.round(elapsedMs / 60000));
+          state.mc.totalMinutesSpent = (state.mc.totalMinutesSpent || 0) + elapsedMin;
           state.mc.startTimestamp = null;
-
-          addLog(`Finished M&C at ${state.mc.finishFormatted} (+${elapsedMinutes}m, total ${state.mc.totalMinutesSpent}m)`, 'indigo');
+          addLog(`M&C finished at ${state.mc.finishFormatted} (${elapsedMin}m spent, total ${state.mc.totalMinutesSpent}m)`, 'amber');
         }
       }
 
@@ -1103,27 +1279,27 @@
 
       let displayRemaining = state.lunch.remainingMinutes;
       if (state.lunch.isRunning && state.lunch.startTimestamp) {
-        const liveElapsedMin = Math.floor((getCorrectedNowMs() - state.lunch.startTimestamp) / 60000);
-        displayRemaining = state.lunch.remainingMinutes - liveElapsedMin;
+        const liveMin = Math.floor((getCorrectedNowMs() - state.lunch.startTimestamp) / 60000);
+        displayRemaining = state.lunch.remainingMinutes - liveMin;
       }
 
-      if (lunchRem) {
+      if (lunchRem && !lunchRem.querySelector('input')) {
         lunchRem.textContent = displayRemaining;
         if (displayRemaining <= 0) {
-          lunchRem.className = 'h-8 bg-rose-600 border border-rose-400 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-white cursor-pointer select-none';
+          lunchRem.className = 'h-7 bg-red-600 border border-red-400 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-white cursor-pointer select-none';
         } else if (displayRemaining <= 15) {
-          lunchRem.className = 'h-8 bg-amber-500 border border-amber-300 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-slate-950 cursor-pointer select-none';
+          lunchRem.className = 'h-7 bg-amber-500 border border-amber-300 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-black cursor-pointer select-none';
         } else {
-          lunchRem.className = 'h-8 bg-slate-900 border border-indigo-500/50 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-emerald-400 cursor-pointer select-none';
+          lunchRem.className = 'h-7 w-sub border border-emerald-500/60 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-emerald-500 cursor-pointer select-none';
         }
       }
 
       if (lunchBtn) {
         if (state.lunch.isRunning) {
-          lunchBtn.className = 'w-full h-8 px-2 rounded-md bg-emerald-600 hover:bg-emerald-500 active:scale-95 border border-emerald-400 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 active-break-btn';
+          lunchBtn.className = 'w-full h-7 px-2 rounded-md bg-emerald-600 hover:bg-emerald-500 active:scale-95 border border-emerald-400 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 cursor-pointer active-lunch-btn';
           if (lunchDot) lunchDot.classList.remove('hidden');
         } else {
-          lunchBtn.className = 'w-full h-8 px-2 rounded-md bg-slate-700 hover:bg-slate-600 active:scale-95 border border-slate-500/80 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 shadow-sm';
+          lunchBtn.className = 'w-full h-7 px-2 rounded-md w-btn border active:scale-95 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer';
           if (lunchDot) lunchDot.classList.add('hidden');
         }
       }
@@ -1140,17 +1316,52 @@
 
       if (mcBtn) {
         if (state.mc.isRunning) {
-          mcBtn.className = 'w-full h-8 px-2 rounded-md bg-indigo-600 hover:bg-indigo-500 active:scale-95 border border-indigo-400 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 active-break-btn';
+          mcBtn.className = 'w-full h-7 px-2 rounded-md bg-amber-600 hover:bg-amber-500 active:scale-95 border border-amber-400 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 cursor-pointer active-mc-btn';
           if (mcDot) mcDot.classList.remove('hidden');
         } else {
-          mcBtn.className = 'w-full h-8 px-2 rounded-md bg-slate-700 hover:bg-slate-600 active:scale-95 border border-slate-500/80 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 shadow-sm';
+          mcBtn.className = 'w-full h-7 px-2 rounded-md w-btn border active:scale-95 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer';
           if (mcDot) mcDot.classList.add('hidden');
         }
       }
     }
 
+    function enableInlineLunchEdit() {
+      const box = getWidgetElement('lunch-remaining-box');
+      if (!box || box.querySelector('input')) return;
+
+      const doc = box.ownerDocument;
+      const input = doc.createElement('input');
+      input.type = 'number';
+      input.value = state.lunch.remainingMinutes;
+      input.className = 'w-full h-full w-input text-center font-mono-num text-xs font-extrabold rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500';
+
+      const commit = () => {
+        const val = parseInt(input.value, 10);
+        if (!isNaN(val)) {
+          state.lunch.remainingMinutes = val;
+          saveState();
+        }
+        box.innerHTML = '';
+        renderBreakModule();
+      };
+
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') commit();
+        if (e.key === 'Escape') {
+          box.innerHTML = '';
+          renderBreakModule();
+        }
+      });
+
+      box.innerHTML = '';
+      box.appendChild(input);
+      input.focus();
+      input.select();
+    }
+
     /********************************************************************
-     * 6. MODULE 3: HOURLY TICKET COUNTER, SLIDE-OUT DRAWER & LAST REPLY
+     * 7. MODULE 3: TICKET COUNTER, LAST REPLY & SHIFT HOURS DRAWER
      ********************************************************************/
     function incrementTicket() {
       checkHourlyRollover();
@@ -1163,14 +1374,6 @@
       recalculateTotalFromHourly();
       state.tickets.lastReplyTimestamp = getCorrectedNowMs();
 
-      if (state.autoResetStopwatchOnPlus) {
-        state.stopwatch.elapsedMs = 0;
-        state.stopwatch.startTimestamp = getCorrectedNowMs();
-        state.stopwatch.isRunning = true;
-        renderStopwatchControls();
-      }
-
-      addLog(`Ticket +1 in ${formatSingleHour12And24(cairoH)} (Hour: ${state.tickets.currentHourCount} | Shift Total: ${state.tickets.totalShiftCount})`, 'emerald');
       saveState();
       renderCounterModule();
       renderHourlyTables();
@@ -1186,21 +1389,18 @@
         state.tickets.currentHourCount = currentVal - 1;
         state.tickets.hourlyCounts[cairoH] = state.tickets.currentHourCount;
         recalculateTotalFromHourly();
-        addLog(`Ticket -1 in ${formatSingleHour12And24(cairoH)} (Hour: ${state.tickets.currentHourCount} | Shift Total: ${state.tickets.totalShiftCount})`, 'rose');
         saveState();
         renderCounterModule();
         renderHourlyTables();
       } else if (state.tickets.totalShiftCount > 0) {
-        // Fallback if current hour is 0 but another shift hour has tickets and user wants to decrement total
-        const hoursKeys = Object.keys(state.tickets.hourlyCounts).reverse();
-        for (const k of hoursKeys) {
+        const keys = Object.keys(state.tickets.hourlyCounts).reverse();
+        for (const k of keys) {
           if ((state.tickets.hourlyCounts[k] || 0) > 0) {
             state.tickets.hourlyCounts[k] -= 1;
             break;
           }
         }
         recalculateTotalFromHourly();
-        addLog(`Ticket -1 from shift total (Hour: ${state.tickets.currentHourCount} | Shift Total: ${state.tickets.totalShiftCount})`, 'rose');
         saveState();
         renderCounterModule();
         renderHourlyTables();
@@ -1210,8 +1410,7 @@
     function updateHourlyCountManual(hour24, val) {
       const num = Math.max(0, parseInt(val, 10) || 0);
       state.tickets.hourlyCounts[hour24] = num;
-      const currentCairoH = getCairoParts().hour24;
-      if (parseInt(hour24, 10) === currentCairoH) {
+      if (parseInt(hour24, 10) === getCairoParts().hour24) {
         state.tickets.currentHourCount = num;
       }
       recalculateTotalFromHourly();
@@ -1221,11 +1420,10 @@
     }
 
     function toggleHourlyDrawer(forceState) {
-      const nextState = typeof forceState === 'boolean' ? forceState : !state.tickets.drawerOpen;
-      state.tickets.drawerOpen = nextState;
+      state.tickets.drawerOpen = typeof forceState === 'boolean' ? forceState : !state.tickets.drawerOpen;
       saveState();
       applyHourlyDrawerState();
-      setTimeout(() => resizePopupToFitContent(), 300);
+      setTimeout(() => resizePopupToFitContent(), 250);
     }
 
     function applyHourlyDrawerState() {
@@ -1263,7 +1461,7 @@
       const cairoH = getCairoParts().hour24;
       const h12 = cairoH % 12 || 12;
       const ampm = cairoH >= 12 ? 'PM' : 'AM';
-      if (hourTagEl) hourTagEl.textContent = `${String(h12).padStart(2, '0')}:00 ${ampm} (${String(cairoH).padStart(2, '0')}:00)`;
+      if (hourTagEl) hourTagEl.textContent = `${String(h12).padStart(2, '0')}:00 ${ampm}`;
       if (countEl) countEl.textContent = state.tickets.currentHourCount;
       if (totalEl) totalEl.textContent = state.tickets.totalShiftCount;
 
@@ -1282,127 +1480,102 @@
       const hoursSeq = getShiftHoursSequence();
       const currentCairoH = getCairoParts().hour24;
 
-      // 1. Render inside Popup Slide-Out Drawer
+      // Popup Drawer Table
       const popupList = getWidgetElement('popup-hourly-list');
       if (popupList) {
         popupList.innerHTML = hoursSeq.map(h => {
           const count = state.tickets.hourlyCounts[h] || 0;
           const isCurrent = (h === currentCairoH);
           return `
-            <div class="px-2.5 py-1.5 flex items-center justify-between ${isCurrent ? 'bg-indigo-500/20 text-white font-bold' : 'text-slate-300'}">
+            <div class="px-2.5 py-1.5 flex items-center justify-between ${isCurrent ? 'w-row-active rounded w-text-primary font-bold' : 'w-text-secondary'}">
               <div class="flex items-center gap-1.5 font-mono-num text-[10px]">
                 <span>${formatHourLabel(h, true)}</span>
-                ${isCurrent ? '<span class="text-[8px] px-1 rounded bg-emerald-500 text-slate-950 font-extrabold">NOW</span>' : ''}
               </div>
-              <span class="font-mono-num font-bold text-xs ${count > 0 ? 'text-emerald-400' : 'text-slate-500'}">${count}</span>
+              <span class="font-mono-num font-bold text-xs ${count > 0 ? 'text-emerald-500' : (isCurrent ? 'w-text-primary' : 'w-text-muted')}">${count}</span>
             </div>
           `;
         }).join('');
       }
 
-      // 2. Render Dashboard Main Table
-      const tbody = document.getElementById('dashboard-hourly-tbody');
-      const totalCell = document.getElementById('dashboard-hourly-total');
-      if (tbody) {
-        tbody.innerHTML = hoursSeq.map(h => {
+      // Dashboard Excel-Ready Table
+      const dashTbody = document.getElementById('dashboard-hourly-tbody');
+      const dashTotal = document.getElementById('dashboard-hourly-total');
+      if (dashTbody) {
+        dashTbody.innerHTML = hoursSeq.map(h => {
           const count = state.tickets.hourlyCounts[h] || 0;
           const isCurrent = (h === currentCairoH);
           return `
-            <tr class="${isCurrent ? 'bg-indigo-500/10' : 'hover:bg-slate-900/40'} transition">
-              <td class="py-2.5 px-4 font-mono-num font-medium text-slate-200">
-                ${formatHourLabel(h, false)}
-              </td>
-              <td class="py-2.5 px-4 text-center">
+            <tr class="${isCurrent ? 'bg-emerald-500/15' : 'hover:bg-[#1a1512]'} transition">
+              <td class="py-2 px-3.5 font-mono-num text-[#f5f0eb]">${formatHourLabel(h, false)}</td>
+              <td class="py-2 px-3.5 text-center">
                 ${isCurrent
-                  ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Active Hour</span>'
-                  : '<span class="text-slate-500 text-[11px]">Shift Slot</span>'}
+                  ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Current Hour</span>'
+                  : '<span class="text-[11px] text-[#8a7c72]">Shift Slot</span>'}
               </td>
-              <td class="py-2 px-4 text-right">
-                <input type="number" min="0" value="${count}" data-hour="${h}" onchange="updateHourlyCountManual(${h}, this.value)"
-                  class="w-20 text-right bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 font-mono-num text-xs font-bold ${count > 0 ? 'text-emerald-400' : 'text-slate-400'} focus:outline-none focus:border-indigo-500">
+              <td class="py-2 px-3.5 text-right">
+                <input type="number" min="0" value="${count}" data-hour="${h}" class="dash-hour-input w-16 text-right bg-[#0c0a09] border border-[#2b221e] focus:border-emerald-500 rounded-md px-2 py-0.5 font-mono-num text-xs font-bold text-emerald-400 focus:outline-none">
               </td>
             </tr>
           `;
         }).join('');
+
+        dashTbody.querySelectorAll('.dash-hour-input').forEach(inp => {
+          inp.addEventListener('change', (e) => {
+            updateHourlyCountManual(e.target.dataset.hour, e.target.value);
+          });
+        });
       }
-      if (totalCell) {
-        totalCell.textContent = state.tickets.totalShiftCount;
+
+      if (dashTotal) {
+        dashTotal.textContent = state.tickets.totalShiftCount;
       }
     }
 
-    function copyHourlyTableForExcel() {
+    function copyTextFallback(text, docRef = document) {
+      try {
+        const ta = docRef.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        ta.style.left = '-9999px';
+        docRef.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        docRef.execCommand('copy');
+        docRef.body.removeChild(ta);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function copyTableForExcel() {
       const hoursSeq = getShiftHoursSequence();
-      const rows = [['Shift Hour (Cairo)', 'Tickets Answered']];
+      const lines = ['Shift Hour (Cairo)\tTickets'];
       hoursSeq.forEach(h => {
         const count = state.tickets.hourlyCounts[h] || 0;
-        rows.push([formatHourLabel(h), String(count)]);
+        lines.push(`${formatHourLabel(h, false)}\t${count}`);
       });
-      rows.push(['Total Shift Tickets', String(state.tickets.totalShiftCount)]);
+      lines.push(`Total Shift Tickets\t${state.tickets.totalShiftCount}`);
 
-      const tsvContent = rows.map(r => r.join('\t')).join('\n');
-
-      const textarea = document.createElement('textarea');
-      textarea.value = tsvContent;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand('copy');
-        const label = document.getElementById('copy-excel-label');
-        if (label) {
-          label.textContent = 'Copied for Excel!';
-          setTimeout(() => { label.textContent = 'Copy for Excel'; }, 2000);
-        }
-        addLog('Copied hourly shift table to clipboard for Excel.', 'emerald');
-      } catch (err) {
-        console.error('Copy failed', err);
+      copyTextFallback(lines.join('\n'), document);
+      const label = document.getElementById('copy-excel-label');
+      if (label) {
+        const orig = label.textContent;
+        label.textContent = 'Copied for Excel!';
+        setTimeout(() => { label.textContent = orig; }, 1800);
       }
-      document.body.removeChild(textarea);
     }
 
     /********************************************************************
-     * 7. MODULE 4: TICKET OPEN SINCE (STOPWATCH)
+     * 8. MODULE 4: QUICK-COPY TEMPLATES (PERMANENT STORAGE + SEARCH)
      ********************************************************************/
-    function formatStopwatchMinSec(totalSeconds) {
-      const sec = Math.max(0, Math.floor(totalSeconds));
-      const m = Math.floor(sec / 60);
-      const s = sec % 60;
-      return `${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
-    }
-
-    /********************************************************************
-     * 7B. QUICK-COPY TEMPLATES ENGINE ("Title" Bulk Parser + Dropdown Drawer)
-     ********************************************************************/
-    // Parses multiple `"Button Title" template content...` blocks from a single string
-    function parseQuotedTemplatesString(rawText) {
-      const results = [];
-      if (!rawText || !rawText.trim()) return results;
-
-      // Matches "Button Title" followed by everything until the next "Button Title" or end of text
-      const regex = /"([^"]+)"\s*([\s\S]*?)(?=(?:(?:^|\n)\s*"[^"]+")|$)/g;
-      let match;
-      while ((match = regex.exec(rawText)) !== null) {
-        const title = (match[1] || '').trim();
-        const content = (match[2] || '').trim();
-        if (title && content) {
-          results.push({ title, content });
-        }
-      }
-
-      // Fallback if user put multiple `"Title" text` on the same line or flexible spacing
-      if (results.length === 0) {
-        const fallbackRegex = /"([^"]+)"\s*([^"]*)/g;
-        let m2;
-        while ((m2 = fallbackRegex.exec(rawText)) !== null) {
-          const title = (m2[1] || '').trim();
-          const content = (m2[2] || '').trim();
-          if (title && content) {
-            results.push({ title, content });
-          }
-        }
-      }
-      return results;
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
 
     function parseAndSaveBulkTemplates() {
@@ -1410,460 +1583,322 @@
       const feedback = document.getElementById('template-parse-feedback');
       if (!textarea) return;
 
-      const parsedPairs = parseQuotedTemplatesString(textarea.value);
-      if (parsedPairs.length === 0) {
-        if (feedback) {
-          feedback.textContent = 'Please wrap each button name in double quotes followed by the template text, e.g. "Greeting" Hello there!';
-          feedback.className = 'text-xs text-rose-400 block';
+      const raw = textarea.value.trim();
+      if (!raw) {
+        showTemplateFeedback('Please enter at least one "Title" followed by text.', 'text-amber-400');
+        return;
+      }
+
+      // Match every "Title" followed by its body up to the next "Title" or end of input
+      const regex = /"([^"]+)"\s*([\s\S]*?)(?=(?:\r?\n\s*"[^"]+")|$)/g;
+      const parsedItems = [];
+      let match;
+
+      while ((match = regex.exec(raw)) !== null) {
+        const title = match[1].trim();
+        const body = match[2].trim();
+        if (title && body) {
+          parsedItems.push({ title, body });
         }
+      }
+
+      if (parsedItems.length === 0) {
+        showTemplateFeedback('Format: "Button Name" Your template text here', 'text-rose-400');
         return;
       }
 
       let addedCount = 0;
       let updatedCount = 0;
 
-      parsedPairs.forEach(item => {
-        const existingIndex = templatesList.findIndex(
+      parsedItems.forEach(item => {
+        const existingIdx = templatesList.findIndex(
           t => t.title.toLowerCase() === item.title.toLowerCase()
         );
-        if (existingIndex !== -1) {
-          templatesList[existingIndex].title = item.title;
-          templatesList[existingIndex].content = item.content;
+        if (existingIdx >= 0) {
+          templatesList[existingIdx].title = item.title;
+          templatesList[existingIdx].body = item.body;
           updatedCount++;
         } else {
-          templatesList.push({
-            id: 'tpl_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-            title: item.title,
-            content: item.content
-          });
+          templatesList.push({ id: Date.now() + Math.random(), title: item.title, body: item.body });
           addedCount++;
         }
       });
 
       saveTemplatesPermanent();
-      renderTemplatesAll();
       textarea.value = '';
+      renderTemplatesModule();
 
-      if (feedback) {
-        feedback.textContent = `Saved permanently! (${addedCount} new button${addedCount === 1 ? '' : 's'} created, ${updatedCount} updated).`;
-        feedback.className = 'text-xs text-emerald-400 block';
-        setTimeout(() => {
-          feedback.classList.add('hidden');
-        }, 4000);
-      }
-
-      addLog(`Saved ${parsedPairs.length} template button(s) permanently.`, 'indigo');
+      const parts = [];
+      if (addedCount > 0) parts.push(`${addedCount} added`);
+      if (updatedCount > 0) parts.push(`${updatedCount} updated`);
+      showTemplateFeedback(`Saved (${parts.join(', ')})!`, 'text-emerald-400');
     }
 
-    function insertSampleTemplateSyntax() {
-      const textarea = document.getElementById('textarea-bulk-templates');
-      if (!textarea) return;
-      const sample = `"Greeting" Hello! Thank you for contacting support. How can I assist you today?\n\n"Checking" Please bear with me for 2 minutes while I review your ticket details.\n\n"Closing" Thank you for your time today! Please let us know if you need anything else.`;
-      textarea.value = textarea.value ? (textarea.value.trim() + '\n\n' + sample) : sample;
-      textarea.focus();
+    function showTemplateFeedback(msg, colorClass) {
+      const feedback = document.getElementById('template-parse-feedback');
+      if (!feedback) return;
+      feedback.textContent = msg;
+      feedback.className = `text-xs font-semibold ${colorClass}`;
+      feedback.classList.remove('hidden');
+      setTimeout(() => {
+        feedback.classList.add('hidden');
+      }, 3000);
     }
 
-    function deleteTemplateById(id) {
-      templatesList = templatesList.filter(t => t.id !== id);
+    function deleteTemplateByIndex(idx) {
+      if (idx < 0 || idx >= templatesList.length) return;
+      templatesList.splice(idx, 1);
       saveTemplatesPermanent();
-      renderTemplatesAll();
-      setTimeout(() => resizePopupToFitContent(), 280);
+      renderTemplatesModule();
     }
 
-    function loadSingleTemplateIntoEditor(id) {
-      const found = templatesList.find(t => t.id === id);
-      if (!found) return;
-      const textarea = document.getElementById('textarea-bulk-templates');
-      if (textarea) {
-        textarea.value = `"${found.title}" ${found.content}`;
-        textarea.focus();
-      }
-    }
-
-    function clearAllTemplates() {
-      const backdrop = document.getElementById('custom-modal-backdrop');
-      const title = document.getElementById('modal-title');
-      const desc = document.getElementById('modal-desc');
-      const inputWrap = document.getElementById('modal-input-wrapper');
-      const primaryBtn = document.getElementById('modal-primary-btn');
-
-      title.textContent = 'Clear All Saved Templates?';
-      desc.textContent = 'This will remove all custom template buttons from your browser.';
-      inputWrap.classList.add('hidden');
-
-      primaryBtn.textContent = 'Delete All Templates';
-      primaryBtn.onclick = () => {
-        templatesList = [];
-        saveTemplatesPermanent();
-        renderTemplatesAll();
-        setTimeout(() => resizePopupToFitContent(), 280);
-        closeModal();
-      };
-
-      backdrop.classList.remove('hidden');
-      backdrop.classList.add('flex');
-    }
-
-    // Copies text reliably inside both the main page and the Document PiP floating window
-    function copyTextUniversal(text, targetDoc = document) {
-      const docToUse = (pipWindowRef && pipWindowRef.document && targetDoc === pipWindowRef.document)
-        ? pipWindowRef.document
-        : document;
-
-      const ta = docToUse.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.left = '-9999px';
-      ta.style.opacity = '0';
-      docToUse.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      try {
-        docToUse.execCommand('copy');
-      } catch (e) {
-        try { document.execCommand('copy'); } catch (err) {}
-      }
-      docToUse.body.removeChild(ta);
-    }
-
-    function copyTemplateById(id, btnElement) {
-      const item = templatesList.find(t => t.id === id);
-      if (!item) return;
-
-      const ownerDoc = btnElement ? btnElement.ownerDocument : document;
-      copyTextUniversal(item.content, ownerDoc);
-
-      if (btnElement) {
-        const labelEl = btnElement.querySelector('.tpl-btn-label');
-        const originalText = item.title;
-        btnElement.classList.add('border-emerald-400', 'bg-emerald-950/80');
-        if (labelEl) {
-          labelEl.textContent = '✓ Copied!';
-          labelEl.classList.add('text-emerald-300');
-        }
-        setTimeout(() => {
-          btnElement.classList.remove('border-emerald-400', 'bg-emerald-950/80');
-          if (labelEl) {
-            labelEl.textContent = originalText;
-            labelEl.classList.remove('text-emerald-300');
-          }
-        }, 1100);
-      }
-
-      addLog(`Copied template "${item.title}"`, 'indigo');
-    }
-
-    function toggleTemplatesPopupPanel(forceState) {
-      const next = typeof forceState === 'boolean' ? forceState : !state.templatesPanelOpen;
-      state.templatesPanelOpen = next;
+    function toggleTemplatesDrawer(forceState) {
+      state.templatesPanelOpen = typeof forceState === 'boolean' ? forceState : !state.templatesPanelOpen;
       saveState();
       applyTemplatesDrawerState();
-      setTimeout(() => resizePopupToFitContent(), 300);
+      setTimeout(() => resizePopupToFitContent(), 250);
     }
 
     function applyTemplatesDrawerState() {
       const drawer = getWidgetElement('popup-templates-drawer');
-      const toggleLabel = getWidgetElement('popup-templates-toggle-label');
+      const label = getWidgetElement('popup-templates-toggle-label');
       if (drawer) {
         if (state.templatesPanelOpen) {
           drawer.classList.add('open');
-          if (toggleLabel) toggleLabel.textContent = 'Hide Templates ▴';
+          if (label) label.textContent = 'Hide Templates ▴';
         } else {
           drawer.classList.remove('open');
-          if (toggleLabel) toggleLabel.textContent = 'Templates ▾';
+          if (label) label.textContent = 'Templates ▾';
         }
       }
     }
 
-    function escapeHtmlSafe(str) {
-      return String(str || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
-
-    function renderTemplatesAll() {
-      // 1. Update count badges
+    function renderTemplatesModule() {
       const dashCount = document.getElementById('dashboard-template-count');
-      if (dashCount) dashCount.textContent = templatesList.length;
-
+      const dashTags = document.getElementById('dashboard-templates-tags');
       const popupBadge = getWidgetElement('popup-templates-count-badge');
+      const popupList = getWidgetElement('popup-templates-list');
+
+      if (dashCount) dashCount.textContent = templatesList.length;
       if (popupBadge) popupBadge.textContent = templatesList.length;
 
-      // 2. Apply dropdown drawer open/close state
-      applyTemplatesDrawerState();
-
-      // 3. Render compact wrapped buttons inside the Popup Dropdown Drawer (filtered by search query)
-      renderPopupTemplateButtonsOnly();
-
-      // 4. Render cards on the Dashboard
-      const dashGrid = document.getElementById('dashboard-templates-grid');
-      if (dashGrid) {
+      // Dashboard saved templates list
+      if (dashTags) {
         if (templatesList.length === 0) {
-          dashGrid.innerHTML = `
-            <div class="col-span-full py-6 px-4 text-center text-xs text-slate-500 border border-dashed border-slate-800 rounded-xl">
-              No saved templates yet. Type <span class="text-slate-300 font-mono-num">"Button Name" Your template text</span> above and click Create!
-            </div>
-          `;
+          dashTags.innerHTML = '<span class="text-xs text-[#8a7c72] italic">No templates saved yet. Add one above using "Title" Text.</span>';
         } else {
-          dashGrid.innerHTML = templatesList.map(t => `
-            <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between gap-2 hover:border-slate-700 transition">
-              <div>
-                <div class="flex items-center justify-between gap-2">
-                  <span class="font-bold text-xs text-indigo-300 truncate">"${escapeHtmlSafe(t.title)}"</span>
-                  <div class="flex items-center gap-1 shrink-0">
-                    <button type="button" onclick="copyTemplateById('${t.id}', this)" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-semibold text-emerald-300 border border-slate-700 cursor-pointer">
-                      <span class="tpl-btn-label">Copy</span>
-                    </button>
-                    <button type="button" onclick="loadSingleTemplateIntoEditor('${t.id}')" title="Edit in box above" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 border border-slate-700 cursor-pointer">
-                      Edit
-                    </button>
-                    <button type="button" onclick="deleteTemplateById('${t.id}')" title="Delete template" class="px-1.5 py-0.5 rounded bg-rose-500/10 hover:bg-rose-500/25 text-[10px] text-rose-300 border border-rose-500/30 cursor-pointer">
-                      ✕
-                    </button>
-                  </div>
-                </div>
-                <p class="text-[11px] text-slate-400 mt-1.5 line-clamp-2 font-mono-num break-words">${escapeHtmlSafe(t.content)}</p>
-              </div>
+          dashTags.innerHTML = templatesList.map((t, idx) => `
+            <div title="${escapeHtml(t.body)}" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#14100e] border border-[#2b221e] text-xs text-[#f5f0eb]">
+              <span class="font-semibold">${escapeHtml(t.title)}</span>
+              <button type="button" data-del-idx="${idx}" title="Delete template" class="dash-del-tpl text-[#8a7c72] hover:text-rose-400 font-bold leading-none px-0.5 cursor-pointer">×</button>
             </div>
           `).join('');
+
+          dashTags.querySelectorAll('.dash-del-tpl').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              deleteTemplateByIndex(parseInt(e.currentTarget.dataset.delIdx, 10));
+            });
+          });
+        }
+      }
+
+      // Popup compact wrapped template chips (filtered by search query)
+      if (popupList) {
+        const q = (state.templateSearchQuery || '').trim().toLowerCase();
+        const filtered = templatesList.filter(t =>
+          !q || t.title.toLowerCase().includes(q) || t.body.toLowerCase().includes(q)
+        );
+
+        if (filtered.length === 0) {
+          popupList.innerHTML = `<span class="text-[11px] w-text-muted italic">${templatesList.length === 0 ? 'No templates yet. Add them on the dashboard.' : 'No matching templates.'}</span>`;
+        } else {
+          popupList.innerHTML = filtered.map((t, i) => `
+            <button type="button" data-tpl-idx="${i}" title="${escapeHtml(t.body)}"
+              class="popup-tpl-chip inline-flex items-center w-auto px-2.5 py-1 rounded-md w-btn border hover:border-emerald-500 active:scale-95 text-xs font-semibold transition cursor-pointer leading-tight">
+              ${escapeHtml(t.title)}
+            </button>
+          `).join('');
+
+          popupList.querySelectorAll('.popup-tpl-chip').forEach((btn, idx) => {
+            btn.addEventListener('click', () => {
+              const item = filtered[idx];
+              if (!item) return;
+              copyTextFallback(item.body, btn.ownerDocument);
+              const origText = item.title;
+              btn.textContent = '✓ Copied!';
+              btn.classList.add('border-emerald-500', 'text-emerald-400');
+              setTimeout(() => {
+                btn.textContent = origText;
+                btn.classList.remove('border-emerald-500', 'text-emerald-400');
+              }, 1100);
+            });
+          });
+        }
+      }
+
+      applyTemplatesDrawerState();
+    }
+
+    /********************************************************************
+     * 9. MODULE 5: TEMPORARY NOTES (SCROLLABLE SCRATCHPAD)
+     ********************************************************************/
+    function toggleNotesDrawer(forceState) {
+      state.notesPanelOpen = typeof forceState === 'boolean' ? forceState : !state.notesPanelOpen;
+      saveState();
+      applyNotesDrawerState();
+      setTimeout(() => resizePopupToFitContent(), 250);
+    }
+
+    function applyNotesDrawerState() {
+      const drawer = getWidgetElement('popup-notes-drawer');
+      const label = getWidgetElement('popup-notes-toggle-label');
+      if (drawer) {
+        if (state.notesPanelOpen) {
+          drawer.classList.add('open');
+          if (label) label.textContent = 'Hide Notes ▴';
+        } else {
+          drawer.classList.remove('open');
+          if (label) label.textContent = 'Temporary Notes ▾';
         }
       }
     }
 
-    function renderPopupTemplateButtonsOnly() {
-      const popupListEl = getWidgetElement('popup-templates-list');
-      if (!popupListEl) return;
+    function renderNotesModule() {
+      const ta = getWidgetElement('textarea-popup-notes');
+      const indicator = getWidgetElement('popup-notes-indicator');
 
-      const searchInput = getWidgetElement('input-popup-template-search');
-      const query = (searchInput ? searchInput.value : (state.templateSearchQuery || '')).trim().toLowerCase();
-
-      if (templatesList.length === 0) {
-        popupListEl.innerHTML = `
-          <div class="w-full p-2 text-center text-[11px] text-slate-400 border border-dashed border-slate-800 rounded">
-            No templates yet. Add <span class="text-emerald-300 font-mono-num">"Title"</span> templates on the dashboard!
-          </div>
-        `;
-        return;
+      if (ta && ta.value !== (state.temporaryNotes || '')) {
+        ta.value = state.temporaryNotes || '';
       }
 
-      const filtered = query
-        ? templatesList.filter(t => t.title.toLowerCase().includes(query) || t.content.toLowerCase().includes(query))
-        : templatesList;
-
-      if (filtered.length === 0) {
-        popupListEl.innerHTML = `
-          <div class="w-full p-2 text-center text-[11px] text-slate-400">
-            No matching templates for "${escapeHtmlSafe(query)}"
-          </div>
-        `;
-        return;
+      if (indicator) {
+        const hasText = Boolean((state.temporaryNotes || '').trim());
+        indicator.className = `w-2 h-2 rounded-full ${hasText ? 'bg-amber-400' : 'bg-neutral-500'}`;
       }
 
-      popupListEl.innerHTML = filtered.map(t => `
-        <button type="button" data-tpl-id="${t.id}" title="${escapeHtmlSafe(t.content)}"
-          class="popup-tpl-copy-btn inline-flex items-center w-auto px-2.5 py-1 rounded bg-slate-950 hover:bg-indigo-950/90 active:scale-95 border border-slate-700 hover:border-indigo-500/60 transition cursor-pointer shadow-sm">
-          <span class="tpl-btn-label text-xs font-semibold text-slate-100 whitespace-nowrap">${escapeHtmlSafe(t.title)}</span>
-        </button>
-      `).join('');
-
-      const btns = popupListEl.querySelectorAll('.popup-tpl-copy-btn');
-      btns.forEach(btn => {
-        btn.onclick = () => copyTemplateById(btn.getAttribute('data-tpl-id'), btn);
-      });
+      applyNotesDrawerState();
     }
 
+    /********************************************************************
+     * 10. MODULE 6: STOPWATCH (REPEAT AUTO-RESTART + PLAY/PAUSE)
+     ********************************************************************/
     function toggleStopwatch() {
+      const nowMs = getCorrectedNowMs();
       if (!state.stopwatch.isRunning) {
         state.stopwatch.isRunning = true;
-        state.stopwatch.startTimestamp = getCorrectedNowMs();
+        state.stopwatch.startTimestamp = nowMs;
       } else {
-        state.stopwatch.elapsedMs += getCorrectedNowMs() - (state.stopwatch.startTimestamp || getCorrectedNowMs());
+        state.stopwatch.elapsedMs += Math.max(0, nowMs - (state.stopwatch.startTimestamp || nowMs));
         state.stopwatch.isRunning = false;
         state.stopwatch.startTimestamp = null;
       }
       saveState();
-      renderStopwatchControls();
       updateStopwatchDisplay();
     }
 
-    function resetStopwatch() {
-      state.stopwatch.isRunning = false;
-      state.stopwatch.startTimestamp = null;
+    function repeatStopwatch() {
       state.stopwatch.elapsedMs = 0;
+      state.stopwatch.isRunning = true;
+      state.stopwatch.startTimestamp = getCorrectedNowMs();
       saveState();
-      renderStopwatchControls();
       updateStopwatchDisplay();
-    }
-
-    function renderStopwatchControls() {
-      const playIcon = getWidgetElement('icon-stopwatch-play');
-      const pauseIcon = getWidgetElement('icon-stopwatch-pause');
-      if (!playIcon || !pauseIcon) return;
-
-      if (state.stopwatch.isRunning) {
-        playIcon.classList.add('hidden');
-        pauseIcon.classList.remove('hidden');
-      } else {
-        playIcon.classList.remove('hidden');
-        pauseIcon.classList.add('hidden');
-      }
     }
 
     function updateStopwatchDisplay() {
-      const swEl = getWidgetElement('display-stopwatch');
-      if (!swEl) return;
+      const display = getWidgetElement('display-stopwatch');
+      const playIcon = getWidgetElement('icon-stopwatch-play');
+      const pauseIcon = getWidgetElement('icon-stopwatch-pause');
 
-      let totalMs = state.stopwatch.elapsedMs;
+      let totalMs = state.stopwatch.elapsedMs || 0;
       if (state.stopwatch.isRunning && state.stopwatch.startTimestamp) {
-        totalMs += getCorrectedNowMs() - state.stopwatch.startTimestamp;
+        totalMs += Math.max(0, getCorrectedNowMs() - state.stopwatch.startTimestamp);
       }
-      swEl.textContent = formatStopwatchMinSec(Math.floor(totalMs / 1000));
+
+      const totalSec = Math.floor(totalMs / 1000);
+      const mins = Math.floor(totalSec / 60);
+      const secs = totalSec % 60;
+
+      if (display) {
+        if (mins >= 60) {
+          const hrs = Math.floor(mins / 60);
+          const remM = mins % 60;
+          display.textContent = `${String(hrs).padStart(2, '0')}h ${String(remM).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
+        } else {
+          display.textContent = `${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
+        }
+      }
+
+      if (playIcon && pauseIcon) {
+        playIcon.classList.toggle('hidden', state.stopwatch.isRunning);
+        pauseIcon.classList.toggle('hidden', !state.stopwatch.isRunning);
+      }
     }
 
     /********************************************************************
-     * 8. AUTO-ADJUST POPUP HEIGHT & MODULE VISIBILITY
+     * 11. MODULE VISIBILITY & ACTIVITY LOG
      ********************************************************************/
-    function toggleModuleVisibility(modKey, isVisible) {
-      state.modules[modKey] = isVisible;
-      saveState();
-      applyModuleVisibility();
+    const MODULE_KEYS = ['clock', 'breaks', 'counter', 'templates', 'notes', 'stopwatch'];
+
+    function applyModuleVisibility() {
+      MODULE_KEYS.forEach(key => {
+        const isVisible = Boolean(state.modules[key]);
+        const chk = document.getElementById(`chk-mod-${key}`);
+        const modEl = getWidgetElement(`mod-${key}`);
+
+        if (chk) chk.checked = isVisible;
+        if (modEl) modEl.classList.toggle('hidden', !isVisible);
+      });
       resizePopupToFitContent();
     }
 
-    function applyModuleVisibility() {
-      const map = {
-        clock: 'mod-clock',
-        breaks: 'mod-breaks',
-        counter: 'mod-counter',
-        templates: 'mod-templates',
-        stopwatch: 'mod-stopwatch'
-      };
-      Object.keys(map).forEach(key => {
-        const el = getWidgetElement(map[key]);
-        if (el) {
-          if (state.modules[key] !== false) {
-            el.classList.remove('hidden');
-          } else {
-            el.classList.add('hidden');
-          }
-        }
-        const chk = document.getElementById(`chk-mod-${key}`);
-        if (chk) chk.checked = (state.modules[key] !== false);
-      });
-    }
+    function renderLogs() {
+      const list = document.getElementById('activity-log-list');
+      if (!list) return;
 
-    // Automatically resizes popup window so there is zero extra black space
-    function resizePopupToFitContent() {
-      const widget = getWidgetElement('agent-popup-widget');
-      if (!widget) return;
-
-      widget.style.height = 'fit-content';
-
-      const targetWidth = 344;
-
-      if (pipWindowRef && !pipWindowRef.closed) {
-        try {
-          const contentHeight = widget.offsetHeight;
-          const targetHeight = Math.max(120, contentHeight + 36);
-          pipWindowRef.resizeTo(targetWidth, targetHeight);
-        } catch (e) {}
+      if (!state.logs || state.logs.length === 0) {
+        list.innerHTML = '<div class="text-[#8a7c72] italic py-2">No break or shift activity recorded yet today.</div>';
+        return;
       }
+
+      list.innerHTML = state.logs.map(entry => {
+        const dotColor = entry.color === 'emerald' ? 'bg-emerald-500' : 'bg-amber-500';
+        return `
+          <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-[#14100e] border border-[#2b221e]">
+            <span class="w-1.5 h-1.5 rounded-full ${dotColor} shrink-0"></span>
+            <span class="font-mono-num text-[11px] text-[#b5a89e] shrink-0">${escapeHtml(entry.time)}</span>
+            <span class="text-[#f5f0eb]">${escapeHtml(entry.text)}</span>
+          </div>
+        `;
+      }).join('');
     }
 
-    function updateLunchAllowance(val) {
-      const num = parseInt(val, 10);
-      if (!isNaN(num) && num > 0) {
-        state.lunchAllowance = num;
-        state.lunch.remainingMinutes = num;
-        saveState();
-        renderBreakModule();
-        addLog(`Updated lunch allowance to ${num} minutes`, 'indigo');
-      }
-    }
-
-    function resetLunchMinutesOnly() {
-      state.lunch.remainingMinutes = state.lunchAllowance || 75;
-      state.lunch.isRunning = false;
-      state.lunch.startTimestamp = null;
-      state.lunch.startFormatted = '00:00';
-      state.lunch.finishFormatted = '00:00';
+    function clearLogs() {
+      state.logs = [];
       saveState();
-      renderBreakModule();
-    }
-
-    function toggleClockFormat(is24h) {
-      state.use24Hour = is24h;
-      saveState();
-      updateClockModule();
-    }
-
-    function toggleAutoStopwatch(enabled) {
-      state.autoResetStopwatchOnPlus = enabled;
-      saveState();
+      renderLogs();
     }
 
     /********************************************************************
-     * 9. MODAL SYSTEM (Reset to 0 & Manual Lunch Edit)
+     * 12. SHIFT RESET MODAL
      ********************************************************************/
     function openResetModal() {
-      const backdrop = document.getElementById('custom-modal-backdrop');
-      const title = document.getElementById('modal-title');
-      const desc = document.getElementById('modal-desc');
-      const inputWrap = document.getElementById('modal-input-wrapper');
-      const primaryBtn = document.getElementById('modal-primary-btn');
-
-      title.textContent = 'Start New Shift (Reset All to 0)?';
-      desc.textContent = 'This will reset your current hour counter to 0, total shift counter to 0, clear all hourly table slots, and restore your lunch box to 75 minutes.';
-      inputWrap.classList.add('hidden');
-
-      primaryBtn.textContent = 'Reset Shift to 0';
-      primaryBtn.onclick = () => {
-        performShiftReset();
-        closeModal();
-      };
-
-      backdrop.classList.remove('hidden');
-      backdrop.classList.add('flex');
+      const modal = document.getElementById('custom-modal-backdrop');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
     }
 
-    function promptEditRemainingLunch() {
-      const backdrop = document.getElementById('custom-modal-backdrop');
-      const title = document.getElementById('modal-title');
-      const desc = document.getElementById('modal-desc');
-      const inputWrap = document.getElementById('modal-input-wrapper');
-      const numInput = document.getElementById('modal-number-input');
-      const primaryBtn = document.getElementById('modal-primary-btn');
-
-      title.textContent = 'Edit Remaining Lunch Minutes';
-      desc.textContent = 'Enter the exact number of lunch minutes you have left today:';
-      inputWrap.classList.remove('hidden');
-      numInput.value = state.lunch.remainingMinutes;
-
-      primaryBtn.textContent = 'Save Minutes';
-      primaryBtn.onclick = () => {
-        const val = parseInt(numInput.value, 10);
-        if (!isNaN(val)) {
-          state.lunch.remainingMinutes = val;
-          saveState();
-          renderBreakModule();
-          addLog(`Manually set remaining lunch minutes to ${val}m`, 'amber');
-        }
-        closeModal();
-      };
-
-      backdrop.classList.remove('hidden');
-      backdrop.classList.add('flex');
+    function closeResetModal() {
+      const modal = document.getElementById('custom-modal-backdrop');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
     }
 
-    function closeModal() {
-      const backdrop = document.getElementById('custom-modal-backdrop');
-      backdrop.classList.add('hidden');
-      backdrop.classList.remove('flex');
-    }
-
-    function performShiftReset() {
+    function confirmShiftReset() {
+      const currentCairoH = getCairoParts().hour24;
       state.lunch = {
         isRunning: false,
         startTimestamp: null,
@@ -1881,375 +1916,265 @@
       state.tickets = {
         currentHourCount: 0,
         totalShiftCount: 0,
-        activeCairoHour: getCairoParts().hour24,
+        activeCairoHour: currentCairoH,
         hourlyCounts: {},
         lastReplyTimestamp: null,
         drawerOpen: state.tickets.drawerOpen
       };
-      resetStopwatch();
-      addLog('Shift reset: Hourly & Total counters set to 0, Lunch restored.', 'indigo');
+      state.temporaryNotes = '';
+      state.stopwatch = {
+        isRunning: false,
+        startTimestamp: null,
+        elapsedMs: 0
+      };
+      state.logs = [];
+
       saveState();
       renderAll();
+      closeResetModal();
     }
 
     /********************************************************************
-     * 10. ACTIVITY LOG RENDERER
+     * 13. FLOATING WIDGET POPUP (DOCUMENT PICTURE-IN-PICTURE + FALLBACK)
      ********************************************************************/
-    function renderLogs() {
-      const container = document.getElementById('activity-log-list');
-      if (!container) return;
-
-      if (!state.logs || state.logs.length === 0) {
-        container.innerHTML = `
-          <div class="text-slate-500 py-6 text-center border border-dashed border-slate-800 rounded-xl">
-            No shift events recorded yet. Click Lunch, M&amp;C, or + Ticket to begin logging!
-          </div>
-        `;
-        return;
-      }
-
-      const colorClasses = {
-        emerald: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
-        amber: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
-        indigo: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30',
-        rose: 'bg-rose-500/10 text-rose-300 border-rose-500/30'
-      };
-
-      container.innerHTML = state.logs.map(item => `
-        <div class="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-slate-800/50 border border-slate-800">
-          <span class="text-slate-200">${item.text}</span>
-          <span class="font-mono-num text-[11px] px-2 py-0.5 rounded border shrink-0 ${colorClasses[item.color] || colorClasses.indigo}">
-            ${item.time}
-          </span>
-        </div>
-      `).join('');
-    }
-
-    function clearHistoryLog() {
-      state.logs = [];
-      saveState();
-      renderLogs();
-    }
-
-    /********************************************************************
-     * 11. WIDGET POPUP (popup-timer.com style via Document PiP API)
-     ********************************************************************/
-    let isDragging = false;
-    let dragOffsetX = 0;
-    let dragOffsetY = 0;
-
-    function initDraggableWidget() {
-      const widget = document.getElementById('agent-popup-widget');
-      const handle = document.getElementById('widget-drag-handle');
-      if (!widget || !handle) return;
-
-      handle.addEventListener('mousedown', (e) => {
-        if (pipWindowRef) return;
-        if (e.target.closest('button')) return;
-
-        const rect = widget.getBoundingClientRect();
-        widget.style.position = 'fixed';
-        widget.style.left = `${rect.left}px`;
-        widget.style.top = `${rect.top}px`;
-        widget.style.margin = '0';
-
-        isDragging = true;
-        dragOffsetX = e.clientX - rect.left;
-        dragOffsetY = e.clientY - rect.top;
-        document.body.style.userSelect = 'none';
-      });
-
-      window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const widget = document.getElementById('agent-popup-widget');
-        if (!widget) return;
-
-        const maxX = window.innerWidth - 100;
-        const maxY = window.innerHeight - 60;
-        const newLeft = Math.max(8, Math.min(maxX, e.clientX - dragOffsetX));
-        const newTop = Math.max(8, Math.min(maxY, e.clientY - dragOffsetY));
-
-        widget.style.left = `${newLeft}px`;
-        widget.style.top = `${newTop}px`;
-      });
-
-      window.addEventListener('mouseup', () => {
-        if (isDragging) {
-          isDragging = false;
-          document.body.style.userSelect = '';
-        }
-      });
-    }
-
-    function resetWidgetPosition() {
-      const widget = document.getElementById('agent-popup-widget');
-      if (!widget) return;
-      widget.style.position = 'relative';
-      widget.style.left = '';
-      widget.style.top = '';
-      widget.style.width = '336px';
-      widget.style.height = 'fit-content';
-      widget.classList.remove('hidden');
-      const dot = document.getElementById('inpage-status-dot');
-      if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-400';
-    }
-
-    function toggleInPagePopup() {
-      if (pipWindowRef) {
-        bringWidgetBackInline();
-        return;
-      }
-      const widget = document.getElementById('agent-popup-widget');
-      const dot = document.getElementById('inpage-status-dot');
-      if (!widget) return;
-
-      widget.classList.toggle('hidden');
-      const isHidden = widget.classList.contains('hidden');
-      if (dot) {
-        dot.className = isHidden
-          ? 'w-2 h-2 rounded-full bg-slate-500'
-          : 'w-2 h-2 rounded-full bg-emerald-400';
-      }
-    }
-
-    // Launches popup-timer.com style Always-On-Top Widget (Only X & Back-to-Tab buttons)
-    async function launchAlwaysOnTopPopup() {
-      const widget = document.getElementById('agent-popup-widget');
-      const handle = getWidgetElement('widget-drag-handle');
-      const placeholder = document.getElementById('pip-placeholder');
-
-      if ('documentPictureInPicture' in window) {
+    function resizePopupToFitContent() {
+      if (pipWindowRef && !pipWindowRef.closed) {
         try {
-          if (pipWindowRef) {
-            pipWindowRef.close();
-            pipWindowRef = null;
+          const widget = pipWindowRef.document.getElementById('widget-root');
+          if (widget) {
+            const targetHeight = Math.min(820, Math.max(120, widget.offsetHeight + 16));
+            const targetWidth = Math.max(330, widget.offsetWidth + 16);
+            pipWindowRef.resizeTo(targetWidth, targetHeight);
           }
-          // Calculate exact height and width so there is zero extra black space
-          const measuredHeight = widget ? Math.max(140, widget.offsetHeight) : 420;
-          const measuredWidth = 344;
+        } catch (e) {
+          // Some browsers restrict resizeTo inside PiP
+        }
+      }
+    }
+
+    async function launchWidgetPopup() {
+      const widget = document.getElementById('widget-root');
+      const dock = document.getElementById('widget-dock-container');
+      const poppedIndicator = document.getElementById('popped-out-indicator');
+
+      // Focus if already open
+      if (pipWindowRef && !pipWindowRef.closed) {
+        pipWindowRef.focus();
+        return;
+      }
+
+      // Primary: Document Picture-in-Picture (borderless always-on-top widget)
+      if ('documentPictureInPicture' in window && widget) {
+        try {
+          const initialHeight = Math.min(780, Math.max(180, widget.offsetHeight + 16));
+          const initialWidth = Math.max(350, widget.offsetWidth + 12);
 
           const pipWin = await window.documentPictureInPicture.requestWindow({
-            width: measuredWidth,
-            height: measuredHeight
+            width: initialWidth,
+            height: initialHeight
           });
-
           pipWindowRef = pipWin;
+          pipWin.document.title = 'Teams: Hashish.9';
 
-          // Copy styles to PiP widget window
-          [...document.styleSheets].forEach((styleSheet) => {
-            try {
-              const cssRules = [...styleSheet.cssRules].map((r) => r.cssText).join('');
-              const style = document.createElement('style');
-              style.textContent = cssRules;
-              pipWin.document.head.appendChild(style);
-            } catch (e) {
-              const link = document.createElement('link');
-              link.rel = 'stylesheet';
-              link.type = styleSheet.type;
-              link.media = styleSheet.media;
-              link.href = styleSheet.href;
-              pipWin.document.head.appendChild(link);
-            }
+          // Copy stylesheets & fonts into the PiP window
+          document.querySelectorAll('style, link[rel="stylesheet"]').forEach(node => {
+            pipWin.document.head.appendChild(node.cloneNode(true));
           });
 
-          const tailwindScript = pipWin.document.createElement('script');
-          tailwindScript.src = 'https://cdn.tailwindcss.com';
-          pipWin.document.head.appendChild(tailwindScript);
-
-          pipWin.document.body.style.backgroundColor = '#020617';
+          const themeBg = THEME_BODY_BG[state.popupTheme || 'dark'];
           pipWin.document.body.style.margin = '0';
-          pipWin.document.body.style.padding = '0';
-          pipWin.document.body.style.overflowX = 'hidden';
+          pipWin.document.body.style.padding = '4px';
+          pipWin.document.body.style.backgroundColor = themeBg;
+          pipWin.document.body.style.display = 'flex';
+          pipWin.document.body.style.justifyContent = 'center';
+          pipWin.document.body.style.alignItems = 'flex-start';
 
-          // Hide internal drag bar inside PiP because native PiP already provides the clean X & Back-to-tab bar
-          if (handle) handle.classList.add('hidden');
-
-          widget.style.position = 'relative';
-          widget.style.left = '';
-          widget.style.top = '';
           widget.style.width = '100%';
-          widget.style.maxWidth = '100%';
-          widget.style.height = 'fit-content';
-          widget.style.border = 'none';
-          widget.style.borderRadius = '0';
-          widget.classList.remove('hidden');
-
           pipWin.document.body.appendChild(widget);
-          bindWidgetEventListeners();
-          resizePopupToFitContent();
-          if (placeholder) placeholder.classList.remove('hidden');
+
+          if (poppedIndicator) poppedIndicator.classList.remove('hidden');
 
           pipWin.addEventListener('pagehide', () => {
+            widget.style.width = '340px';
+            if (dock) dock.appendChild(widget);
+            if (poppedIndicator) poppedIndicator.classList.add('hidden');
             pipWindowRef = null;
-            bringWidgetBackInline();
+            applyPopupTheme();
           });
 
+          setTimeout(() => resizePopupToFitContent(), 120);
           return;
         } catch (err) {
-          console.warn('Document PiP unavailable, using fallback popup:', err);
+          console.warn('PiP unavailable, falling back to popup window:', err);
         }
       }
 
-      // Fallback minimal popup window
-      const measuredH = widget ? Math.max(180, widget.offsetHeight + 10) : 440;
-      const features = `width=346,height=${measuredH},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
-      fallbackPopupRef = window.open(window.location.href + '#popupmode', 'WorkCompanionWidget', features);
+      // Fallback: Standard mini popup window
+      const baseUrl = window.location.href.split('#')[0];
+      const h = widget ? Math.min(780, Math.max(220, widget.offsetHeight + 40)) : 560;
+      fallbackPopupRef = window.open(
+        `${baseUrl}#popupmode`,
+        'WorkToolkitPopup',
+        `width=365,height=${h},resizable=yes,scrollbars=no`
+      );
+      if (fallbackPopupRef) fallbackPopupRef.focus();
     }
 
-    function bringWidgetBackInline() {
-      const dock = document.getElementById('widget-dock-container');
-      const widget = getWidgetElement('agent-popup-widget');
-      const handle = getWidgetElement('widget-drag-handle');
-      const placeholder = document.getElementById('pip-placeholder');
+    function applyStandalonePopupModeIfNeeded() {
+      if (window.location.hash !== '#popupmode') return;
+      document.title = 'Teams: Hashish.9';
+      const header = document.querySelector('header');
+      const dashContent = document.getElementById('dashboard-content');
+      const main = document.getElementById('dashboard-main');
+      const widgetCol = document.getElementById('widget-column');
+      const widget = document.getElementById('widget-root');
 
-      if (pipWindowRef) {
-        try { pipWindowRef.close(); } catch (e) {}
-        pipWindowRef = null;
-      }
-
-      if (handle) handle.classList.remove('hidden');
-
-      if (dock && widget) {
-        widget.style.width = '336px';
-        widget.style.height = 'fit-content';
-        widget.style.position = 'relative';
-        widget.style.left = '';
-        widget.style.top = '';
-        widget.style.border = '';
-        widget.style.borderRadius = '';
-        dock.appendChild(widget);
-        bindWidgetEventListeners();
-      }
-      if (placeholder) placeholder.classList.add('hidden');
+      if (header) header.classList.add('hidden');
+      if (dashContent) dashContent.classList.add('hidden');
+      if (main) main.className = 'p-2 flex justify-center items-start min-h-screen';
+      if (widgetCol) widgetCol.className = 'w-full flex justify-center';
+      if (widget) widget.style.width = '100%';
+      document.body.style.backgroundColor = THEME_BODY_BG[state.popupTheme || 'dark'];
     }
-
-    // Directly binds JS event listeners to popup elements so they work both on the main page AND inside Document Picture-in-Picture child windows
-    function bindWidgetEventListeners() {
-      const tplToggleBtn = getWidgetElement('btn-popup-templates-toggle');
-      if (tplToggleBtn) tplToggleBtn.onclick = () => toggleTemplatesPopupPanel();
-
-      const tplSearchInput = getWidgetElement('input-popup-template-search');
-      if (tplSearchInput) {
-        tplSearchInput.oninput = (e) => {
-          state.templateSearchQuery = e.target.value || '';
-          renderPopupTemplateButtonsOnly();
-          resizePopupToFitContent();
-        };
-      }
-
-      const plusBtn = getWidgetElement('btn-ticket-plus');
-      if (plusBtn) plusBtn.onclick = () => incrementTicket();
-
-      const minusBtn = getWidgetElement('btn-ticket-minus');
-      if (minusBtn) minusBtn.onclick = () => decrementTicket();
-
-      const drawerBtn = getWidgetElement('btn-hourly-drawer');
-      if (drawerBtn) drawerBtn.onclick = () => toggleHourlyDrawer();
-
-      const drawerCloseBtn = getWidgetElement('btn-hourly-drawer-close');
-      if (drawerCloseBtn) drawerCloseBtn.onclick = () => toggleHourlyDrawer(false);
-
-      const lunchBtn = getWidgetElement('btn-lunch');
-      if (lunchBtn) lunchBtn.onclick = () => handleBreakClick('lunch');
-
-      const mcBtn = getWidgetElement('btn-mc');
-      if (mcBtn) mcBtn.onclick = () => handleBreakClick('mc');
-
-      const lunchRemBox = getWidgetElement('lunch-remaining-box');
-      if (lunchRemBox) {
-        lunchRemBox.ondblclick = () => promptEditRemainingLunch();
-      }
-
-      const swToggleBtn = getWidgetElement('btn-stopwatch-toggle');
-      if (swToggleBtn) swToggleBtn.onclick = () => toggleStopwatch();
-
-      const swResetBtn = getWidgetElement('btn-stopwatch-reset');
-      if (swResetBtn) swResetBtn.onclick = () => resetStopwatch();
-
-      const startSel = document.getElementById('select-shift-start');
-      if (startSel) startSel.onchange = () => updateShiftHours();
-
-      const endSel = document.getElementById('select-shift-end');
-      if (endSel) endSel.onchange = () => updateShiftHours();
-    }
-
-    window.addEventListener('storage', (e) => {
-      if (e.key === STORAGE_KEY) {
-        state = loadState();
-        renderAll();
-      } else if (e.key === TEMPLATES_STORAGE_KEY) {
-        templatesList = loadTemplatesPermanent();
-        renderTemplatesAll();
-      }
-    });
 
     /********************************************************************
-     * 12. INITIALIZATION & MASTER LOOP
+     * 14. EVENT BINDINGS & INITIALIZATION
      ********************************************************************/
+    function bindWidgetEventListeners() {
+      const bindClick = (id, fn) => {
+        const el = getWidgetElement(id);
+        if (el) el.addEventListener('click', fn);
+      };
+
+      bindClick('btn-lunch', () => handleBreakClick('lunch'));
+      bindClick('btn-mc', () => handleBreakClick('mc'));
+
+      const lunchRem = getWidgetElement('lunch-remaining-box');
+      if (lunchRem) lunchRem.addEventListener('dblclick', enableInlineLunchEdit);
+
+      bindClick('btn-ticket-plus', incrementTicket);
+      bindClick('btn-ticket-minus', decrementTicket);
+      bindClick('btn-hourly-drawer', () => toggleHourlyDrawer());
+      bindClick('btn-hourly-drawer-close', () => toggleHourlyDrawer(false));
+
+      bindClick('btn-popup-templates-toggle', () => toggleTemplatesDrawer());
+      const tplSearch = getWidgetElement('input-popup-template-search');
+      if (tplSearch) {
+        tplSearch.value = state.templateSearchQuery || '';
+        tplSearch.addEventListener('input', (e) => {
+          state.templateSearchQuery = e.target.value;
+          renderTemplatesModule();
+        });
+      }
+
+      bindClick('btn-popup-notes-toggle', () => toggleNotesDrawer());
+      bindClick('btn-popup-notes-clear', () => {
+        state.temporaryNotes = '';
+        saveState();
+        renderNotesModule();
+      });
+
+      const notesTa = getWidgetElement('textarea-popup-notes');
+      if (notesTa) {
+        notesTa.addEventListener('input', (e) => {
+          state.temporaryNotes = e.target.value;
+          saveState();
+          renderNotesModule();
+        });
+      }
+
+      bindClick('btn-stopwatch-toggle', toggleStopwatch);
+      bindClick('btn-stopwatch-repeat', repeatStopwatch);
+    }
+
+    function bindDashboardEventListeners() {
+      const bindClick = (id, fn) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', fn);
+      };
+
+      bindClick('btn-header-launch', launchWidgetPopup);
+      bindClick('btn-header-reset', openResetModal);
+      bindClick('btn-modal-cancel', closeResetModal);
+      bindClick('btn-modal-confirm', confirmShiftReset);
+
+      bindClick('btn-theme-dark', () => setPopupTheme('dark'));
+      bindClick('btn-theme-blue', () => setPopupTheme('blue'));
+      bindClick('btn-theme-white', () => setPopupTheme('white'));
+
+      bindClick('btn-clock-large', () => setClockSize('large'));
+      bindClick('btn-clock-wide', () => setClockSize('wide'));
+      bindClick('btn-clock-small', () => setClockSize('small'));
+
+      MODULE_KEYS.forEach(key => {
+        const chk = document.getElementById(`chk-mod-${key}`);
+        if (chk) {
+          chk.addEventListener('change', (e) => {
+            state.modules[key] = e.target.checked;
+            saveState();
+            applyModuleVisibility();
+          });
+        }
+      });
+
+      const startSel = document.getElementById('select-shift-start');
+      const endSel = document.getElementById('select-shift-end');
+      if (startSel) startSel.addEventListener('change', updateShiftHours);
+      if (endSel) endSel.addEventListener('change', updateShiftHours);
+
+      bindClick('btn-save-templates', parseAndSaveBulkTemplates);
+      bindClick('btn-copy-excel', copyTableForExcel);
+      bindClick('btn-clear-log', clearLogs);
+
+      // Keep fallback popup window & main tab synchronized via localStorage events
+      window.addEventListener('storage', (e) => {
+        if (e.key === STORAGE_KEY) {
+          state = loadState();
+          renderAll();
+        } else if (e.key === TEMPLATES_STORAGE_KEY) {
+          templatesList = loadTemplatesPermanent();
+          renderTemplatesModule();
+        }
+      });
+    }
+
     function renderAll() {
-      populateShiftSelects();
-      bindWidgetEventListeners();
-
-      const allowanceInput = document.getElementById('input-lunch-allowance');
-      if (allowanceInput) allowanceInput.value = state.lunchAllowance || 75;
-
-      const chk24 = document.getElementById('chk-24h');
-      if (chk24) chk24.checked = !!state.use24Hour;
-
-      const chkAutoSw = document.getElementById('chk-autostopwatch');
-      if (chkAutoSw) chkAutoSw.checked = !!state.autoResetStopwatchOnPlus;
-
+      applyPopupTheme();
+      applyClockSize();
       applyModuleVisibility();
       updateClockModule();
       renderBreakModule();
       renderCounterModule();
       renderHourlyTables();
-      renderTemplatesAll();
-      renderStopwatchControls();
+      renderTemplatesModule();
+      renderNotesModule();
       updateStopwatchDisplay();
       renderLogs();
-      resizePopupToFitContent();
     }
 
-    function checkCompactPopupMode() {
-      if (window.location.hash === '#popupmode') {
-        const header = document.querySelector('header');
-        const leftCol = document.querySelector('.lg\\:col-span-7');
-        const main = document.querySelector('main');
-        const widget = document.getElementById('agent-popup-widget');
-        const handle = document.getElementById('widget-drag-handle');
-        if (header) header.classList.add('hidden');
-        if (leftCol) leftCol.classList.add('hidden');
-        if (handle) handle.classList.add('hidden');
-        if (main) {
-          main.className = 'p-0 m-0 w-full flex items-start justify-stretch';
-        }
-        if (widget) {
-          widget.style.width = '100vw';
-          widget.style.maxWidth = '100vw';
-          widget.style.height = 'fit-content';
-          widget.style.border = 'none';
-          widget.style.borderRadius = '0';
-        }
-      }
-    }
-
-    window.onload = function () {
-      syncCairoTimeWithAPI();
-      checkCompactPopupMode();
-      initDraggableWidget();
-      checkHourlyRollover();
+    function init() {
+      applyStandalonePopupModeIfNeeded();
+      populateShiftSelects();
+      bindDashboardEventListeners();
+      bindWidgetEventListeners();
       renderAll();
 
+      // Sync Cairo time with WorldTimeAPI (falls back smoothly if offline/blocked)
+      syncCairoTimeWithAPI().then(() => {
+        updateClockModule();
+        renderHourlyTables();
+      });
+
+      // Live 1-second tick for clock, active lunch countdown, last reply timer, and stopwatch
       setInterval(() => {
         updateClockModule();
-        renderCounterModule();
-        updateStopwatchDisplay();
-        if (state.lunch.isRunning) {
-          renderBreakModule();
-        }
-      }, 250);
-    };
+        if (state.lunch.isRunning) renderBreakModule();
+        if (state.tickets.lastReplyTimestamp) renderCounterModule();
+        if (state.stopwatch.isRunning) updateStopwatchDisplay();
+      }, 1000);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
