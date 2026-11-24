@@ -1165,18 +1165,17 @@
 
         // Measure exact browser PiP title bar & border chrome
         const chromeHeight = Math.max(0, pipWindow.outerHeight - pipWindow.innerHeight);
-        const chromeWidth = Math.max(0, pipWindow.outerWidth - pipWindow.innerWidth);
 
         // Account for body padding (4px top + 4px bottom = 8px) plus a small safety buffer
         const bodyPaddingV = 12;
-        const bodyPaddingH = 12;
         const maxScreenH = (window.screen && window.screen.availHeight) ? window.screen.availHeight - 40 : 900;
 
         const desiredH = Math.min(maxScreenH, Math.ceil(contentHeight + chromeHeight + bodyPaddingV));
-        const desiredW = Math.ceil(Math.max(320, rect.width) + chromeWidth + bodyPaddingH);
+        // Always keep the user's current popup width untouched
+        const currentOuterW = pipWindow.outerWidth;
 
-        if (Math.abs(pipWindow.outerHeight - desiredH) > 2 || Math.abs(pipWindow.outerWidth - desiredW) > 2) {
-          pipWindow.resizeTo(desiredW, desiredH);
+        if (Math.abs(pipWindow.outerHeight - desiredH) > 2) {
+          pipWindow.resizeTo(currentOuterW, desiredH);
         }
       } catch (e) {
         // Some browsers restrict resizeTo; ignore safely
@@ -2406,6 +2405,12 @@
           pipWindow.document.body.style.overflowY = 'auto';
           pipWindow.document.body.style.backgroundColor = THEME_BODY_BG[state.popupTheme] || '#1c1613';
 
+          // Make widget fluid inside PiP so shrinking the popup never snaps width back out
+          widgetRoot.style.width = '100%';
+          widgetRoot.style.minWidth = '0';
+          widgetRoot.style.maxWidth = '100%';
+          widgetRoot.style.resize = 'none';
+
           pipWindow.document.body.appendChild(widgetRoot);
           if (indicator) indicator.classList.remove('hidden');
 
@@ -2422,6 +2427,12 @@
             if (pipResizeObserver) {
               pipResizeObserver.disconnect();
               pipResizeObserver = null;
+            }
+            if (widgetRoot) {
+              widgetRoot.style.width = '';
+              widgetRoot.style.minWidth = '';
+              widgetRoot.style.maxWidth = '';
+              widgetRoot.style.resize = '';
             }
             if (dock && widgetRoot) dock.appendChild(widgetRoot);
             if (indicator) indicator.classList.add('hidden');
