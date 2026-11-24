@@ -151,21 +151,13 @@
       transition: width 0.2s ease, background-color 0.2s ease;
     }
 
-    /* Smooth slide-out drawers (Shift Hours, Templates, Temporary Notes, Say Hello) */
+    /* Instant drawers (no multi-frame slide animation so popup resizes in one clean step) */
     .widget-drawer {
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      transition: max-height 0.22s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.16s ease, margin-top 0.16s ease;
+      display: none;
     }
     .widget-drawer.open {
-      max-height: 280px;
-      opacity: 1;
+      display: block;
       margin-top: 0.4rem;
-    }
-    /* Allow Say Hello location dropdown to overflow cleanly while open */
-    #popup-hello-drawer.open {
-      overflow: visible;
     }
 
     /* Dashboard warm scrollbars */
@@ -1468,7 +1460,7 @@
       state.tickets.drawerOpen = typeof forceState === 'boolean' ? forceState : !state.tickets.drawerOpen;
       saveState();
       applyHourlyDrawerState();
-      setTimeout(() => resizePopupToFitContent(), 250);
+      resizePopupToFitContent();
     }
 
     function applyHourlyDrawerState() {
@@ -1681,7 +1673,7 @@
       state.templatesPanelOpen = typeof forceState === 'boolean' ? forceState : !state.templatesPanelOpen;
       saveState();
       applyTemplatesDrawerState();
-      setTimeout(() => resizePopupToFitContent(), 250);
+      resizePopupToFitContent();
     }
 
     function applyTemplatesDrawerState() {
@@ -1786,7 +1778,7 @@
       state.notesPanelOpen = typeof forceState === 'boolean' ? forceState : !state.notesPanelOpen;
       saveState();
       applyNotesDrawerState();
-      setTimeout(() => resizePopupToFitContent(), 250);
+      resizePopupToFitContent();
     }
 
     function applyNotesDrawerState() {
@@ -2083,7 +2075,7 @@
       state.helloPanelOpen = typeof forceState === 'boolean' ? forceState : !state.helloPanelOpen;
       saveState();
       applyHelloDrawerState();
-      setTimeout(() => resizePopupToFitContent(), 250);
+      resizePopupToFitContent();
     }
 
     function applyHelloDrawerState() {
