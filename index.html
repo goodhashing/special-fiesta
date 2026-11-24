@@ -151,7 +151,7 @@
       transition: width 0.2s ease, background-color 0.2s ease;
     }
 
-    /* Smooth slide-out drawers (Shift Hours, Templates, Temporary Notes) */
+    /* Smooth slide-out drawers (Shift Hours, Templates, Temporary Notes, Say Hello) */
     .widget-drawer {
       max-height: 0;
       overflow: hidden;
@@ -159,9 +159,13 @@
       transition: max-height 0.22s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.16s ease, margin-top 0.16s ease;
     }
     .widget-drawer.open {
-      max-height: 260px;
+      max-height: 280px;
       opacity: 1;
       margin-top: 0.4rem;
+    }
+    /* Allow Say Hello location dropdown to overflow cleanly while open */
+    #popup-hello-drawer.open {
+      overflow: visible;
     }
 
     /* Dashboard warm scrollbars */
@@ -199,6 +203,9 @@
     }
     .active-lunch-btn {
       animation: pulse-emerald 1.6s infinite;
+      background-color: #059669 !important;
+      border-color: #34d399 !important;
+      color: #ffffff !important;
     }
     @keyframes pulse-amber {
       0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); }
@@ -206,6 +213,14 @@
     }
     .active-mc-btn {
       animation: pulse-amber 1.6s infinite;
+      background-color: #d97706 !important;
+      border-color: #fbbf24 !important;
+      color: #ffffff !important;
+    }
+    .tpl-copied-flash {
+      background-color: #059669 !important;
+      border-color: #34d399 !important;
+      color: #ffffff !important;
     }
   </style>
 </head>
@@ -215,8 +230,8 @@
        TOP DASHBOARD HEADER
        ===================================================================== -->
   <header class="border-b border-[#2b221e] bg-[#0c0a09]/95 backdrop-blur-md sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[4rem] py-2 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 shrink-0">
         <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-amber-600 flex items-center justify-center shadow-lg shadow-black/40 shrink-0">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -225,8 +240,19 @@
         <h1 class="text-lg font-bold tracking-tight text-[#f5f0eb]">Work Toolkit</h1>
       </div>
 
-      <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
-        <button type="button" id="btn-header-reset" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-red-600 hover:bg-red-500 text-white shadow-md shadow-red-950/40 transition flex items-center gap-1.5 cursor-pointer">
+      <!-- Centered Badge between "Work Toolkit" and "Start New Shift" -->
+      <div class="flex-1 flex justify-center min-w-fit">
+        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#14100e] border border-[#2b221e] shadow-inner">
+          <span class="relative flex h-2.5 w-2.5 shrink-0">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
+            <span class="animate-pulse relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.85)]"></span>
+          </span>
+          <span class="text-xs sm:text-sm font-bold tracking-wide text-[#f5f0eb]">Teams: Hashish.9</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end shrink-0">
+        <button type="button" id="btn-header-reset" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-red-600/90 hover:bg-red-500 text-white shadow-md shadow-red-950/40 transition flex items-center gap-1.5 cursor-pointer">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
           </svg>
@@ -279,7 +305,7 @@
           </div>
         </div>
 
-        <!-- 6 Tool Toggle Rows -->
+        <!-- 7 Tool Toggle Rows -->
         <div class="space-y-1.5">
 
           <!-- 1. Time & Date (with Large / Wide / Small toggles on right) -->
@@ -352,7 +378,19 @@
             <div class="hidden sm:block"></div>
           </label>
 
-          <!-- 6. Stopwatch -->
+          <!-- 6. Say Hello? -->
+          <label class="grid grid-cols-1 sm:grid-cols-[175px_1fr_175px] items-center gap-2 px-3 py-2 rounded-xl bg-[#14100e] hover:bg-[#1a1512] border border-[#2b221e] cursor-pointer transition select-none">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" id="chk-mod-hello" checked class="w-4 h-4 rounded accent-emerald-500 bg-[#0c0a09] border-[#2b221e] shrink-0 cursor-pointer">
+              <span class="text-xs font-bold text-[#f5f0eb]">Say Hello?</span>
+            </div>
+            <div class="text-xs text-[#b5a89e] sm:text-center">
+              New day greeting checker by member timezone
+            </div>
+            <div class="hidden sm:block"></div>
+          </label>
+
+          <!-- 7. Stopwatch -->
           <label class="grid grid-cols-1 sm:grid-cols-[175px_1fr_175px] items-center gap-2 px-3 py-2 rounded-xl bg-[#14100e] hover:bg-[#1a1512] border border-[#2b221e] cursor-pointer transition select-none">
             <div class="flex items-center gap-2.5">
               <input type="checkbox" id="chk-mod-stopwatch" checked class="w-4 h-4 rounded accent-emerald-500 bg-[#0c0a09] border-[#2b221e] shrink-0 cursor-pointer">
@@ -516,29 +554,21 @@
              =============================================================== -->
         <div id="widget-root" class="theme-dark resizable-widget w-[340px] border rounded-xl shadow-2xl shadow-black/60 flex flex-col select-none relative z-20">
 
-          <!-- Compact Popup Top Bar -->
-          <div id="widget-drag-handle" class="w-handle border-b px-2.5 py-1 flex items-center justify-between shrink-0">
-            <div class="flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-              <span class="text-[11px] font-bold tracking-wide w-text-secondary">Teams: Hashish.9</span>
-            </div>
-          </div>
-
-          <!-- ALL 6 POPUP MODULES (Tight 4px vertical gap, 5px outer padding) -->
+          <!-- ALL 7 POPUP MODULES (Tight 4px vertical gap, 5px outer padding) -->
           <div id="widget-modules-wrapper" class="w-full p-[5px] flex flex-col gap-[4px]">
 
             <!-- 1. TIME & DATE (NO YEAR, NO CAIRO TIME, NO GMT+2, HIGHLIGHTED DAY BADGE) -->
             <div id="mod-clock" class="w-card border rounded-lg">
-              <!-- Large Mode Layout (Centered, stacked, slightly bigger) -->
-              <div id="clock-layout-large" class="hidden px-3 py-3 flex flex-col items-center justify-center gap-1.5 text-center">
-                <div id="display-clock-large" class="font-mono-num text-3xl font-extrabold tracking-tight w-text-primary leading-none">
+              <!-- Large Mode Layout (Matched to reference clock size & text size) -->
+              <div id="clock-layout-large" class="hidden px-3 py-2.5 flex flex-col items-center justify-center text-center">
+                <div id="display-clock-large" class="font-mono-num text-xl sm:text-2xl font-extrabold tracking-tight w-text-primary leading-tight">
                   00:00:00 AM
                 </div>
-                <div class="flex items-center justify-center gap-1.5">
-                  <span id="display-date-large-monthday" class="text-xs font-bold uppercase tracking-wider w-text-secondary leading-none">
+                <div class="flex items-center justify-center gap-1.5 mt-0.5">
+                  <span id="display-date-large-monthday" class="text-[11px] font-medium tracking-wide uppercase w-text-secondary">
                     SUN, NOV
                   </span>
-                  <span id="display-date-large-num" class="px-2 py-0.5 rounded-md bg-amber-500 text-black font-mono-num text-sm font-extrabold leading-tight shadow-sm">
+                  <span id="display-date-large-num" class="px-1.5 py-0.5 rounded bg-amber-500 text-black font-mono-num text-[11px] font-extrabold leading-none shadow-sm">
                     22
                   </span>
                 </div>
@@ -738,7 +768,43 @@
               </div>
             </div>
 
-            <!-- 6. TICKET OPEN SINCE (STOPWATCH: REPEAT FAR LEFT, PLAY NEXT, LABEL OVER TIME) -->
+            <!-- 6. SAY HELLO? (NEW DAY GREETING CHECKER — ABOVE STOPWATCH) -->
+            <div id="mod-hello" class="w-card border rounded-lg p-2">
+              <button id="btn-popup-hello-toggle" type="button" class="w-full py-1.5 px-2.5 rounded-md w-btn border text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between transition cursor-pointer">
+                <span id="popup-hello-toggle-label">Say Hello? ▾</span>
+                <span id="popup-hello-mini-badge" class="text-[10px] font-bold w-text-muted">👋</span>
+              </button>
+
+              <div id="popup-hello-drawer" class="widget-drawer w-sub border rounded-md">
+                <div class="p-2 space-y-1.5">
+                  <!-- Timestamp Input -->
+                  <div class="relative flex items-center">
+                    <input id="input-hello-timestamp" type="text" placeholder="Paste Cairo time (e.g. 19 Nov 2026, 14:43)" autocomplete="off"
+                      class="w-full w-input border focus:border-emerald-500 rounded px-2 py-1 pr-6 text-[11px] font-mono-num focus:outline-none">
+                    <button id="btn-hello-clear-ts" type="button" title="Clear timestamp"
+                      class="hidden absolute right-1.5 w-text-muted hover:w-text-primary text-[11px] font-bold px-1 cursor-pointer">✕</button>
+                  </div>
+
+                  <!-- Searchable State / Country Input -->
+                  <div class="relative">
+                    <input id="input-hello-location" type="text" placeholder="State or country (e.g. MI, Michigan, UK)..." autocomplete="off"
+                      class="w-full w-input border focus:border-emerald-500 rounded px-2 py-1 pr-6 text-[11px] focus:outline-none">
+                    <button id="btn-hello-clear-loc" type="button" title="Clear location"
+                      class="hidden absolute right-1.5 top-1/2 -translate-y-1/2 w-text-muted hover:w-text-primary text-[11px] font-bold px-1 cursor-pointer">✕</button>
+                    <div id="hello-location-dropdown" class="hidden absolute left-0 right-0 top-full mt-1 z-30 max-h-32 overflow-y-auto popup-scroll w-card border rounded-md shadow-xl divide-y w-border text-[11px]">
+                      <!-- Populated dynamically -->
+                    </div>
+                  </div>
+
+                  <!-- Simplified Result Box -->
+                  <div id="hello-result-box" class="hidden rounded-md px-2.5 py-1.5 text-center font-extrabold text-xs tracking-wide border">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. TICKET OPEN SINCE (STOPWATCH: REPEAT FAR LEFT, PLAY NEXT, LABEL OVER TIME) -->
             <div id="mod-stopwatch" class="w-card border rounded-lg p-2">
               <div class="w-full flex items-center gap-2 px-2 py-1.5 w-sub border rounded-md">
                 <!-- Far Left: Circular Repeat Icon (Resets to 00m 00s & Starts Automatically) -->
@@ -913,7 +979,8 @@
         breaks: true,
         counter: true,
         templates: true,
-        notes: true, // Enabled by default like the rest
+        notes: true,
+        hello: true,
         stopwatch: true
       },
       clockSize: 'wide',   // 'large' | 'wide' (default) | 'small'
@@ -948,6 +1015,10 @@
       templateSearchQuery: '',
       notesPanelOpen: false,
       temporaryNotes: '',
+      helloPanelOpen: false,
+      helloTimestamp: '',
+      helloLocationLabel: '',
+      helloLocationTz: '',
       stopwatch: {
         isRunning: false,
         startTimestamp: null,
@@ -956,46 +1027,18 @@
       logs: []
     };
 
-    let state = loadState();
-    let templatesList = loadTemplatesPermanent();
-    let pipWindowRef = null;
-    let fallbackPopupRef = null;
-
-    function loadTemplatesPermanent() {
-      try {
-        const raw = localStorage.getItem(TEMPLATES_STORAGE_KEY);
-        if (!raw) return [];
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (e) {
-        return [];
-      }
-    }
-
-    function saveTemplatesPermanent() {
-      try {
-        localStorage.setItem(TEMPLATES_STORAGE_KEY, JSON.stringify(templatesList));
-      } catch (e) {
-        console.error('Failed to save templates:', e);
-      }
-    }
-
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return JSON.parse(JSON.stringify(defaultState));
         const parsed = JSON.parse(raw);
         return {
-          ...defaultState,
+          ...JSON.parse(JSON.stringify(defaultState)),
           ...parsed,
           modules: { ...defaultState.modules, ...(parsed.modules || {}) },
           lunch: { ...defaultState.lunch, ...(parsed.lunch || {}) },
           mc: { ...defaultState.mc, ...(parsed.mc || {}) },
-          tickets: {
-            ...defaultState.tickets,
-            ...(parsed.tickets || {}),
-            hourlyCounts: { ...((parsed.tickets && parsed.tickets.hourlyCounts) || {}) }
-          },
+          tickets: { ...defaultState.tickets, ...(parsed.tickets || {}) },
           stopwatch: { ...defaultState.stopwatch, ...(parsed.stopwatch || {}) },
           logs: Array.isArray(parsed.logs) ? parsed.logs : []
         };
@@ -1008,259 +1051,267 @@
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       } catch (e) {
-        console.error('Failed to save state:', e);
+        // Ignore storage quota errors
       }
     }
 
-    function addLog(message, badgeColor = 'amber') {
-      state.logs.unshift({
-        time: formatCairoClockFull(),
-        text: message,
-        color: badgeColor
-      });
-      if (state.logs.length > 60) state.logs.pop();
-      saveState();
-      renderLogs();
+    function loadTemplates() {
+      try {
+        const raw = localStorage.getItem(TEMPLATES_STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
     }
 
-    // Finds elements inside either the main document or the popped-out PiP document
+    function saveTemplates() {
+      try {
+        localStorage.setItem(TEMPLATES_STORAGE_KEY, JSON.stringify(templates));
+      } catch (e) {
+        // Ignore storage quota errors
+      }
+    }
+
+    let state = loadState();
+    let templates = loadTemplates();
+    let pipWindow = null;
+    let pipResizeObserver = null;
+
+    /********************************************************************
+     * 3. DOM HELPERS (WORKS IN BOTH MAIN WINDOW & POPPED-OUT PiP WINDOW)
+     ********************************************************************/
+    function getWidgetDoc() {
+      return (pipWindow && !pipWindow.closed) ? pipWindow.document : document;
+    }
+
     function getWidgetElement(id) {
-      const inMain = document.getElementById(id);
-      if (inMain) return inMain;
-      if (pipWindowRef && pipWindowRef.document) {
-        return pipWindowRef.document.getElementById(id);
+      const doc = getWidgetDoc();
+      return doc.getElementById(id) || document.getElementById(id);
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function copyTextToClipboard(text, targetDoc = document) {
+      try {
+        const ta = targetDoc.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        ta.style.pointerEvents = 'none';
+        targetDoc.body.appendChild(ta);
+        ta.select();
+        const ok = targetDoc.execCommand('copy');
+        targetDoc.body.removeChild(ta);
+        return ok;
+      } catch (e) {
+        return false;
       }
-      return null;
+    }
+
+    function resizePopupToFitContent() {
+      if (!pipWindow || pipWindow.closed) return;
+      try {
+        const root = pipWindow.document.getElementById('widget-root');
+        if (!root) return;
+
+        const rect = root.getBoundingClientRect();
+        let contentHeight = Math.max(rect.height, root.scrollHeight);
+
+        // Include overflow height if the Say Hello location dropdown is open
+        const helloDd = pipWindow.document.getElementById('hello-location-dropdown');
+        if (helloDd && !helloDd.classList.contains('hidden')) {
+          const ddRect = helloDd.getBoundingClientRect();
+          const extraBelow = ddRect.bottom - rect.bottom;
+          if (extraBelow > 0) {
+            contentHeight += extraBelow + 6;
+          }
+        }
+
+        // Measure exact browser PiP title bar & border chrome
+        const chromeHeight = Math.max(0, pipWindow.outerHeight - pipWindow.innerHeight);
+        const chromeWidth = Math.max(0, pipWindow.outerWidth - pipWindow.innerWidth);
+
+        // Account for body padding (4px top + 4px bottom = 8px) plus a small safety buffer
+        const bodyPaddingV = 12;
+        const bodyPaddingH = 12;
+        const maxScreenH = (window.screen && window.screen.availHeight) ? window.screen.availHeight - 40 : 900;
+
+        const desiredH = Math.min(maxScreenH, Math.ceil(contentHeight + chromeHeight + bodyPaddingV));
+        const desiredW = Math.ceil(Math.max(320, rect.width) + chromeWidth + bodyPaddingH);
+
+        if (Math.abs(pipWindow.outerHeight - desiredH) > 2 || Math.abs(pipWindow.outerWidth - desiredW) > 2) {
+          pipWindow.resizeTo(desiredW, desiredH);
+        }
+      } catch (e) {
+        // Some browsers restrict resizeTo; ignore safely
+      }
     }
 
     /********************************************************************
-     * 3. POPUP THEME & CLOCK SIZE TOGGLES
+     * 4. THEME & CLOCK SIZE CONTROLLERS
      ********************************************************************/
-    function setPopupTheme(theme) {
-      if (!['dark', 'blue', 'white'].includes(theme)) return;
-      state.popupTheme = theme;
-      saveState();
-      applyPopupTheme();
-    }
-
     function applyPopupTheme() {
-      const theme = state.popupTheme || 'dark';
-      const widget = getWidgetElement('widget-root');
+      const theme = ['dark', 'blue', 'white'].includes(state.popupTheme) ? state.popupTheme : 'dark';
+      state.popupTheme = theme;
 
-      if (widget) {
-        widget.classList.remove('theme-dark', 'theme-blue', 'theme-white');
-        widget.classList.add(`theme-${theme}`);
+      const root = getWidgetElement('widget-root');
+      if (root) {
+        root.classList.remove('theme-dark', 'theme-blue', 'theme-white');
+        root.classList.add(`theme-${theme}`);
       }
 
-      if (pipWindowRef && !pipWindowRef.closed && pipWindowRef.document && pipWindowRef.document.body) {
-        pipWindowRef.document.body.style.backgroundColor = THEME_BODY_BG[theme];
+      if (pipWindow && !pipWindow.closed && pipWindow.document.body) {
+        pipWindow.document.body.style.backgroundColor = THEME_BODY_BG[theme];
       }
 
-      if (window.location.hash === '#popupmode') {
-        document.body.style.backgroundColor = THEME_BODY_BG[theme];
-      }
-
+      // Color-coded dashboard theme buttons with emerald active ring
       const themeBtnStyles = {
-        dark: 'bg-[#1c1613] hover:bg-[#2a211c] text-[#f5f0eb] border-[#52433a]',
-        blue: 'bg-[#1e3a5f] hover:bg-[#264a78] text-[#f8fafc] border-sky-400/70',
-        white: 'bg-[#eceef1] hover:bg-[#f6f7f9] text-[#1f2937] border-[#bfc6d0]'
+        dark: {
+          el: document.getElementById('btn-theme-dark'),
+          base: 'px-3 py-1 rounded-lg text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer bg-[#1c1613] text-[#f5f0eb]',
+          active: 'border-emerald-400 ring-2 ring-emerald-500/70',
+          inactive: 'border-[#3a2f29] opacity-75 hover:opacity-100'
+        },
+        blue: {
+          el: document.getElementById('btn-theme-blue'),
+          base: 'px-3 py-1 rounded-lg text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer bg-[#1e3a8a] text-[#f8fafc]',
+          active: 'border-emerald-400 ring-2 ring-emerald-500/70',
+          inactive: 'border-[#3b82f6]/50 opacity-75 hover:opacity-100'
+        },
+        white: {
+          el: document.getElementById('btn-theme-white'),
+          base: 'px-3 py-1 rounded-lg text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer bg-[#e5e7eb] text-[#111827]',
+          active: 'border-emerald-500 ring-2 ring-emerald-500/80',
+          inactive: 'border-[#9ca3af] opacity-80 hover:opacity-100'
+        }
       };
 
-      ['dark', 'blue', 'white'].forEach(t => {
-        const btn = document.getElementById(`btn-theme-${t}`);
-        if (!btn) return;
-        const stateRing = t === theme
-          ? 'ring-2 ring-emerald-400 ring-offset-1 ring-offset-[#0c0a09] shadow-md opacity-100'
-          : 'opacity-75 hover:opacity-100';
-        btn.className = `px-3 py-1 rounded-lg text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer ${themeBtnStyles[t]} ${stateRing}`;
+      Object.keys(themeBtnStyles).forEach(key => {
+        const cfg = themeBtnStyles[key];
+        if (!cfg.el) return;
+        cfg.el.className = `${cfg.base} ${key === theme ? cfg.active : cfg.inactive}`;
       });
-    }
-
-    function setClockSize(size) {
-      if (!['large', 'wide', 'small'].includes(size)) return;
-      state.clockSize = size;
-      saveState();
-      applyClockSize();
-      resizePopupToFitContent();
     }
 
     function applyClockSize() {
-      const size = state.clockSize || 'wide';
-      const largeEl = getWidgetElement('clock-layout-large');
-      const wideEl = getWidgetElement('clock-layout-wide');
-      const smallEl = getWidgetElement('clock-layout-small');
+      const size = ['large', 'wide', 'small'].includes(state.clockSize) ? state.clockSize : 'wide';
+      state.clockSize = size;
 
-      if (largeEl) largeEl.classList.toggle('hidden', size !== 'large');
-      if (wideEl) wideEl.classList.toggle('hidden', size !== 'wide');
-      if (smallEl) smallEl.classList.toggle('hidden', size !== 'small');
+      const elLarge = getWidgetElement('clock-layout-large');
+      const elWide = getWidgetElement('clock-layout-wide');
+      const elSmall = getWidgetElement('clock-layout-small');
 
-      const activeClasses = 'bg-emerald-600 border-emerald-400 text-white';
-      const inactiveClasses = 'bg-[#0c0a09] border-[#2b221e] text-[#b5a89e] hover:text-[#f5f0eb]';
+      if (elLarge) elLarge.classList.toggle('hidden', size !== 'large');
+      if (elWide) elWide.classList.toggle('hidden', size !== 'wide');
+      if (elSmall) elSmall.classList.toggle('hidden', size !== 'small');
 
-      const btnLarge = document.getElementById('btn-clock-large');
-      const btnWide = document.getElementById('btn-clock-wide');
-      const btnSmall = document.getElementById('btn-clock-small');
-      if (btnLarge) btnLarge.className = `px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${size === 'large' ? activeClasses : inactiveClasses}`;
-      if (btnWide) btnWide.className = `px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${size === 'wide' ? activeClasses : inactiveClasses}`;
-      if (btnSmall) btnSmall.className = `px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${size === 'small' ? activeClasses : inactiveClasses}`;
+      ['large', 'wide', 'small'].forEach(sz => {
+        const btn = document.getElementById(`btn-clock-${sz}`);
+        if (!btn) return;
+        if (sz === size) {
+          btn.className = 'px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer bg-emerald-600 text-white border-emerald-400';
+        } else {
+          btn.className = 'px-2 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer bg-[#0c0a09] text-[#b5a89e] border-[#2b221e] hover:text-[#f5f0eb]';
+        }
+      });
+
+      setTimeout(() => resizePopupToFitContent(), 60);
     }
 
     /********************************************************************
-     * 4. SHIFT HOURS CONFIGURATION & HOURLY ROLLOVER
+     * 5. MODULE 1: LIVE CAIRO CLOCK & HOUR ROLLOVER
      ********************************************************************/
-    function populateShiftSelects() {
-      const startSel = document.getElementById('select-shift-start');
-      const endSel = document.getElementById('select-shift-end');
-      if (!startSel || !endSel) return;
+    function updateClockModule() {
+      const nowMs = getCorrectedNowMs();
+      const parts = getCairoParts(nowMs);
+      const clockStr = formatCairoClockFull(nowMs);
+      const monthDayStr = `${parts.weekday}, ${parts.month}`;
+      const dayNumStr = parts.day;
 
-      let startHtml = '';
-      for (let h = 0; h <= 23; h++) {
-        startHtml += `<option value="${h}">${formatSingleHour12And24(h)}</option>`;
-      }
-      startSel.innerHTML = startHtml;
-      startSel.value = String(state.shiftStartHour);
+      const setTxt = (id, val) => {
+        const el = getWidgetElement(id);
+        if (el) el.textContent = val;
+      };
 
-      let endHtml = '';
-      for (let h = 0; h <= 24; h++) {
-        endHtml += `<option value="${h}">${formatSingleHour12And24(h)}</option>`;
-      }
-      endSel.innerHTML = endHtml;
-      endSel.value = String(state.shiftEndHour);
-    }
+      setTxt('display-clock-large', clockStr);
+      setTxt('display-date-large-monthday', monthDayStr.toUpperCase());
+      setTxt('display-date-large-num', dayNumStr);
 
-    function updateShiftHours() {
-      const startSel = document.getElementById('select-shift-start');
-      const endSel = document.getElementById('select-shift-end');
-      if (!startSel || !endSel) return;
+      setTxt('display-clock-wide', clockStr);
+      setTxt('display-date-wide-monthday', monthDayStr);
+      setTxt('display-date-wide-num', dayNumStr);
 
-      state.shiftStartHour = parseInt(startSel.value, 10);
-      state.shiftEndHour = parseInt(endSel.value, 10);
-      saveState();
-      renderHourlyTables();
-      resizePopupToFitContent();
-    }
+      setTxt('display-clock-small', clockStr);
+      setTxt('display-date-small-monthday', monthDayStr);
+      setTxt('display-date-small-num', dayNumStr);
 
-    function getShiftHoursSequence() {
-      const start = parseInt(state.shiftStartHour, 10);
-      const end = parseInt(state.shiftEndHour, 10);
-      const seq = [];
-
-      if (end === 24) {
-        for (let h = start; h < 24; h++) seq.push(h);
-      } else if (start < end) {
-        for (let h = start; h < end; h++) seq.push(h);
-      } else if (start > end) {
-        // Overnight shift across midnight
-        for (let h = start; h < 24; h++) seq.push(h);
-        for (let h = 0; h < end; h++) seq.push(h);
-      } else {
-        // Same start and end -> full 24h cycle starting at start
-        for (let i = 0; i < 24; i++) seq.push((start + i) % 24);
-      }
-
-      return seq;
-    }
-
-    function checkHourlyRollover() {
-      const currentCairoH = getCairoParts().hour24;
-      if (state.tickets.activeCairoHour === null || state.tickets.activeCairoHour === undefined) {
-        state.tickets.activeCairoHour = currentCairoH;
-        state.tickets.currentHourCount = state.tickets.hourlyCounts[currentCairoH] || 0;
+      // Auto-reset hourly counter when Cairo hour changes
+      if (state.tickets.activeCairoHour === null) {
+        state.tickets.activeCairoHour = parts.hour24;
+        state.tickets.currentHourCount = state.tickets.hourlyCounts[parts.hour24] || 0;
         saveState();
-        return;
-      }
-
-      if (state.tickets.activeCairoHour !== currentCairoH) {
-        state.tickets.activeCairoHour = currentCairoH;
-        state.tickets.currentHourCount = state.tickets.hourlyCounts[currentCairoH] || 0;
+      } else if (state.tickets.activeCairoHour !== parts.hour24) {
+        state.tickets.activeCairoHour = parts.hour24;
+        state.tickets.currentHourCount = state.tickets.hourlyCounts[parts.hour24] || 0;
         saveState();
         renderCounterModule();
         renderHourlyTables();
       }
     }
 
-    function recalculateTotalFromHourly() {
-      let sum = 0;
-      Object.values(state.tickets.hourlyCounts || {}).forEach(v => {
-        sum += Math.max(0, parseInt(v, 10) || 0);
-      });
-      state.tickets.totalShiftCount = sum;
-    }
-
-    /********************************************************************
-     * 5. MODULE 1: CAIRO TIME & DATE (No Year, Highlighted Day Number)
-     ********************************************************************/
-    function updateClockModule() {
-      checkHourlyRollover();
-      const nowMs = getCorrectedNowMs();
-      const p = getCairoParts(nowMs);
-      const clockStr = formatCairoClockFull(nowMs);
-      const weekdayMonth = `${p.weekday}, ${p.month}`;
-      const dayNum = p.day;
-
-      const largeClock = getWidgetElement('display-clock-large');
-      const largeMonthDay = getWidgetElement('display-date-large-monthday');
-      const largeNum = getWidgetElement('display-date-large-num');
-
-      const wideClock = getWidgetElement('display-clock-wide');
-      const wideMonthDay = getWidgetElement('display-date-wide-monthday');
-      const wideNum = getWidgetElement('display-date-wide-num');
-
-      const smallClock = getWidgetElement('display-clock-small');
-      const smallMonthDay = getWidgetElement('display-date-small-monthday');
-      const smallNum = getWidgetElement('display-date-small-num');
-
-      if (largeClock) largeClock.textContent = clockStr;
-      if (largeMonthDay) largeMonthDay.textContent = weekdayMonth;
-      if (largeNum) largeNum.textContent = dayNum;
-
-      if (wideClock) wideClock.textContent = clockStr;
-      if (wideMonthDay) wideMonthDay.textContent = weekdayMonth;
-      if (wideNum) wideNum.textContent = dayNum;
-
-      if (smallClock) smallClock.textContent = clockStr;
-      if (smallMonthDay) smallMonthDay.textContent = weekdayMonth;
-      if (smallNum) smallNum.textContent = dayNum;
-    }
-
     /********************************************************************
      * 6. MODULE 2: LUNCH & M&C TRACKER
      ********************************************************************/
-    function handleBreakClick(type) {
+    function toggleLunch() {
       const nowMs = getCorrectedNowMs();
+      const hhmm = formatCairoHHMM(nowMs);
 
-      if (type === 'lunch') {
-        if (!state.lunch.isRunning) {
-          state.lunch.isRunning = true;
-          state.lunch.startTimestamp = nowMs;
-          state.lunch.startFormatted = formatCairoHHMM(nowMs);
-          state.lunch.finishFormatted = '00:00';
-          addLog(`Lunch started at ${state.lunch.startFormatted} (${state.lunch.remainingMinutes}m left)`, 'emerald');
-        } else {
-          state.lunch.isRunning = false;
-          state.lunch.finishFormatted = formatCairoHHMM(nowMs);
-          const elapsedMs = Math.max(0, nowMs - (state.lunch.startTimestamp || nowMs));
-          const elapsedMin = Math.max(1, Math.round(elapsedMs / 60000));
-          state.lunch.remainingMinutes = state.lunch.remainingMinutes - elapsedMin;
-          state.lunch.startTimestamp = null;
-          addLog(`Lunch finished at ${state.lunch.finishFormatted} (${elapsedMin}m spent, ${state.lunch.remainingMinutes}m left)`, 'amber');
-        }
-      } else if (type === 'mc') {
-        if (!state.mc.isRunning) {
-          state.mc.isRunning = true;
-          state.mc.startTimestamp = nowMs;
-          state.mc.startFormatted = formatCairoHHMM(nowMs);
-          state.mc.finishFormatted = '00:00';
-          addLog(`M&C started at ${state.mc.startFormatted}`, 'amber');
-        } else {
-          state.mc.isRunning = false;
-          state.mc.finishFormatted = formatCairoHHMM(nowMs);
-          const elapsedMs = Math.max(0, nowMs - (state.mc.startTimestamp || nowMs));
-          const elapsedMin = Math.max(1, Math.round(elapsedMs / 60000));
-          state.mc.totalMinutesSpent = (state.mc.totalMinutesSpent || 0) + elapsedMin;
-          state.mc.startTimestamp = null;
-          addLog(`M&C finished at ${state.mc.finishFormatted} (${elapsedMin}m spent, total ${state.mc.totalMinutesSpent}m)`, 'amber');
-        }
+      if (!state.lunch.isRunning) {
+        state.lunch.isRunning = true;
+        state.lunch.startTimestamp = nowMs;
+        state.lunch.startFormatted = hhmm;
+        state.lunch.finishFormatted = '00:00';
+        addLog(`Lunch started at ${hhmm}`);
+      } else {
+        const elapsedMin = Math.max(1, Math.round((nowMs - (state.lunch.startTimestamp || nowMs)) / 60000));
+        state.lunch.isRunning = false;
+        state.lunch.startTimestamp = null;
+        state.lunch.finishFormatted = hhmm;
+        state.lunch.remainingMinutes = Math.max(0, state.lunch.remainingMinutes - elapsedMin);
+        addLog(`Lunch finished at ${hhmm} (-${elapsedMin}m, ${state.lunch.remainingMinutes}m left)`);
+      }
+
+      saveState();
+      renderBreakModule();
+    }
+
+    function toggleMC() {
+      const nowMs = getCorrectedNowMs();
+      const hhmm = formatCairoHHMM(nowMs);
+
+      if (!state.mc.isRunning) {
+        state.mc.isRunning = true;
+        state.mc.startTimestamp = nowMs;
+        state.mc.startFormatted = hhmm;
+        state.mc.finishFormatted = '00:00';
+        addLog(`M&C started at ${hhmm}`);
+      } else {
+        const elapsedMin = Math.max(1, Math.round((nowMs - (state.mc.startTimestamp || nowMs)) / 60000));
+        state.mc.isRunning = false;
+        state.mc.startTimestamp = null;
+        state.mc.finishFormatted = hhmm;
+        state.mc.totalMinutesSpent = (state.mc.totalMinutesSpent || 0) + elapsedMin;
+        addLog(`M&C finished at ${hhmm} (+${elapsedMin}m, total ${state.mc.totalMinutesSpent}m)`);
       }
 
       saveState();
@@ -1268,152 +1319,146 @@
     }
 
     function renderBreakModule() {
-      const lunchBtn = getWidgetElement('btn-lunch');
+      const btnLunch = getWidgetElement('btn-lunch');
       const lunchDot = getWidgetElement('lunch-dot');
       const lunchStart = getWidgetElement('lunch-start-box');
       const lunchFinish = getWidgetElement('lunch-finish-box');
       const lunchRem = getWidgetElement('lunch-remaining-box');
 
-      if (lunchStart) lunchStart.textContent = state.lunch.startFormatted;
-      if (lunchFinish) lunchFinish.textContent = state.lunch.finishFormatted;
+      if (btnLunch) btnLunch.classList.toggle('active-lunch-btn', state.lunch.isRunning);
+      if (lunchDot) lunchDot.classList.toggle('hidden', !state.lunch.isRunning);
+      if (lunchStart) lunchStart.textContent = state.lunch.startFormatted || '00:00';
+      if (lunchFinish) lunchFinish.textContent = state.lunch.finishFormatted || '00:00';
 
-      let displayRemaining = state.lunch.remainingMinutes;
+      let liveRemaining = state.lunch.remainingMinutes;
       if (state.lunch.isRunning && state.lunch.startTimestamp) {
-        const liveMin = Math.floor((getCorrectedNowMs() - state.lunch.startTimestamp) / 60000);
-        displayRemaining = state.lunch.remainingMinutes - liveMin;
+        const liveElapsed = Math.floor((getCorrectedNowMs() - state.lunch.startTimestamp) / 60000);
+        liveRemaining = Math.max(0, state.lunch.remainingMinutes - liveElapsed);
       }
 
-      if (lunchRem && !lunchRem.querySelector('input')) {
-        lunchRem.textContent = displayRemaining;
-        if (displayRemaining <= 0) {
-          lunchRem.className = 'h-7 bg-red-600 border border-red-400 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-white cursor-pointer select-none';
-        } else if (displayRemaining <= 15) {
-          lunchRem.className = 'h-7 bg-amber-500 border border-amber-300 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-black cursor-pointer select-none';
+      if (lunchRem) {
+        lunchRem.textContent = String(liveRemaining);
+        lunchRem.classList.remove('text-emerald-500', 'border-emerald-500/60', 'text-amber-500', 'border-amber-500/60', 'text-rose-500', 'border-rose-500/60');
+        if (liveRemaining <= 0) {
+          lunchRem.classList.add('text-rose-500', 'border-rose-500/60');
+        } else if (liveRemaining <= 15) {
+          lunchRem.classList.add('text-amber-500', 'border-amber-500/60');
         } else {
-          lunchRem.className = 'h-7 w-sub border border-emerald-500/60 rounded-md flex items-center justify-center font-mono-num text-xs font-extrabold text-emerald-500 cursor-pointer select-none';
+          lunchRem.classList.add('text-emerald-500', 'border-emerald-500/60');
         }
       }
 
-      if (lunchBtn) {
-        if (state.lunch.isRunning) {
-          lunchBtn.className = 'w-full h-7 px-2 rounded-md bg-emerald-600 hover:bg-emerald-500 active:scale-95 border border-emerald-400 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 cursor-pointer active-lunch-btn';
-          if (lunchDot) lunchDot.classList.remove('hidden');
-        } else {
-          lunchBtn.className = 'w-full h-7 px-2 rounded-md w-btn border active:scale-95 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer';
-          if (lunchDot) lunchDot.classList.add('hidden');
-        }
-      }
-
-      const mcBtn = getWidgetElement('btn-mc');
+      const btnMc = getWidgetElement('btn-mc');
       const mcDot = getWidgetElement('mc-dot');
       const mcStart = getWidgetElement('mc-start-box');
       const mcFinish = getWidgetElement('mc-finish-box');
       const mcSpent = getWidgetElement('mc-spent-box');
 
-      if (mcStart) mcStart.textContent = state.mc.startFormatted;
-      if (mcFinish) mcFinish.textContent = state.mc.finishFormatted;
+      if (btnMc) btnMc.classList.toggle('active-mc-btn', state.mc.isRunning);
+      if (mcDot) mcDot.classList.toggle('hidden', !state.mc.isRunning);
+      if (mcStart) mcStart.textContent = state.mc.startFormatted || '00:00';
+      if (mcFinish) mcFinish.textContent = state.mc.finishFormatted || '00:00';
       if (mcSpent) mcSpent.textContent = `${state.mc.totalMinutesSpent || 0}m`;
-
-      if (mcBtn) {
-        if (state.mc.isRunning) {
-          mcBtn.className = 'w-full h-7 px-2 rounded-md bg-amber-600 hover:bg-amber-500 active:scale-95 border border-amber-400 font-bold text-xs text-white transition flex items-center justify-center gap-1.5 cursor-pointer active-mc-btn';
-          if (mcDot) mcDot.classList.remove('hidden');
-        } else {
-          mcBtn.className = 'w-full h-7 px-2 rounded-md w-btn border active:scale-95 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer';
-          if (mcDot) mcDot.classList.add('hidden');
-        }
-      }
     }
 
-    function enableInlineLunchEdit() {
+    function startInlineLunchEdit() {
       const box = getWidgetElement('lunch-remaining-box');
       if (!box || box.querySelector('input')) return;
-
-      const doc = box.ownerDocument;
+      const doc = getWidgetDoc();
       const input = doc.createElement('input');
       input.type = 'number';
-      input.value = state.lunch.remainingMinutes;
-      input.className = 'w-full h-full w-input text-center font-mono-num text-xs font-extrabold rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500';
+      input.min = '0';
+      input.max = '240';
+      input.value = String(state.lunch.remainingMinutes);
+      input.className = 'w-full h-full bg-transparent text-center font-mono-num text-xs font-extrabold w-text-primary focus:outline-none';
+      box.textContent = '';
+      box.appendChild(input);
+      input.focus();
+      input.select();
 
       const commit = () => {
         const val = parseInt(input.value, 10);
-        if (!isNaN(val)) {
+        if (!isNaN(val) && val >= 0) {
           state.lunch.remainingMinutes = val;
           saveState();
         }
-        box.innerHTML = '';
         renderBreakModule();
       };
 
       input.addEventListener('blur', commit);
       input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') commit();
-        if (e.key === 'Escape') {
-          box.innerHTML = '';
-          renderBreakModule();
-        }
+        if (e.key === 'Enter') input.blur();
+        if (e.key === 'Escape') renderBreakModule();
       });
-
-      box.innerHTML = '';
-      box.appendChild(input);
-      input.focus();
-      input.select();
     }
 
     /********************************************************************
-     * 7. MODULE 3: TICKET COUNTER, LAST REPLY & SHIFT HOURS DRAWER
+     * 7. MODULE 3: TICKET COUNTER, SHIFT HOURS & EXCEL COPY
      ********************************************************************/
+    function getShiftHoursList() {
+      const start = parseInt(state.shiftStartHour, 10);
+      const end = parseInt(state.shiftEndHour, 10);
+      const hours = [];
+
+      if (end === 24) {
+        for (let h = start; h < 24; h++) hours.push(h);
+      } else if (start < end) {
+        for (let h = start; h < end; h++) hours.push(h);
+      } else if (start > end) {
+        // Overnight shift crossing midnight
+        for (let h = start; h < 24; h++) hours.push(h);
+        for (let h = 0; h < end; h++) hours.push(h);
+      } else {
+        hours.push(start);
+      }
+
+      return hours;
+    }
+
+    function recalculateTotalTickets() {
+      let total = 0;
+      Object.values(state.tickets.hourlyCounts || {}).forEach(n => {
+        total += (parseInt(n, 10) || 0);
+      });
+      state.tickets.totalShiftCount = total;
+    }
+
     function incrementTicket() {
-      checkHourlyRollover();
-      const cairoH = getCairoParts().hour24;
-      state.tickets.activeCairoHour = cairoH;
+      const nowMs = getCorrectedNowMs();
+      const parts = getCairoParts(nowMs);
+      const hr = parts.hour24;
 
-      const currentVal = Math.max(0, parseInt(state.tickets.currentHourCount, 10) || 0);
-      state.tickets.currentHourCount = currentVal + 1;
-      state.tickets.hourlyCounts[cairoH] = state.tickets.currentHourCount;
-      recalculateTotalFromHourly();
-      state.tickets.lastReplyTimestamp = getCorrectedNowMs();
-
+      state.tickets.activeCairoHour = hr;
+      const prev = state.tickets.hourlyCounts[hr] || 0;
+      state.tickets.hourlyCounts[hr] = prev + 1;
+      state.tickets.currentHourCount = state.tickets.hourlyCounts[hr];
+      state.tickets.lastReplyTimestamp = nowMs;
+      recalculateTotalTickets();
       saveState();
+
       renderCounterModule();
       renderHourlyTables();
     }
 
     function decrementTicket() {
-      checkHourlyRollover();
-      const cairoH = getCairoParts().hour24;
-      state.tickets.activeCairoHour = cairoH;
+      const parts = getCairoParts(getCorrectedNowMs());
+      const hr = parts.hour24;
+      state.tickets.activeCairoHour = hr;
 
-      const currentVal = Math.max(0, parseInt(state.tickets.currentHourCount, 10) || 0);
-      if (currentVal > 0) {
-        state.tickets.currentHourCount = currentVal - 1;
-        state.tickets.hourlyCounts[cairoH] = state.tickets.currentHourCount;
-        recalculateTotalFromHourly();
-        saveState();
-        renderCounterModule();
-        renderHourlyTables();
-      } else if (state.tickets.totalShiftCount > 0) {
-        const keys = Object.keys(state.tickets.hourlyCounts).reverse();
-        for (const k of keys) {
-          if ((state.tickets.hourlyCounts[k] || 0) > 0) {
-            state.tickets.hourlyCounts[k] -= 1;
-            break;
-          }
+      const cur = state.tickets.hourlyCounts[hr] || 0;
+      if (cur > 0) {
+        state.tickets.hourlyCounts[hr] = cur - 1;
+        state.tickets.currentHourCount = state.tickets.hourlyCounts[hr];
+      } else {
+        // If current hour is 0, decrement the most recent shift hour with > 0 tickets
+        const shiftHours = getShiftHoursList().slice().reverse();
+        const fallbackHr = shiftHours.find(h => (state.tickets.hourlyCounts[h] || 0) > 0);
+        if (fallbackHr !== undefined) {
+          state.tickets.hourlyCounts[fallbackHr] = Math.max(0, (state.tickets.hourlyCounts[fallbackHr] || 0) - 1);
         }
-        recalculateTotalFromHourly();
-        saveState();
-        renderCounterModule();
-        renderHourlyTables();
       }
-    }
 
-    function updateHourlyCountManual(hour24, val) {
-      const num = Math.max(0, parseInt(val, 10) || 0);
-      state.tickets.hourlyCounts[hour24] = num;
-      if (parseInt(hour24, 10) === getCairoParts().hour24) {
-        state.tickets.currentHourCount = num;
-      }
-      recalculateTotalFromHourly();
+      recalculateTotalTickets();
       saveState();
       renderCounterModule();
       renderHourlyTables();
@@ -1440,215 +1485,195 @@
       }
     }
 
-    function formatMMSS(totalSeconds) {
-      const sec = Math.max(0, Math.floor(totalSeconds));
-      const m = Math.floor(sec / 60);
-      const s = sec % 60;
-      if (m >= 60) {
-        const h = Math.floor(m / 60);
-        const remM = m % 60;
-        return `${String(h).padStart(2, '0')}:${String(remM).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-      }
-      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    function formatElapsedMMSS(ms) {
+      const totalSec = Math.max(0, Math.floor(ms / 1000));
+      const mins = Math.floor(totalSec / 60);
+      const secs = totalSec % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
     function renderCounterModule() {
+      const parts = getCairoParts(getCorrectedNowMs());
+      const hr = parts.hour24;
+      const curCount = state.tickets.hourlyCounts[hr] || 0;
+      state.tickets.currentHourCount = curCount;
+      recalculateTotalTickets();
+
+      const tagEl = getWidgetElement('display-active-hour-tag');
       const countEl = getWidgetElement('display-ticket-count');
       const totalEl = getWidgetElement('display-ticket-total');
-      const hourTagEl = getWidgetElement('display-active-hour-tag');
       const lastReplyEl = getWidgetElement('display-last-reply');
 
-      const cairoH = getCairoParts().hour24;
-      const h12 = cairoH % 12 || 12;
-      const ampm = cairoH >= 12 ? 'PM' : 'AM';
-      if (hourTagEl) hourTagEl.textContent = `${String(h12).padStart(2, '0')}:00 ${ampm}`;
-      if (countEl) countEl.textContent = state.tickets.currentHourCount;
-      if (totalEl) totalEl.textContent = state.tickets.totalShiftCount;
+      if (tagEl) tagEl.textContent = `${String(hr).padStart(2, '0')}:00`;
+      if (countEl) countEl.textContent = String(curCount);
+      if (totalEl) totalEl.textContent = String(state.tickets.totalShiftCount);
 
       if (lastReplyEl) {
-        if (!state.tickets.lastReplyTimestamp) {
-          lastReplyEl.textContent = '00:00';
+        if (state.tickets.lastReplyTimestamp) {
+          lastReplyEl.textContent = formatElapsedMMSS(getCorrectedNowMs() - state.tickets.lastReplyTimestamp);
         } else {
-          const diffSec = Math.floor((getCorrectedNowMs() - state.tickets.lastReplyTimestamp) / 1000);
-          lastReplyEl.textContent = formatMMSS(diffSec);
+          lastReplyEl.textContent = '00:00';
         }
       }
+
       applyHourlyDrawerState();
     }
 
     function renderHourlyTables() {
-      const hoursSeq = getShiftHoursSequence();
-      const currentCairoH = getCairoParts().hour24;
+      const shiftHours = getShiftHoursList();
+      const currentCairoHr = getCairoParts(getCorrectedNowMs()).hour24;
 
-      // Popup Drawer Table
+      // Include any extra hours that have tickets outside configured shift
+      const extraHours = Object.keys(state.tickets.hourlyCounts || {})
+        .map(k => parseInt(k, 10))
+        .filter(h => !isNaN(h) && (state.tickets.hourlyCounts[h] || 0) > 0 && !shiftHours.includes(h));
+      const allHours = [...shiftHours, ...extraHours];
+
+      // 1. Dashboard Table
+      const tbody = document.getElementById('dashboard-hourly-tbody');
+      const totalCell = document.getElementById('dashboard-hourly-total');
+      if (tbody) {
+        tbody.innerHTML = allHours.map(h => {
+          const cnt = state.tickets.hourlyCounts[h] || 0;
+          const isNow = h === currentCairoHr;
+          const rowClass = isNow ? 'bg-emerald-500/15' : '';
+          const statusHtml = isNow
+            ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">Active Hour</span>'
+            : (cnt > 0
+              ? '<span class="text-[11px] text-[#b5a89e]">Logged</span>'
+              : '<span class="text-[11px] text-[#6d5f57]">—</span>');
+          return `
+            <tr class="${rowClass}">
+              <td class="py-2 px-3.5 font-mono-num text-[#f5f0eb]">${escapeHtml(formatHourLabel(h, false))}</td>
+              <td class="py-2 px-3.5 text-center">${statusHtml}</td>
+              <td class="py-2 px-3.5 text-right font-mono-num font-bold ${cnt > 0 ? 'text-emerald-400' : 'text-[#8a7c72]'}">${cnt}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+      if (totalCell) totalCell.textContent = String(state.tickets.totalShiftCount);
+
+      // 2. Popup Shift Hours Drawer (Current Cairo hour bar highlighted in light faded green, no "NOW" badge)
       const popupList = getWidgetElement('popup-hourly-list');
       if (popupList) {
-        popupList.innerHTML = hoursSeq.map(h => {
-          const count = state.tickets.hourlyCounts[h] || 0;
-          const isCurrent = (h === currentCairoH);
+        popupList.innerHTML = allHours.map(h => {
+          const cnt = state.tickets.hourlyCounts[h] || 0;
+          const isNow = h === currentCairoHr;
           return `
-            <div class="px-2.5 py-1.5 flex items-center justify-between ${isCurrent ? 'w-row-active rounded w-text-primary font-bold' : 'w-text-secondary'}">
-              <div class="flex items-center gap-1.5 font-mono-num text-[10px]">
-                <span>${formatHourLabel(h, true)}</span>
-              </div>
-              <span class="font-mono-num font-bold text-xs ${count > 0 ? 'text-emerald-500' : (isCurrent ? 'w-text-primary' : 'w-text-muted')}">${count}</span>
+            <div class="px-2.5 py-1.5 flex items-center justify-between gap-2 ${isNow ? 'w-row-active font-bold' : ''}">
+              <span class="font-mono-num w-text-primary truncate">${escapeHtml(formatHourLabel(h, true))}</span>
+              <span class="font-mono-num font-extrabold ${cnt > 0 ? 'text-emerald-500' : 'w-text-muted'}">${cnt}</span>
             </div>
           `;
         }).join('');
       }
-
-      // Dashboard Excel-Ready Table
-      const dashTbody = document.getElementById('dashboard-hourly-tbody');
-      const dashTotal = document.getElementById('dashboard-hourly-total');
-      if (dashTbody) {
-        dashTbody.innerHTML = hoursSeq.map(h => {
-          const count = state.tickets.hourlyCounts[h] || 0;
-          const isCurrent = (h === currentCairoH);
-          return `
-            <tr class="${isCurrent ? 'bg-emerald-500/15' : 'hover:bg-[#1a1512]'} transition">
-              <td class="py-2 px-3.5 font-mono-num text-[#f5f0eb]">${formatHourLabel(h, false)}</td>
-              <td class="py-2 px-3.5 text-center">
-                ${isCurrent
-                  ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Current Hour</span>'
-                  : '<span class="text-[11px] text-[#8a7c72]">Shift Slot</span>'}
-              </td>
-              <td class="py-2 px-3.5 text-right">
-                <input type="number" min="0" value="${count}" data-hour="${h}" class="dash-hour-input w-16 text-right bg-[#0c0a09] border border-[#2b221e] focus:border-emerald-500 rounded-md px-2 py-0.5 font-mono-num text-xs font-bold text-emerald-400 focus:outline-none">
-              </td>
-            </tr>
-          `;
-        }).join('');
-
-        dashTbody.querySelectorAll('.dash-hour-input').forEach(inp => {
-          inp.addEventListener('change', (e) => {
-            updateHourlyCountManual(e.target.dataset.hour, e.target.value);
-          });
-        });
-      }
-
-      if (dashTotal) {
-        dashTotal.textContent = state.tickets.totalShiftCount;
-      }
     }
 
-    function copyTextFallback(text, docRef = document) {
-      try {
-        const ta = docRef.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        ta.style.left = '-9999px';
-        docRef.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        docRef.execCommand('copy');
-        docRef.body.removeChild(ta);
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    function copyTableForExcel() {
-      const hoursSeq = getShiftHoursSequence();
+    function copyHourlyBreakdownForExcel() {
+      const shiftHours = getShiftHoursList();
       const lines = ['Shift Hour (Cairo)\tTickets'];
-      hoursSeq.forEach(h => {
-        const count = state.tickets.hourlyCounts[h] || 0;
-        lines.push(`${formatHourLabel(h, false)}\t${count}`);
+      shiftHours.forEach(h => {
+        lines.push(`${formatHourLabel(h, false)}\t${state.tickets.hourlyCounts[h] || 0}`);
       });
-      lines.push(`Total Shift Tickets\t${state.tickets.totalShiftCount}`);
+      lines.push(`Total\t${state.tickets.totalShiftCount}`);
+      copyTextToClipboard(lines.join('\n'), document);
 
-      copyTextFallback(lines.join('\n'), document);
-      const label = document.getElementById('copy-excel-label');
-      if (label) {
-        const orig = label.textContent;
-        label.textContent = 'Copied for Excel!';
-        setTimeout(() => { label.textContent = orig; }, 1800);
+      const lbl = document.getElementById('copy-excel-label');
+      if (lbl) {
+        lbl.textContent = '✓ Copied!';
+        setTimeout(() => { lbl.textContent = 'Copy for Excel'; }, 1400);
       }
+    }
+
+    function populateShiftSelects() {
+      const startSel = document.getElementById('select-shift-start');
+      const endSel = document.getElementById('select-shift-end');
+      if (!startSel || !endSel) return;
+
+      startSel.innerHTML = '';
+      for (let h = 0; h < 24; h++) {
+        const opt = document.createElement('option');
+        opt.value = String(h);
+        opt.textContent = formatSingleHour12And24(h);
+        startSel.appendChild(opt);
+      }
+
+      endSel.innerHTML = '';
+      for (let h = 0; h <= 24; h++) {
+        const opt = document.createElement('option');
+        opt.value = String(h);
+        opt.textContent = formatSingleHour12And24(h);
+        endSel.appendChild(opt);
+      }
+
+      startSel.value = String(state.shiftStartHour);
+      endSel.value = String(state.shiftEndHour);
     }
 
     /********************************************************************
-     * 8. MODULE 4: QUICK-COPY TEMPLATES (PERMANENT STORAGE + SEARCH)
+     * 8. MODULE 4: QUICK-COPY TEMPLATES (PERMANENT STORAGE)
      ********************************************************************/
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
-
     function parseAndSaveBulkTemplates() {
-      const textarea = document.getElementById('textarea-bulk-templates');
-      const feedback = document.getElementById('template-parse-feedback');
-      if (!textarea) return;
+      const ta = document.getElementById('textarea-bulk-templates');
+      const fb = document.getElementById('template-parse-feedback');
+      if (!ta) return;
 
-      const raw = textarea.value.trim();
+      // Normalize curly quotes to straight quotes
+      const raw = ta.value.replace(/[\u201C\u201D]/g, '"').trim();
       if (!raw) {
-        showTemplateFeedback('Please enter at least one "Title" followed by text.', 'text-amber-400');
+        if (fb) {
+          fb.textContent = 'Please type at least one "Button Title" and template text.';
+          fb.className = 'text-xs font-medium text-amber-400';
+        }
         return;
       }
 
-      // Match every "Title" followed by its body up to the next "Title" or end of input
-      const regex = /"([^"]+)"\s*([\s\S]*?)(?=(?:\r?\n\s*"[^"]+")|$)/g;
-      const parsedItems = [];
+      const regex = /"([^"\n]+)"\s*([\s\S]*?)(?=(?:\n\s*"[^"\n]+")|$)/g;
       let match;
+      let addedCount = 0;
+      let updatedCount = 0;
 
       while ((match = regex.exec(raw)) !== null) {
         const title = match[1].trim();
         const body = match[2].trim();
-        if (title && body) {
-          parsedItems.push({ title, body });
+        if (!title || !body) continue;
+
+        const existingIdx = templates.findIndex(t => t.title.toLowerCase() === title.toLowerCase());
+        if (existingIdx >= 0) {
+          templates[existingIdx].title = title;
+          templates[existingIdx].body = body;
+          updatedCount++;
+        } else {
+          templates.push({ id: `tpl_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, title, body });
+          addedCount++;
         }
       }
 
-      if (parsedItems.length === 0) {
-        showTemplateFeedback('Format: "Button Name" Your template text here', 'text-rose-400');
+      if (addedCount === 0 && updatedCount === 0) {
+        if (fb) {
+          fb.textContent = 'No valid "Title" + text found. Wrap button names in double quotes.';
+          fb.className = 'text-xs font-medium text-rose-400';
+        }
         return;
       }
 
-      let addedCount = 0;
-      let updatedCount = 0;
-
-      parsedItems.forEach(item => {
-        const existingIdx = templatesList.findIndex(
-          t => t.title.toLowerCase() === item.title.toLowerCase()
-        );
-        if (existingIdx >= 0) {
-          templatesList[existingIdx].title = item.title;
-          templatesList[existingIdx].body = item.body;
-          updatedCount++;
-        } else {
-          templatesList.push({ id: Date.now() + Math.random(), title: item.title, body: item.body });
-          addedCount++;
-        }
-      });
-
-      saveTemplatesPermanent();
-      textarea.value = '';
+      saveTemplates();
+      ta.value = '';
       renderTemplatesModule();
 
-      const parts = [];
-      if (addedCount > 0) parts.push(`${addedCount} added`);
-      if (updatedCount > 0) parts.push(`${updatedCount} updated`);
-      showTemplateFeedback(`Saved (${parts.join(', ')})!`, 'text-emerald-400');
+      if (fb) {
+        const parts = [];
+        if (addedCount > 0) parts.push(`${addedCount} created`);
+        if (updatedCount > 0) parts.push(`${updatedCount} updated`);
+        fb.textContent = `✓ Saved (${parts.join(', ')})`;
+        fb.className = 'text-xs font-semibold text-emerald-400';
+        setTimeout(() => { fb.classList.add('hidden'); }, 3000);
+      }
     }
 
-    function showTemplateFeedback(msg, colorClass) {
-      const feedback = document.getElementById('template-parse-feedback');
-      if (!feedback) return;
-      feedback.textContent = msg;
-      feedback.className = `text-xs font-semibold ${colorClass}`;
-      feedback.classList.remove('hidden');
-      setTimeout(() => {
-        feedback.classList.add('hidden');
-      }, 3000);
-    }
-
-    function deleteTemplateByIndex(idx) {
-      if (idx < 0 || idx >= templatesList.length) return;
-      templatesList.splice(idx, 1);
-      saveTemplatesPermanent();
+    function deleteTemplateById(id) {
+      templates = templates.filter(t => t.id !== id);
+      saveTemplates();
       renderTemplatesModule();
     }
 
@@ -1674,63 +1699,78 @@
     }
 
     function renderTemplatesModule() {
+      // Dashboard tags
       const dashCount = document.getElementById('dashboard-template-count');
       const dashTags = document.getElementById('dashboard-templates-tags');
-      const popupBadge = getWidgetElement('popup-templates-count-badge');
-      const popupList = getWidgetElement('popup-templates-list');
+      if (dashCount) dashCount.textContent = String(templates.length);
 
-      if (dashCount) dashCount.textContent = templatesList.length;
-      if (popupBadge) popupBadge.textContent = templatesList.length;
-
-      // Dashboard saved templates list
       if (dashTags) {
-        if (templatesList.length === 0) {
-          dashTags.innerHTML = '<span class="text-xs text-[#8a7c72] italic">No templates saved yet. Add one above using "Title" Text.</span>';
+        if (templates.length === 0) {
+          dashTags.innerHTML = '<span class="text-xs text-[#7d6f66] italic">No templates saved yet.</span>';
         } else {
-          dashTags.innerHTML = templatesList.map((t, idx) => `
-            <div title="${escapeHtml(t.body)}" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#14100e] border border-[#2b221e] text-xs text-[#f5f0eb]">
-              <span class="font-semibold">${escapeHtml(t.title)}</span>
-              <button type="button" data-del-idx="${idx}" title="Delete template" class="dash-del-tpl text-[#8a7c72] hover:text-rose-400 font-bold leading-none px-0.5 cursor-pointer">×</button>
+          dashTags.innerHTML = templates.map(t => `
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#14100e] border border-[#2b221e] text-xs text-[#f5f0eb]" title="${escapeHtml(t.body)}">
+              <button type="button" data-copy-id="${escapeHtml(t.id)}" class="dash-tpl-copy font-semibold hover:text-emerald-400 transition cursor-pointer">${escapeHtml(t.title)}</button>
+              <button type="button" data-del-id="${escapeHtml(t.id)}" title="Delete template" class="dash-tpl-del text-[#8a7c72] hover:text-rose-400 font-bold pl-1 border-l border-[#2b221e] cursor-pointer">✕</button>
             </div>
           `).join('');
 
-          dashTags.querySelectorAll('.dash-del-tpl').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              deleteTemplateByIndex(parseInt(e.currentTarget.dataset.delIdx, 10));
+          dashTags.querySelectorAll('.dash-tpl-copy').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const tpl = templates.find(x => x.id === btn.dataset.copyId);
+              if (!tpl) return;
+              copyTextToClipboard(tpl.body, document);
+              const orig = btn.textContent;
+              btn.textContent = '✓ Copied!';
+              btn.classList.add('text-emerald-400');
+              setTimeout(() => {
+                btn.textContent = orig;
+                btn.classList.remove('text-emerald-400');
+              }, 1000);
             });
+          });
+
+          dashTags.querySelectorAll('.dash-tpl-del').forEach(btn => {
+            btn.addEventListener('click', () => deleteTemplateById(btn.dataset.delId));
           });
         }
       }
 
-      // Popup compact wrapped template chips (filtered by search query)
+      // Popup badge & chips
+      const badge = getWidgetElement('popup-templates-count-badge');
+      const popupList = getWidgetElement('popup-templates-list');
+      const searchInp = getWidgetElement('input-popup-template-search');
+      if (badge) badge.textContent = String(templates.length);
+      if (searchInp && searchInp.value !== (state.templateSearchQuery || '')) {
+        searchInp.value = state.templateSearchQuery || '';
+      }
+
       if (popupList) {
         const q = (state.templateSearchQuery || '').trim().toLowerCase();
-        const filtered = templatesList.filter(t =>
-          !q || t.title.toLowerCase().includes(q) || t.body.toLowerCase().includes(q)
-        );
+        const filtered = templates.filter(t => !q || t.title.toLowerCase().includes(q) || t.body.toLowerCase().includes(q));
 
         if (filtered.length === 0) {
-          popupList.innerHTML = `<span class="text-[11px] w-text-muted italic">${templatesList.length === 0 ? 'No templates yet. Add them on the dashboard.' : 'No matching templates.'}</span>`;
+          popupList.innerHTML = `<span class="text-[11px] w-text-muted italic">${templates.length === 0 ? 'Add templates from the dashboard.' : 'No matching templates.'}</span>`;
         } else {
-          popupList.innerHTML = filtered.map((t, i) => `
-            <button type="button" data-tpl-idx="${i}" title="${escapeHtml(t.body)}"
-              class="popup-tpl-chip inline-flex items-center w-auto px-2.5 py-1 rounded-md w-btn border hover:border-emerald-500 active:scale-95 text-xs font-semibold transition cursor-pointer leading-tight">
+          popupList.innerHTML = filtered.map(t => `
+            <button type="button" data-tpl-id="${escapeHtml(t.id)}" title="${escapeHtml(t.body)}"
+              class="popup-tpl-chip inline-flex w-auto max-w-full px-2.5 py-1 rounded-md w-btn border text-xs font-semibold active:scale-95 transition cursor-pointer truncate">
               ${escapeHtml(t.title)}
             </button>
           `).join('');
 
-          popupList.querySelectorAll('.popup-tpl-chip').forEach((btn, idx) => {
+          popupList.querySelectorAll('.popup-tpl-chip').forEach(btn => {
             btn.addEventListener('click', () => {
-              const item = filtered[idx];
-              if (!item) return;
-              copyTextFallback(item.body, btn.ownerDocument);
-              const origText = item.title;
+              const tpl = templates.find(x => x.id === btn.dataset.tplId);
+              if (!tpl) return;
+              copyTextToClipboard(tpl.body, getWidgetDoc());
+              const orig = btn.textContent;
               btn.textContent = '✓ Copied!';
-              btn.classList.add('border-emerald-500', 'text-emerald-400');
+              btn.classList.add('tpl-copied-flash');
               setTimeout(() => {
-                btn.textContent = origText;
-                btn.classList.remove('border-emerald-500', 'text-emerald-400');
-              }, 1100);
+                btn.textContent = orig;
+                btn.classList.remove('tpl-copied-flash');
+              }, 950);
             });
           });
         }
@@ -1740,7 +1780,7 @@
     }
 
     /********************************************************************
-     * 9. MODULE 5: TEMPORARY NOTES (SCROLLABLE SCRATCHPAD)
+     * 9. MODULE 5: TEMPORARY NOTES (SCRATCHPAD)
      ********************************************************************/
     function toggleNotesDrawer(forceState) {
       state.notesPanelOpen = typeof forceState === 'boolean' ? forceState : !state.notesPanelOpen;
@@ -1766,21 +1806,425 @@
     function renderNotesModule() {
       const ta = getWidgetElement('textarea-popup-notes');
       const indicator = getWidgetElement('popup-notes-indicator');
-
       if (ta && ta.value !== (state.temporaryNotes || '')) {
         ta.value = state.temporaryNotes || '';
       }
-
       if (indicator) {
         const hasText = Boolean((state.temporaryNotes || '').trim());
-        indicator.className = `w-2 h-2 rounded-full ${hasText ? 'bg-amber-400' : 'bg-neutral-500'}`;
+        indicator.className = hasText
+          ? 'w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)]'
+          : 'w-2 h-2 rounded-full bg-neutral-500';
       }
-
       applyNotesDrawerState();
     }
 
     /********************************************************************
-     * 10. MODULE 6: STOPWATCH (REPEAT AUTO-RESTART + PLAY/PAUSE)
+     * 9B. MODULE 6: SAY HELLO? (NEW DAY IN MEMBER TIMEZONE)
+     ********************************************************************/
+    // Exact list: US States (+ DC & PR), Australian States/Territories, and Europe + UK
+    const HELLO_LOCATIONS = [
+      // US States, DC & Puerto Rico
+      { code: 'AL', name: 'Alabama (US)', tz: 'America/Chicago' },
+      { code: 'AK', name: 'Alaska (US)', tz: 'America/Anchorage' },
+      { code: 'AZ', name: 'Arizona (US)', tz: 'America/Phoenix' },
+      { code: 'AR', name: 'Arkansas (US)', tz: 'America/Chicago' },
+      { code: 'CA', name: 'California (US)', tz: 'America/Los_Angeles' },
+      { code: 'CO', name: 'Colorado (US)', tz: 'America/Denver' },
+      { code: 'CT', name: 'Connecticut (US)', tz: 'America/New_York' },
+      { code: 'DE', name: 'Delaware (US)', tz: 'America/New_York' },
+      { code: 'DC', name: 'District of Columbia (US)', tz: 'America/New_York' },
+      { code: 'FL', name: 'Florida (US)', tz: 'America/New_York' },
+      { code: 'GA', name: 'Georgia (US)', tz: 'America/New_York' },
+      { code: 'HI', name: 'Hawaii (US)', tz: 'Pacific/Honolulu' },
+      { code: 'ID', name: 'Idaho (US)', tz: 'America/Boise' },
+      { code: 'IL', name: 'Illinois (US)', tz: 'America/Chicago' },
+      { code: 'IN', name: 'Indiana (US)', tz: 'America/Indiana/Indianapolis' },
+      { code: 'IA', name: 'Iowa (US)', tz: 'America/Chicago' },
+      { code: 'KS', name: 'Kansas (US)', tz: 'America/Chicago' },
+      { code: 'KY', name: 'Kentucky (US)', tz: 'America/New_York' },
+      { code: 'LA', name: 'Louisiana (US)', tz: 'America/Chicago' },
+      { code: 'ME', name: 'Maine (US)', tz: 'America/New_York' },
+      { code: 'MD', name: 'Maryland (US)', tz: 'America/New_York' },
+      { code: 'MA', name: 'Massachusetts (US)', tz: 'America/New_York' },
+      { code: 'MI', name: 'Michigan (US)', tz: 'America/Detroit' },
+      { code: 'MN', name: 'Minnesota (US)', tz: 'America/Chicago' },
+      { code: 'MS', name: 'Mississippi (US)', tz: 'America/Chicago' },
+      { code: 'MO', name: 'Missouri (US)', tz: 'America/Chicago' },
+      { code: 'MT', name: 'Montana (US)', tz: 'America/Denver' },
+      { code: 'NE', name: 'Nebraska (US)', tz: 'America/Chicago' },
+      { code: 'NV', name: 'Nevada (US)', tz: 'America/Los_Angeles' },
+      { code: 'NH', name: 'New Hampshire (US)', tz: 'America/New_York' },
+      { code: 'NJ', name: 'New Jersey (US)', tz: 'America/New_York' },
+      { code: 'NM', name: 'New Mexico (US)', tz: 'America/Denver' },
+      { code: 'NY', name: 'New York (US)', tz: 'America/New_York' },
+      { code: 'NC', name: 'North Carolina (US)', tz: 'America/New_York' },
+      { code: 'ND', name: 'North Dakota (US)', tz: 'America/Chicago' },
+      { code: 'OH', name: 'Ohio (US)', tz: 'America/New_York' },
+      { code: 'OK', name: 'Oklahoma (US)', tz: 'America/Chicago' },
+      { code: 'OR', name: 'Oregon (US)', tz: 'America/Los_Angeles' },
+      { code: 'PA', name: 'Pennsylvania (US)', tz: 'America/New_York' },
+      { code: 'RI', name: 'Rhode Island (US)', tz: 'America/New_York' },
+      { code: 'SC', name: 'South Carolina (US)', tz: 'America/New_York' },
+      { code: 'SD', name: 'South Dakota (US)', tz: 'America/Chicago' },
+      { code: 'TN', name: 'Tennessee (US)', tz: 'America/Chicago' },
+      { code: 'TX', name: 'Texas (US)', tz: 'America/Chicago' },
+      { code: 'UT', name: 'Utah (US)', tz: 'America/Denver' },
+      { code: 'VT', name: 'Vermont (US)', tz: 'America/New_York' },
+      { code: 'VA', name: 'Virginia (US)', tz: 'America/New_York' },
+      { code: 'WA', name: 'Washington (US)', tz: 'America/Los_Angeles' },
+      { code: 'WV', name: 'West Virginia (US)', tz: 'America/New_York' },
+      { code: 'WI', name: 'Wisconsin (US)', tz: 'America/Chicago' },
+      { code: 'WY', name: 'Wyoming (US)', tz: 'America/Denver' },
+      { code: 'PR', name: 'Puerto Rico (US)', tz: 'America/Puerto_Rico' },
+
+      // Australian States & Territories
+      { code: 'ACT', name: 'Australian Capital Territory (Australia)', tz: 'Australia/Sydney' },
+      { code: 'NSW', name: 'New South Wales (Australia)', tz: 'Australia/Sydney' },
+      { code: 'NT', name: 'Northern Territory (Australia)', tz: 'Australia/Darwin' },
+      { code: 'QLD', name: 'Queensland (Australia)', tz: 'Australia/Brisbane' },
+      { code: 'SA', name: 'South Australia (Australia)', tz: 'Australia/Adelaide' },
+      { code: 'TAS', name: 'Tasmania (Australia)', tz: 'Australia/Hobart' },
+      { code: 'VIC', name: 'Victoria (Australia)', tz: 'Australia/Melbourne' },
+      { code: 'WA', name: 'Western Australia (Australia)', tz: 'Australia/Perth' },
+
+      // European Countries & United Kingdom
+      { code: '', name: 'Austria', tz: 'Europe/Vienna', aliases: ['AT'] },
+      { code: '', name: 'Belgium', tz: 'Europe/Brussels', aliases: ['BE'] },
+      { code: '', name: 'Croatia', tz: 'Europe/Zagreb', aliases: ['HR'] },
+      { code: '', name: 'Czechia', tz: 'Europe/Prague', aliases: ['CZ', 'Czech Republic'] },
+      { code: '', name: 'Denmark', tz: 'Europe/Copenhagen', aliases: ['DK'] },
+      { code: '', name: 'Estonia', tz: 'Europe/Tallinn', aliases: ['EE'] },
+      { code: '', name: 'Finland', tz: 'Europe/Helsinki', aliases: ['FI'] },
+      { code: '', name: 'France', tz: 'Europe/Paris', aliases: ['FR'] },
+      { code: '', name: 'Germany', tz: 'Europe/Berlin', aliases: ['DE'] },
+      { code: '', name: 'Greece', tz: 'Europe/Athens', aliases: ['GR'] },
+      { code: '', name: 'Hungary', tz: 'Europe/Budapest', aliases: ['HU'] },
+      { code: '', name: 'Ireland', tz: 'Europe/Dublin', aliases: ['IE'] },
+      { code: '', name: 'Italy', tz: 'Europe/Rome', aliases: ['IT'] },
+      { code: '', name: 'Latvia', tz: 'Europe/Riga', aliases: ['LV'] },
+      { code: '', name: 'Lithuania', tz: 'Europe/Vilnius', aliases: ['LT'] },
+      { code: '', name: 'Luxembourg', tz: 'Europe/Luxembourg', aliases: ['LU'] },
+      { code: '', name: 'Netherlands', tz: 'Europe/Amsterdam', aliases: ['NL', 'Holland'] },
+      { code: '', name: 'Poland', tz: 'Europe/Warsaw', aliases: ['PL'] },
+      { code: '', name: 'Portugal', tz: 'Europe/Lisbon', aliases: ['PT'] },
+      { code: '', name: 'Romania', tz: 'Europe/Bucharest', aliases: ['RO'] },
+      { code: '', name: 'Slovakia', tz: 'Europe/Bratislava', aliases: ['SK'] },
+      { code: '', name: 'Slovenia', tz: 'Europe/Ljubljana', aliases: ['SI'] },
+      { code: '', name: 'Spain', tz: 'Europe/Madrid', aliases: ['ES'] },
+      { code: '', name: 'Sweden', tz: 'Europe/Stockholm', aliases: ['SE'] },
+      { code: '', name: 'United Kingdom', tz: 'Europe/London', aliases: ['UK', 'GB', 'England', 'Scotland', 'Wales'] }
+    ];
+
+    const MONTH_NAME_MAP = {
+      jan: 1, january: 1,
+      feb: 2, february: 2,
+      mar: 3, march: 3,
+      apr: 4, april: 4,
+      may: 5,
+      jun: 6, june: 6,
+      jul: 7, july: 7,
+      aug: 8, august: 8,
+      sep: 9, sept: 9, september: 9,
+      oct: 10, october: 10,
+      nov: 11, november: 11,
+      dec: 12, december: 12
+    };
+
+    function getCairoYMD(ms = getCorrectedNowMs()) {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: CAIRO_TZ,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).formatToParts(new Date(ms));
+      const m = {};
+      parts.forEach(p => { m[p.type] = parseInt(p.value, 10); });
+      return { year: m.year, month: m.month, day: m.day };
+    }
+
+    // Converts a Cairo wall-clock date/time into exact UTC milliseconds (DST-aware)
+    function cairoWallTimeToUtcMs(year, month, day, hour, minute) {
+      let utc = Date.UTC(year, month - 1, day, hour, minute, 0, 0);
+      for (let i = 0; i < 2; i++) {
+        const parts = new Intl.DateTimeFormat('en-US', {
+          timeZone: CAIRO_TZ,
+          hour12: false,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        }).formatToParts(new Date(utc));
+        const m = {};
+        parts.forEach(p => { m[p.type] = parseInt(p.value, 10); });
+        const gHour = m.hour === 24 ? 0 : m.hour;
+        const guessWall = Date.UTC(m.year, m.month - 1, m.day, gHour, m.minute, 0, 0);
+        const targetWall = Date.UTC(year, month - 1, day, hour, minute, 0, 0);
+        const diff = targetWall - guessWall;
+        if (diff === 0) break;
+        utc += diff;
+      }
+      return utc;
+    }
+
+    function parseTimePart(hourStr, minStr, ampmStr) {
+      let h = parseInt(hourStr, 10);
+      const min = parseInt(minStr, 10);
+      if (isNaN(h) || isNaN(min) || min < 0 || min > 59) return null;
+      if (ampmStr) {
+        const ap = ampmStr.toLowerCase();
+        if (h < 1 || h > 12) return null;
+        if (ap === 'pm' && h < 12) h += 12;
+        if (ap === 'am' && h === 12) h = 0;
+      } else if (h < 0 || h > 23) {
+        return null;
+      }
+      return { hour: h, minute: min };
+    }
+
+    // Parses common ticket timestamps (assumed Cairo time) into UTC ms
+    function parseCairoTimestamp(raw) {
+      const cleaned = String(raw || '').trim().replace(/\s+/g, ' ');
+      if (!cleaned) return null;
+
+      const todayCairo = getCairoYMD();
+      let year = todayCairo.year;
+      let month = null;
+      let day = null;
+      let timeObj = null;
+
+      // 1. "Today at 16:44" / "Yesterday 4:44 PM"
+      let m = cleaned.match(/^(today|yesterday)\s*(?:at\s*)?,?\s*(\d{1,2}):(\d{2})(?::\d{2})?\s*(am|pm)?$/i);
+      if (m) {
+        timeObj = parseTimePart(m[2], m[3], m[4]);
+        if (!timeObj) return null;
+        const baseMs = m[1].toLowerCase() === 'yesterday'
+          ? getCorrectedNowMs() - 86400000
+          : getCorrectedNowMs();
+        const ymd = getCairoYMD(baseMs);
+        return cairoWallTimeToUtcMs(ymd.year, ymd.month, ymd.day, timeObj.hour, timeObj.minute);
+      }
+
+      // 2. "19 Nov 2026, 14:43" / "Thu 19 Nov 2026 2:43 PM" / "19 Nov, 14:43"
+      m = cleaned.match(/^(?:[a-z]{3,9},?\s+)?(\d{1,2})\s+([a-z]{3,9})(?:\s+(\d{4}))?,?\s*(?:at\s*)?(\d{1,2}):(\d{2})(?::\d{2})?\s*(am|pm)?$/i);
+      if (m) {
+        day = parseInt(m[1], 10);
+        month = MONTH_NAME_MAP[m[2].toLowerCase()];
+        if (m[3]) year = parseInt(m[3], 10);
+        timeObj = parseTimePart(m[4], m[5], m[6]);
+        if (month && day >= 1 && day <= 31 && timeObj) {
+          return cairoWallTimeToUtcMs(year, month, day, timeObj.hour, timeObj.minute);
+        }
+      }
+
+      // 3. "Oct 19, 2026 4:44 PM" / "Nov 19 14:43"
+      m = cleaned.match(/^(?:[a-z]{3,9},?\s+)?([a-z]{3,9})\s+(\d{1,2})(?:,?\s*(\d{4}))?,?\s*(?:at\s*)?(\d{1,2}):(\d{2})(?::\d{2})?\s*(am|pm)?$/i);
+      if (m) {
+        month = MONTH_NAME_MAP[m[1].toLowerCase()];
+        day = parseInt(m[2], 10);
+        if (m[3]) year = parseInt(m[3], 10);
+        timeObj = parseTimePart(m[4], m[5], m[6]);
+        if (month && day >= 1 && day <= 31 && timeObj) {
+          return cairoWallTimeToUtcMs(year, month, day, timeObj.hour, timeObj.minute);
+        }
+      }
+
+      // 4. "YYYY-MM-DD 16:44"
+      m = cleaned.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2}),?\s*(?:at\s*)?(\d{1,2}):(\d{2})(?::\d{2})?\s*(am|pm)?$/i);
+      if (m) {
+        year = parseInt(m[1], 10);
+        month = parseInt(m[2], 10);
+        day = parseInt(m[3], 10);
+        timeObj = parseTimePart(m[4], m[5], m[6]);
+        if (month >= 1 && month <= 12 && day >= 1 && day <= 31 && timeObj) {
+          return cairoWallTimeToUtcMs(year, month, day, timeObj.hour, timeObj.minute);
+        }
+      }
+
+      // 5. "19/10/2026 16:44" (DD/MM/YYYY)
+      m = cleaned.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4}),?\s*(?:at\s*)?(\d{1,2}):(\d{2})(?::\d{2})?\s*(am|pm)?$/i);
+      if (m) {
+        day = parseInt(m[1], 10);
+        month = parseInt(m[2], 10);
+        year = parseInt(m[3], 10);
+        if (year < 100) year += 2000;
+        timeObj = parseTimePart(m[4], m[5], m[6]);
+        if (month >= 1 && month <= 12 && day >= 1 && day <= 31 && timeObj) {
+          return cairoWallTimeToUtcMs(year, month, day, timeObj.hour, timeObj.minute);
+        }
+      }
+
+      return null;
+    }
+
+    function getDateKeyInTimeZone(utcMs, timeZone) {
+      return new Intl.DateTimeFormat('en-CA', {
+        timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(new Date(utcMs));
+    }
+
+    function formatLocationDisplay(loc) {
+      return loc.code ? `${loc.code} – ${loc.name}` : loc.name;
+    }
+
+    function matchesHelloLocation(loc, q) {
+      if (!q) return true;
+      if (loc.code && loc.code.toLowerCase().includes(q)) return true;
+      if (loc.name.toLowerCase().includes(q)) return true;
+      if (formatLocationDisplay(loc).toLowerCase().includes(q)) return true;
+      if (Array.isArray(loc.aliases) && loc.aliases.some(a => a.toLowerCase().includes(q))) return true;
+      return false;
+    }
+
+    function toggleHelloDrawer(forceState) {
+      state.helloPanelOpen = typeof forceState === 'boolean' ? forceState : !state.helloPanelOpen;
+      saveState();
+      applyHelloDrawerState();
+      setTimeout(() => resizePopupToFitContent(), 250);
+    }
+
+    function applyHelloDrawerState() {
+      const drawer = getWidgetElement('popup-hello-drawer');
+      const label = getWidgetElement('popup-hello-toggle-label');
+      if (drawer) {
+        if (state.helloPanelOpen) {
+          drawer.classList.add('open');
+          if (label) label.textContent = 'Hide Say Hello ▴';
+        } else {
+          drawer.classList.remove('open');
+          if (label) label.textContent = 'Say Hello? ▾';
+          const dd = getWidgetElement('hello-location-dropdown');
+          if (dd) dd.classList.add('hidden');
+        }
+      }
+    }
+
+    function renderHelloLocationDropdown(query) {
+      const dd = getWidgetElement('hello-location-dropdown');
+      if (!dd) return;
+
+      const q = String(query || '').trim().toLowerCase();
+      const matches = HELLO_LOCATIONS.filter(loc => matchesHelloLocation(loc, q)).slice(0, 15);
+
+      if (matches.length === 0) {
+        dd.innerHTML = '<div class="px-2.5 py-1.5 w-text-muted italic">No matching location</div>';
+      } else {
+        dd.innerHTML = matches.map((loc, idx) => `
+          <button type="button" data-loc-idx="${idx}"
+            class="hello-loc-opt w-full text-left px-2.5 py-1.5 hover:bg-emerald-500/20 w-text-primary transition cursor-pointer flex items-center justify-between gap-2">
+            <span class="font-semibold truncate">${escapeHtml(formatLocationDisplay(loc))}</span>
+          </button>
+        `).join('');
+
+        dd.querySelectorAll('.hello-loc-opt').forEach((btn, idx) => {
+          btn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const chosen = matches[idx];
+            if (!chosen) return;
+            state.helloLocationLabel = formatLocationDisplay(chosen);
+            state.helloLocationTz = chosen.tz;
+            saveState();
+            const locInput = getWidgetElement('input-hello-location');
+            if (locInput) locInput.value = state.helloLocationLabel;
+            dd.classList.add('hidden');
+            evaluateSayHello();
+            setTimeout(() => resizePopupToFitContent(), 40);
+          });
+        });
+      }
+
+      dd.classList.remove('hidden');
+      setTimeout(() => resizePopupToFitContent(), 40);
+    }
+
+    function evaluateSayHello() {
+      const resultBox = getWidgetElement('hello-result-box');
+      const miniBadge = getWidgetElement('popup-hello-mini-badge');
+      const clearTsBtn = getWidgetElement('btn-hello-clear-ts');
+      const clearLocBtn = getWidgetElement('btn-hello-clear-loc');
+
+      const tsRaw = (state.helloTimestamp || '').trim();
+      const tz = (state.helloLocationTz || '').trim();
+
+      if (clearTsBtn) clearTsBtn.classList.toggle('hidden', !tsRaw);
+      if (clearLocBtn) clearLocBtn.classList.toggle('hidden', !(state.helloLocationLabel || '').trim());
+
+      if (!resultBox) return;
+
+      if (!tsRaw && !tz) {
+        resultBox.classList.add('hidden');
+        if (miniBadge) {
+          miniBadge.textContent = '👋';
+          miniBadge.className = 'text-[10px] font-bold w-text-muted';
+        }
+        return;
+      }
+
+      const replyUtcMs = tsRaw ? parseCairoTimestamp(tsRaw) : null;
+
+      if (tsRaw && replyUtcMs === null) {
+        resultBox.className = 'rounded-md px-2.5 py-1.5 text-center font-bold text-[11px] border bg-amber-500/15 border-amber-500/40 text-amber-400';
+        resultBox.textContent = 'Could not read timestamp';
+        if (miniBadge) {
+          miniBadge.textContent = '👋';
+          miniBadge.className = 'text-[10px] font-bold w-text-muted';
+        }
+        return;
+      }
+
+      if (!replyUtcMs || !tz) {
+        resultBox.classList.add('hidden');
+        if (miniBadge) {
+          miniBadge.textContent = '👋';
+          miniBadge.className = 'text-[10px] font-bold w-text-muted';
+        }
+        return;
+      }
+
+      try {
+        const replyDayKey = getDateKeyInTimeZone(replyUtcMs, tz);
+        const nowDayKey = getDateKeyInTimeZone(getCorrectedNowMs(), tz);
+        const isNewDay = nowDayKey > replyDayKey;
+
+        if (isNewDay) {
+          resultBox.className = 'rounded-md px-2.5 py-1.5 text-center font-extrabold text-xs tracking-wide border bg-emerald-500/20 border-emerald-500/50 text-emerald-400';
+          resultBox.textContent = '👋 SAY HELLO';
+          if (miniBadge) {
+            miniBadge.textContent = 'SAY HELLO';
+            miniBadge.className = 'text-[10px] font-extrabold text-emerald-400';
+          }
+        } else {
+          resultBox.className = 'rounded-md px-2.5 py-1.5 text-center font-extrabold text-xs tracking-wide border bg-rose-500/15 border-rose-500/40 text-rose-400';
+          resultBox.textContent = "DON'T SAY HELLO";
+          if (miniBadge) {
+            miniBadge.textContent = 'NO HELLO';
+            miniBadge.className = 'text-[10px] font-extrabold text-rose-400';
+          }
+        }
+      } catch (err) {
+        resultBox.className = 'rounded-md px-2.5 py-1.5 text-center font-bold text-[11px] border bg-amber-500/15 border-amber-500/40 text-amber-400';
+        resultBox.textContent = 'Invalid timezone';
+      }
+    }
+
+    function renderHelloModule() {
+      const tsInput = getWidgetElement('input-hello-timestamp');
+      const locInput = getWidgetElement('input-hello-location');
+      if (tsInput && tsInput.value !== (state.helloTimestamp || '')) {
+        tsInput.value = state.helloTimestamp || '';
+      }
+      if (locInput && locInput.value !== (state.helloLocationLabel || '')) {
+        locInput.value = state.helloLocationLabel || '';
+      }
+      applyHelloDrawerState();
+      evaluateSayHello();
+    }
+
+    /********************************************************************
+     * 10. MODULE 7: STOPWATCH (REPEAT AUTO-RESTART + PLAY/PAUSE)
      ********************************************************************/
     function toggleStopwatch() {
       const nowMs = getCorrectedNowMs();
@@ -1805,10 +2249,6 @@
     }
 
     function updateStopwatchDisplay() {
-      const display = getWidgetElement('display-stopwatch');
-      const playIcon = getWidgetElement('icon-stopwatch-play');
-      const pauseIcon = getWidgetElement('icon-stopwatch-pause');
-
       let totalMs = state.stopwatch.elapsedMs || 0;
       if (state.stopwatch.isRunning && state.stopwatch.startTimestamp) {
         totalMs += Math.max(0, getCorrectedNowMs() - state.stopwatch.startTimestamp);
@@ -1818,68 +2258,57 @@
       const mins = Math.floor(totalSec / 60);
       const secs = totalSec % 60;
 
-      if (display) {
-        if (mins >= 60) {
-          const hrs = Math.floor(mins / 60);
-          const remM = mins % 60;
-          display.textContent = `${String(hrs).padStart(2, '0')}h ${String(remM).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
-        } else {
-          display.textContent = `${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
-        }
-      }
+      const displayEl = getWidgetElement('display-stopwatch');
+      const playIcon = getWidgetElement('icon-stopwatch-play');
+      const pauseIcon = getWidgetElement('icon-stopwatch-pause');
 
-      if (playIcon && pauseIcon) {
-        playIcon.classList.toggle('hidden', state.stopwatch.isRunning);
-        pauseIcon.classList.toggle('hidden', !state.stopwatch.isRunning);
+      if (displayEl) {
+        displayEl.textContent = `${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
       }
+      if (playIcon) playIcon.classList.toggle('hidden', state.stopwatch.isRunning);
+      if (pauseIcon) pauseIcon.classList.toggle('hidden', !state.stopwatch.isRunning);
     }
 
     /********************************************************************
      * 11. MODULE VISIBILITY & ACTIVITY LOG
      ********************************************************************/
-    const MODULE_KEYS = ['clock', 'breaks', 'counter', 'templates', 'notes', 'stopwatch'];
+    const MODULE_KEYS = ['clock', 'breaks', 'counter', 'templates', 'notes', 'hello', 'stopwatch'];
 
     function applyModuleVisibility() {
       MODULE_KEYS.forEach(key => {
-        const isVisible = Boolean(state.modules[key]);
         const chk = document.getElementById(`chk-mod-${key}`);
         const modEl = getWidgetElement(`mod-${key}`);
-
-        if (chk) chk.checked = isVisible;
-        if (modEl) modEl.classList.toggle('hidden', !isVisible);
+        const visible = state.modules[key] !== false;
+        if (chk) chk.checked = visible;
+        if (modEl) modEl.classList.toggle('hidden', !visible);
       });
-      resizePopupToFitContent();
+      setTimeout(() => resizePopupToFitContent(), 60);
+    }
+
+    function addLog(message) {
+      const timeStr = formatCairoClockFull(getCorrectedNowMs());
+      state.logs.unshift({ time: timeStr, message });
+      if (state.logs.length > 60) state.logs = state.logs.slice(0, 60);
+      renderLogs();
     }
 
     function renderLogs() {
       const list = document.getElementById('activity-log-list');
       if (!list) return;
-
       if (!state.logs || state.logs.length === 0) {
-        list.innerHTML = '<div class="text-[#8a7c72] italic py-2">No break or shift activity recorded yet today.</div>';
+        list.innerHTML = '<div class="text-[#7d6f66] italic py-2">No break events logged yet for this shift.</div>';
         return;
       }
-
-      list.innerHTML = state.logs.map(entry => {
-        const dotColor = entry.color === 'emerald' ? 'bg-emerald-500' : 'bg-amber-500';
-        return `
-          <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-[#14100e] border border-[#2b221e]">
-            <span class="w-1.5 h-1.5 rounded-full ${dotColor} shrink-0"></span>
-            <span class="font-mono-num text-[11px] text-[#b5a89e] shrink-0">${escapeHtml(entry.time)}</span>
-            <span class="text-[#f5f0eb]">${escapeHtml(entry.text)}</span>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function clearLogs() {
-      state.logs = [];
-      saveState();
-      renderLogs();
+      list.innerHTML = state.logs.map(entry => `
+        <div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded-lg bg-[#14100e] border border-[#2b221e]">
+          <span class="text-[#f5f0eb]">${escapeHtml(entry.message)}</span>
+          <span class="font-mono-num text-[11px] text-[#8a7c72] shrink-0">${escapeHtml(entry.time)}</span>
+        </div>
+      `).join('');
     }
 
     /********************************************************************
-     * 12. SHIFT RESET MODAL
+     * 12. SHIFT RESET & CONFIRMATION MODAL
      ********************************************************************/
     function openResetModal() {
       const modal = document.getElementById('custom-modal-backdrop');
@@ -1897,160 +2326,194 @@
       }
     }
 
-    function confirmShiftReset() {
-      const currentCairoH = getCairoParts().hour24;
-      state.lunch = {
-        isRunning: false,
-        startTimestamp: null,
-        startFormatted: '00:00',
-        finishFormatted: '00:00',
-        remainingMinutes: state.lunchAllowance || 75
+    function performShiftReset() {
+      const preserved = {
+        modules: { ...state.modules },
+        clockSize: state.clockSize,
+        popupTheme: state.popupTheme,
+        shiftStartHour: state.shiftStartHour,
+        shiftEndHour: state.shiftEndHour
       };
-      state.mc = {
-        isRunning: false,
-        startTimestamp: null,
-        startFormatted: '00:00',
-        finishFormatted: '00:00',
-        totalMinutesSpent: 0
+      state = {
+        ...JSON.parse(JSON.stringify(defaultState)),
+        ...preserved
       };
-      state.tickets = {
-        currentHourCount: 0,
-        totalShiftCount: 0,
-        activeCairoHour: currentCairoH,
-        hourlyCounts: {},
-        lastReplyTimestamp: null,
-        drawerOpen: state.tickets.drawerOpen
-      };
-      state.temporaryNotes = '';
-      state.stopwatch = {
-        isRunning: false,
-        startTimestamp: null,
-        elapsedMs: 0
-      };
-      state.logs = [];
-
       saveState();
-      renderAll();
       closeResetModal();
+      renderAll();
     }
 
     /********************************************************************
-     * 13. FLOATING WIDGET POPUP (DOCUMENT PICTURE-IN-PICTURE + FALLBACK)
+     * 13. FLOATING WIDGET POPUP (Document PiP + Fallback Window)
      ********************************************************************/
-    function resizePopupToFitContent() {
-      if (pipWindowRef && !pipWindowRef.closed) {
-        try {
-          const widget = pipWindowRef.document.getElementById('widget-root');
-          if (widget) {
-            const targetHeight = Math.min(820, Math.max(120, widget.offsetHeight + 16));
-            const targetWidth = Math.max(330, widget.offsetWidth + 16);
-            pipWindowRef.resizeTo(targetWidth, targetHeight);
-          }
-        } catch (e) {
-          // Some browsers restrict resizeTo inside PiP
-        }
-      }
-    }
-
-    async function launchWidgetPopup() {
-      const widget = document.getElementById('widget-root');
+    async function launchFloatingWidget() {
+      const widgetRoot = document.getElementById('widget-root');
       const dock = document.getElementById('widget-dock-container');
-      const poppedIndicator = document.getElementById('popped-out-indicator');
+      const indicator = document.getElementById('popped-out-indicator');
 
-      // Focus if already open
-      if (pipWindowRef && !pipWindowRef.closed) {
-        pipWindowRef.focus();
+      if (pipWindow && !pipWindow.closed) {
+        pipWindow.focus();
         return;
       }
 
-      // Primary: Document Picture-in-Picture (borderless always-on-top widget)
-      if ('documentPictureInPicture' in window && widget) {
+      if ('documentPictureInPicture' in window && widgetRoot) {
         try {
-          const initialHeight = Math.min(780, Math.max(180, widget.offsetHeight + 16));
-          const initialWidth = Math.max(350, widget.offsetWidth + 12);
-
-          const pipWin = await window.documentPictureInPicture.requestWindow({
-            width: initialWidth,
-            height: initialHeight
-          });
-          pipWindowRef = pipWin;
-          pipWin.document.title = 'Teams: Hashish.9';
-
-          // Copy stylesheets & fonts into the PiP window
-          document.querySelectorAll('style, link[rel="stylesheet"]').forEach(node => {
-            pipWin.document.head.appendChild(node.cloneNode(true));
+          const rect = widgetRoot.getBoundingClientRect();
+          pipWindow = await window.documentPictureInPicture.requestWindow({
+            width: Math.max(336, Math.ceil(rect.width) + 12),
+            height: Math.max(260, Math.ceil(Math.max(rect.height, widgetRoot.scrollHeight)) + 16)
           });
 
-          const themeBg = THEME_BODY_BG[state.popupTheme || 'dark'];
-          pipWin.document.body.style.margin = '0';
-          pipWin.document.body.style.padding = '4px';
-          pipWin.document.body.style.backgroundColor = themeBg;
-          pipWin.document.body.style.display = 'flex';
-          pipWin.document.body.style.justifyContent = 'center';
-          pipWin.document.body.style.alignItems = 'flex-start';
+          pipWindow.document.title = 'Work Toolkit';
 
-          widget.style.width = '100%';
-          pipWin.document.body.appendChild(widget);
-
-          if (poppedIndicator) poppedIndicator.classList.remove('hidden');
-
-          pipWin.addEventListener('pagehide', () => {
-            widget.style.width = '340px';
-            if (dock) dock.appendChild(widget);
-            if (poppedIndicator) poppedIndicator.classList.add('hidden');
-            pipWindowRef = null;
-            applyPopupTheme();
+          // Copy styles and fonts into PiP window
+          document.querySelectorAll('link[rel="stylesheet"], style').forEach(node => {
+            pipWindow.document.head.appendChild(node.cloneNode(true));
           });
 
+          pipWindow.document.body.style.margin = '0';
+          pipWindow.document.body.style.padding = '4px';
+          pipWindow.document.body.style.display = 'flex';
+          pipWindow.document.body.style.justifyContent = 'center';
+          pipWindow.document.body.style.alignItems = 'flex-start';
+          pipWindow.document.body.style.overflowX = 'hidden';
+          pipWindow.document.body.style.overflowY = 'auto';
+          pipWindow.document.body.style.backgroundColor = THEME_BODY_BG[state.popupTheme] || '#1c1613';
+
+          pipWindow.document.body.appendChild(widgetRoot);
+          if (indicator) indicator.classList.remove('hidden');
+
+          // Automatically resize PiP window whenever any drawer, tool, or content height changes
+          if ('ResizeObserver' in window) {
+            if (pipResizeObserver) pipResizeObserver.disconnect();
+            pipResizeObserver = new ResizeObserver(() => {
+              resizePopupToFitContent();
+            });
+            pipResizeObserver.observe(widgetRoot);
+          }
+
+          pipWindow.addEventListener('pagehide', () => {
+            if (pipResizeObserver) {
+              pipResizeObserver.disconnect();
+              pipResizeObserver = null;
+            }
+            if (dock && widgetRoot) dock.appendChild(widgetRoot);
+            if (indicator) indicator.classList.add('hidden');
+            pipWindow = null;
+            renderAll();
+          });
+
+          pipWindow.requestAnimationFrame(() => resizePopupToFitContent());
           setTimeout(() => resizePopupToFitContent(), 120);
+          setTimeout(() => resizePopupToFitContent(), 300);
           return;
         } catch (err) {
-          console.warn('PiP unavailable, falling back to popup window:', err);
+          // Fall through to standard popup window
         }
       }
 
-      // Fallback: Standard mini popup window
-      const baseUrl = window.location.href.split('#')[0];
-      const h = widget ? Math.min(780, Math.max(220, widget.offsetHeight + 40)) : 560;
-      fallbackPopupRef = window.open(
-        `${baseUrl}#popupmode`,
-        'WorkToolkitPopup',
-        `width=365,height=${h},resizable=yes,scrollbars=no`
-      );
-      if (fallbackPopupRef) fallbackPopupRef.focus();
+      // Fallback standalone popup window
+      const url = new URL(window.location.href);
+      url.searchParams.set('popup', '1');
+      window.open(url.toString(), 'WorkToolkitPopup', 'width=360,height=640,resizable=yes,scrollbars=no');
     }
 
     function applyStandalonePopupModeIfNeeded() {
-      if (window.location.hash !== '#popupmode') return;
-      document.title = 'Teams: Hashish.9';
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('popup') !== '1') return;
       const header = document.querySelector('header');
-      const dashContent = document.getElementById('dashboard-content');
+      const dashCol = document.getElementById('dashboard-content');
       const main = document.getElementById('dashboard-main');
       const widgetCol = document.getElementById('widget-column');
-      const widget = document.getElementById('widget-root');
-
       if (header) header.classList.add('hidden');
-      if (dashContent) dashContent.classList.add('hidden');
-      if (main) main.className = 'p-2 flex justify-center items-start min-h-screen';
+      if (dashCol) dashCol.classList.add('hidden');
+      if (main) main.className = 'min-h-screen flex items-start justify-center p-2';
       if (widgetCol) widgetCol.className = 'w-full flex justify-center';
-      if (widget) widget.style.width = '100%';
-      document.body.style.backgroundColor = THEME_BODY_BG[state.popupTheme || 'dark'];
     }
 
     /********************************************************************
      * 14. EVENT BINDINGS & INITIALIZATION
      ********************************************************************/
+    function bindDashboardEventListeners() {
+      const bind = (id, evt, fn) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener(evt, fn);
+      };
+
+      bind('btn-header-launch', 'click', launchFloatingWidget);
+      bind('btn-header-reset', 'click', openResetModal);
+      bind('btn-modal-cancel', 'click', closeResetModal);
+      bind('btn-modal-confirm', 'click', performShiftReset);
+
+      const modalBackdrop = document.getElementById('custom-modal-backdrop');
+      if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', (e) => {
+          if (e.target === modalBackdrop) closeResetModal();
+        });
+      }
+
+      // Popup Color Modes
+      ['dark', 'blue', 'white'].forEach(theme => {
+        bind(`btn-theme-${theme}`, 'click', () => {
+          state.popupTheme = theme;
+          saveState();
+          applyPopupTheme();
+        });
+      });
+
+      // Clock Size Toggles
+      ['large', 'wide', 'small'].forEach(sz => {
+        bind(`btn-clock-${sz}`, 'click', () => {
+          state.clockSize = sz;
+          saveState();
+          applyClockSize();
+        });
+      });
+
+      // Module Visibility Checkboxes
+      MODULE_KEYS.forEach(key => {
+        bind(`chk-mod-${key}`, 'change', (e) => {
+          state.modules[key] = e.target.checked;
+          saveState();
+          applyModuleVisibility();
+        });
+      });
+
+      // Shift Hours Selects
+      bind('select-shift-start', 'change', (e) => {
+        state.shiftStartHour = parseInt(e.target.value, 10);
+        saveState();
+        renderHourlyTables();
+      });
+      bind('select-shift-end', 'change', (e) => {
+        state.shiftEndHour = parseInt(e.target.value, 10);
+        saveState();
+        renderHourlyTables();
+      });
+
+      // Templates Builder & Excel Copy & Clear Log
+      bind('btn-save-templates', 'click', parseAndSaveBulkTemplates);
+      bind('btn-copy-excel', 'click', copyHourlyBreakdownForExcel);
+      bind('btn-clear-log', 'click', () => {
+        state.logs = [];
+        saveState();
+        renderLogs();
+      });
+    }
+
     function bindWidgetEventListeners() {
       const bindClick = (id, fn) => {
         const el = getWidgetElement(id);
         if (el) el.addEventListener('click', fn);
       };
 
-      bindClick('btn-lunch', () => handleBreakClick('lunch'));
-      bindClick('btn-mc', () => handleBreakClick('mc'));
+      bindClick('btn-lunch', toggleLunch);
+      bindClick('btn-mc', toggleMC);
 
-      const lunchRem = getWidgetElement('lunch-remaining-box');
-      if (lunchRem) lunchRem.addEventListener('dblclick', enableInlineLunchEdit);
+      const lunchRemBox = getWidgetElement('lunch-remaining-box');
+      if (lunchRemBox) {
+        lunchRemBox.addEventListener('dblclick', startInlineLunchEdit);
+      }
 
       bindClick('btn-ticket-plus', incrementTicket);
       bindClick('btn-ticket-minus', decrementTicket);
@@ -2060,9 +2523,9 @@
       bindClick('btn-popup-templates-toggle', () => toggleTemplatesDrawer());
       const tplSearch = getWidgetElement('input-popup-template-search');
       if (tplSearch) {
-        tplSearch.value = state.templateSearchQuery || '';
         tplSearch.addEventListener('input', (e) => {
           state.templateSearchQuery = e.target.value;
+          saveState();
           renderTemplatesModule();
         });
       }
@@ -2083,59 +2546,76 @@
         });
       }
 
+      // Say Hello? widget listeners
+      bindClick('btn-popup-hello-toggle', () => toggleHelloDrawer());
+
+      const helloTsInput = getWidgetElement('input-hello-timestamp');
+      if (helloTsInput) {
+        helloTsInput.addEventListener('input', (e) => {
+          state.helloTimestamp = e.target.value;
+          saveState();
+          evaluateSayHello();
+          setTimeout(() => resizePopupToFitContent(), 50);
+        });
+      }
+
+      bindClick('btn-hello-clear-ts', () => {
+        state.helloTimestamp = '';
+        saveState();
+        const inp = getWidgetElement('input-hello-timestamp');
+        if (inp) {
+          inp.value = '';
+          inp.focus();
+        }
+        evaluateSayHello();
+        setTimeout(() => resizePopupToFitContent(), 50);
+      });
+
+      const helloLocInput = getWidgetElement('input-hello-location');
+      if (helloLocInput) {
+        helloLocInput.addEventListener('focus', () => {
+          renderHelloLocationDropdown(helloLocInput.value);
+        });
+        helloLocInput.addEventListener('input', (e) => {
+          const val = e.target.value;
+          state.helloLocationLabel = val;
+          // Auto-match if user typed an unambiguous exact code, name, or alias
+          const q = val.trim().toLowerCase();
+          const exactMatches = HELLO_LOCATIONS.filter(loc =>
+            (loc.code && loc.code.toLowerCase() === q) ||
+            loc.name.toLowerCase() === q ||
+            formatLocationDisplay(loc).toLowerCase() === q ||
+            (Array.isArray(loc.aliases) && loc.aliases.some(a => a.toLowerCase() === q))
+          );
+          state.helloLocationTz = exactMatches.length === 1 ? exactMatches[0].tz : '';
+          saveState();
+          renderHelloLocationDropdown(val);
+          evaluateSayHello();
+        });
+        helloLocInput.addEventListener('blur', () => {
+          setTimeout(() => {
+            const dd = getWidgetElement('hello-location-dropdown');
+            if (dd) dd.classList.add('hidden');
+            resizePopupToFitContent();
+          }, 150);
+        });
+      }
+
+      bindClick('btn-hello-clear-loc', () => {
+        state.helloLocationLabel = '';
+        state.helloLocationTz = '';
+        saveState();
+        const inp = getWidgetElement('input-hello-location');
+        if (inp) {
+          inp.value = '';
+          inp.focus();
+        }
+        evaluateSayHello();
+        setTimeout(() => resizePopupToFitContent(), 50);
+      });
+
       bindClick('btn-stopwatch-toggle', toggleStopwatch);
       bindClick('btn-stopwatch-repeat', repeatStopwatch);
-    }
-
-    function bindDashboardEventListeners() {
-      const bindClick = (id, fn) => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('click', fn);
-      };
-
-      bindClick('btn-header-launch', launchWidgetPopup);
-      bindClick('btn-header-reset', openResetModal);
-      bindClick('btn-modal-cancel', closeResetModal);
-      bindClick('btn-modal-confirm', confirmShiftReset);
-
-      bindClick('btn-theme-dark', () => setPopupTheme('dark'));
-      bindClick('btn-theme-blue', () => setPopupTheme('blue'));
-      bindClick('btn-theme-white', () => setPopupTheme('white'));
-
-      bindClick('btn-clock-large', () => setClockSize('large'));
-      bindClick('btn-clock-wide', () => setClockSize('wide'));
-      bindClick('btn-clock-small', () => setClockSize('small'));
-
-      MODULE_KEYS.forEach(key => {
-        const chk = document.getElementById(`chk-mod-${key}`);
-        if (chk) {
-          chk.addEventListener('change', (e) => {
-            state.modules[key] = e.target.checked;
-            saveState();
-            applyModuleVisibility();
-          });
-        }
-      });
-
-      const startSel = document.getElementById('select-shift-start');
-      const endSel = document.getElementById('select-shift-end');
-      if (startSel) startSel.addEventListener('change', updateShiftHours);
-      if (endSel) endSel.addEventListener('change', updateShiftHours);
-
-      bindClick('btn-save-templates', parseAndSaveBulkTemplates);
-      bindClick('btn-copy-excel', copyTableForExcel);
-      bindClick('btn-clear-log', clearLogs);
-
-      // Keep fallback popup window & main tab synchronized via localStorage events
-      window.addEventListener('storage', (e) => {
-        if (e.key === STORAGE_KEY) {
-          state = loadState();
-          renderAll();
-        } else if (e.key === TEMPLATES_STORAGE_KEY) {
-          templatesList = loadTemplatesPermanent();
-          renderTemplatesModule();
-        }
-      });
     }
 
     function renderAll() {
@@ -2148,6 +2628,7 @@
       renderHourlyTables();
       renderTemplatesModule();
       renderNotesModule();
+      renderHelloModule();
       updateStopwatchDisplay();
       renderLogs();
     }
@@ -2171,10 +2652,11 @@
         if (state.lunch.isRunning) renderBreakModule();
         if (state.tickets.lastReplyTimestamp) renderCounterModule();
         if (state.stopwatch.isRunning) updateStopwatchDisplay();
+        if (state.helloTimestamp && state.helloLocationTz) evaluateSayHello();
       }, 1000);
     }
 
-    document.addEventListener('DOMContentLoaded', init);
+    window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
