@@ -214,6 +214,40 @@
       border-color: #34d399 !important;
       color: #ffffff !important;
     }
+
+    /* Say Hello? result states (explicit CSS so they always render inside PiP popup) */
+    #widget-root .hello-res-yes {
+      background-color: rgba(16, 185, 129, 0.20);
+      border-color: rgba(16, 185, 129, 0.55);
+      color: #34d399;
+    }
+    #widget-root.theme-white .hello-res-yes {
+      background-color: rgba(16, 185, 129, 0.18);
+      border-color: rgba(5, 150, 105, 0.45);
+      color: #047857;
+    }
+    #widget-root .hello-res-no {
+      background-color: rgba(248, 113, 113, 0.22);
+      border-color: rgba(248, 113, 113, 0.55);
+      color: #fca5a5;
+    }
+    #widget-root.theme-white .hello-res-no {
+      background-color: rgba(248, 113, 113, 0.24);
+      border-color: rgba(239, 68, 68, 0.45);
+      color: #dc2626;
+    }
+    #widget-root .hello-badge-yes {
+      color: #34d399;
+    }
+    #widget-root.theme-white .hello-badge-yes {
+      color: #047857;
+    }
+    #widget-root .hello-badge-no {
+      color: #fca5a5;
+    }
+    #widget-root.theme-white .hello-badge-no {
+      color: #dc2626;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-amber-600 selection:text-white overflow-x-hidden bg-[#1c1613] text-[#f5f0eb]">
@@ -2182,18 +2216,18 @@
         const isNewDay = nowDayKey > replyDayKey;
 
         if (isNewDay) {
-          resultBox.className = 'rounded-md px-2.5 py-1.5 text-center font-extrabold text-xs tracking-wide border bg-emerald-500/20 border-emerald-500/50 text-emerald-400';
+          resultBox.className = 'rounded-md px-2.5 py-1.5 text-center font-extrabold text-xs tracking-wide border hello-res-yes';
           resultBox.textContent = '👋 SAY HELLO';
           if (miniBadge) {
             miniBadge.textContent = 'SAY HELLO';
-            miniBadge.className = 'text-[10px] font-extrabold text-emerald-400';
+            miniBadge.className = 'text-[10px] font-extrabold hello-badge-yes';
           }
         } else {
-          resultBox.className = 'rounded-md px-2.5 py-1.5 text-center font-extrabold text-xs tracking-wide border bg-rose-500/15 border-rose-500/40 text-rose-400';
+          resultBox.className = 'rounded-md px-2.5 py-1.5 text-center font-extrabold text-xs tracking-wide border hello-res-no';
           resultBox.textContent = "DON'T SAY HELLO";
           if (miniBadge) {
             miniBadge.textContent = 'NO HELLO';
-            miniBadge.className = 'text-[10px] font-extrabold text-rose-400';
+            miniBadge.className = 'text-[10px] font-extrabold hello-badge-no';
           }
         }
       } catch (err) {
